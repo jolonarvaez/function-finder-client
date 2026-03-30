@@ -135,7 +135,7 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - All component stories must wrap their decorator in `<div className="mx-auto max-w-200 bg-background p-6">` so the preview is never wider than 800px.
 
 ## Storybook — Pages
-- All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto max-w-107.5 bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
+- All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
 
 ## Hard Rules
 - Do not add sections, features, or content not in the reference

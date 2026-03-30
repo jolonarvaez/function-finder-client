@@ -11,7 +11,7 @@ const meta: Meta<typeof SignUpPage> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto max-w-107.5 bg-background">
+      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
         <Story />
       </div>
     ),

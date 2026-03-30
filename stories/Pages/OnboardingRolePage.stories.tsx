@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LoginPage } from "@/components/LoginPage";
+import { OnboardingRolePage } from "@/components/OnboardingRolePage";
 
-const meta: Meta<typeof LoginPage> = {
-  title: "Pages/LoginPage",
-  component: LoginPage,
+const meta: Meta<typeof OnboardingRolePage> = {
+  title: "Pages/OnboardingRolePage",
+  component: OnboardingRolePage,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -19,6 +19,6 @@ const meta: Meta<typeof LoginPage> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof LoginPage>;
+type Story = StoryObj<typeof OnboardingRolePage>;
 
 export const Default: Story = {};
