@@ -7,7 +7,7 @@ const meta: Meta<typeof LocationItem> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex items-center justify-center min-h-32 p-8 bg-background">
+      <div className="mx-auto max-w-200 bg-background p-6 flex items-center justify-center min-h-32">
         <div className="w-85">
           <Story />
         </div>

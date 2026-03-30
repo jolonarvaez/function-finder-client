@@ -7,8 +7,8 @@ const meta: Meta<typeof BottomNav> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex items-center justify-center bg-background p-8">
-        <div >
+      <div className="mx-auto max-w-200 bg-background p-6 flex items-center justify-center">
+        <div>
           <Story />
         </div>
       </div>

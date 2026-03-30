@@ -131,6 +131,9 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - **Strictly no raw colors**: do not use any hardcoded hex values, `rgb()`, or Tailwind color utilities for UI colors. Every color must come from a `globals.css` CSS variable. This is non-negotiable for dark mode compatibility.
 - **Mapping raw colors**: if given a hex or `rgb()` value, read `globals.css`, find the closest matching CSS variable by visual similarity, and use that variable instead. Never use the raw value as-is.
 
+## Storybook — Components
+- All component stories must wrap their decorator in `<div className="mx-auto max-w-200 bg-background p-6">` so the preview is never wider than 800px.
+
 ## Storybook — Pages
 - All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto max-w-107.5 bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
 

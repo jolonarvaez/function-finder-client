@@ -8,7 +8,7 @@ const meta: Meta<typeof GenreSelector> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="bg-background p-6">
+      <div className="mx-auto max-w-200 bg-background p-6">
         <Story />
       </div>
     ),

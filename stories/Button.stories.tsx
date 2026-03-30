@@ -7,7 +7,7 @@ const meta: Meta<typeof Button> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex items-center justify-center min-h-32">
+      <div className="mx-auto max-w-200 bg-background p-6 flex items-center justify-center min-h-32">
         <Story />
       </div>
     ),

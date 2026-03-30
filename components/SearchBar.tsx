@@ -1,0 +1,63 @@
+"use client";
+
+import * as React from "react";
+import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { GenreSelector, type Genre } from "@/components/GenreSelector";
+import { cn } from "@/lib/utils";
+
+export type SearchBarProps = Readonly<{
+  onSearch?: (query: string) => void;
+  onGenresChange?: (genres: Genre[]) => void;
+  showFilter?: boolean;
+  className?: string;
+}>;
+
+export function SearchBar({
+  onSearch,
+  onGenresChange,
+  showFilter = false,
+  className,
+}: SearchBarProps) {
+  const [filterOpen, setFilterOpen] = React.useState(showFilter);
+  const [genres, setGenres] = React.useState<Genre[]>([]);
+  const [query, setQuery] = React.useState("");
+
+  const handleGenresChange = (next: Genre[]) => {
+    setGenres(next);
+    onGenresChange?.(next);
+  };
+
+  return (
+    <div className={cn("space-y-3", className)}>
+      <div className="relative flex items-center">
+        <SearchIcon
+          size={15}
+          className="pointer-events-none absolute left-3 text-muted-foreground"
+        />
+        <Input
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            onSearch?.(e.target.value);
+          }}
+          placeholder="Search venues, genres, and DJs..."
+          className="h-10 border-border bg-muted/40 pl-9 pr-10 text-sm"
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setFilterOpen((prev: boolean) => !prev)}
+          className={cn("absolute right-1 size-8")}
+        >
+          <SlidersHorizontalIcon size={15} />
+        </Button>
+      </div>
+
+      {filterOpen && (
+        <GenreSelector selected={genres} onChange={handleGenresChange} />
+      )}
+    </div>
+  );
+}

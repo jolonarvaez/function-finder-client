@@ -46,7 +46,7 @@ export function GenreSelector({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <span className="text-lg font-medium text-foreground">Genres</span>
+        <span className="text-md font-medium text-foreground">Genres</span>
         {selected.length > 0 && (
           <Button
             variant="ghost"

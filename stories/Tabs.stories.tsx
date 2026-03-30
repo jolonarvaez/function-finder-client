@@ -8,7 +8,7 @@ const meta: Meta<typeof Tabs> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex items-center justify-center min-h-32 p-8">
+      <div className="mx-auto max-w-200 bg-background p-6 flex items-center justify-center min-h-32">
         <Story />
       </div>
     ),
@@ -20,7 +20,7 @@ type Story = StoryObj<typeof Tabs>;
 
 export const Default: Story = {
   render: () => (
-    <Tabs defaultValue="account" className="w-[400px]">
+    <Tabs defaultValue="account" className="w-100">
       <TabsList>
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="password">Password</TabsTrigger>
@@ -35,7 +35,7 @@ export const Default: Story = {
 
 export const Line: Story = {
   render: () => (
-    <Tabs defaultValue="overview" className="w-[400px]">
+    <Tabs defaultValue="overview" className="w-100">
       <TabsList variant="line">
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -50,7 +50,7 @@ export const Line: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <Tabs defaultValue="account" orientation="vertical" className="w-[400px]">
+    <Tabs defaultValue="account" orientation="vertical" className="w-100">
       <TabsList>
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="password">Password</TabsTrigger>
@@ -65,7 +65,7 @@ export const Vertical: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <Tabs defaultValue="home" className="w-[400px]">
+    <Tabs defaultValue="home" className="w-100">
       <TabsList>
         <TabsTrigger value="home">Home</TabsTrigger>
         <TabsTrigger value="disabled" disabled>Disabled</TabsTrigger>
@@ -77,7 +77,7 @@ export const Disabled: Story = {
 
 export const Icons: Story = {
   render: () => (
-    <Tabs defaultValue="preview" className="w-[400px]">
+    <Tabs defaultValue="preview" className="w-100">
       <TabsList>
         <TabsTrigger value="preview">
           <AlarmClock />
