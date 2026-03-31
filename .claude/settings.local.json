@@ -13,7 +13,10 @@
       "WebFetch(domain:www.mapcn.dev)",
       "Bash(npx shadcn@latest add @mapcn/map)",
       "Bash(node screenshot.mjs http://localhost:3000/map map-page)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(npx storybook:*)",
+      "Bash(npx shadcn@latest add sheet)",
+      "Bash(npx shadcn@latest add sheet --overwrite)"
     ]
   }
 }

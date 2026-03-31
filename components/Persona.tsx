@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MapPinIcon, MusicIcon, CalendarIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon } from "lucide-react";
 import {
   Avatar,
   AvatarBadge,
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 export type PersonaProps = Readonly<{
   name: string;
-  genre: string;
+  genre: string | string[];
   avatarSrc?: string;
   avatarFallback?: string;
   isActive?: boolean;
@@ -47,12 +47,15 @@ export function Persona({
           {isActive && <AvatarBadge />}
         </Avatar>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="truncate text-md font-semibold">{name}</span>
-          <span className="flex items-center gap-1 text-sm text-primary">
-            <MusicIcon className="size-3" />
-            {genre}
-          </span>
+          <div className="flex flex-wrap gap-1">
+            {(Array.isArray(genre) ? genre : [genre]).map((g) => (
+              <Badge key={g} variant="outline" className="w-fit">
+                {g}
+              </Badge>
+            ))}
+          </div>
         </div>
 
         <Button
@@ -81,10 +84,13 @@ export function Persona({
             <span className="text-lg font-semibold leading-tight">
               {name}
             </span>
-            <span className="flex items-center gap-1.5 text-md text-primary">
-              <MusicIcon className="size-3.5" />
-              {genre}
-            </span>
+            <div className="flex flex-wrap gap-1">
+              {(Array.isArray(genre) ? genre : [genre]).map((g) => (
+                <Badge key={g} variant="outline" className="w-fit">
+                  {g}
+                </Badge>
+              ))}
+            </div>
             {venue && (
               <Badge variant="default" className="w-fit">
                 <MapPinIcon />
