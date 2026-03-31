@@ -5,23 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { GENRES, type Genre } from "@/lib/constants";
 
-export const GENRES = [
-  "House",
-  "Techno",
-  "Drum & Bass",
-  "Hip-Hop",
-  "R&B",
-  "Afrobeats",
-  "Dancehall",
-  "Reggaeton",
-  "Pop",
-  "Latin",
-  "Soul",
-  "Disco",
-] as const;
-
-export type Genre = (typeof GENRES)[number];
+export { GENRES, type Genre };
 
 export type GenreSelectorProps = Readonly<{
   selected?: Genre[];

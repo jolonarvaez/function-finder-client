@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import type { OnboardingRole } from "@/components/onboarding/OnboardingRolePage";
-import type { Genre } from "@/components/onboarding/OnboardingGenrePage";
+import type { OnboardingRole, Genre } from "@/lib/constants";
 
 type Step = 1 | 2 | 3;
 

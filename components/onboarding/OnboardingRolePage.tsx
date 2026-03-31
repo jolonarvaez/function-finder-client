@@ -4,16 +4,15 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
+import { StepIndicator } from "@/components/onboarding/StepIndicator";
+import { type OnboardingRole } from "@/lib/constants";
 
-export type OnboardingRole = "dj" | "event-goer";
+export type { OnboardingRole };
 
 export type OnboardingRolePageProps = Readonly<{
   onContinue?: (role: OnboardingRole) => void;
   onSkip?: () => void;
 }>;
-
-const STEP_COUNT = 3;
-const CURRENT_STEP = 1;
 
 const roles: { value: OnboardingRole; label: string; description: string }[] = [
   {
@@ -34,18 +33,7 @@ export function OnboardingRolePage({ onContinue }: OnboardingRolePageProps) {
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      {/* Step indicator */}
-      <div className="mb-8 flex items-center gap-1.5">
-        {Array.from({ length: STEP_COUNT }).map((_, i) => (
-          <div
-            key={i}
-            className={cn(
-              "h-1 rounded-full transition-opacity",
-              i < CURRENT_STEP ? "w-6 bg-primary" : "w-3 bg-muted-foreground/30",
-            )}
-          />
-        ))}
-      </div>
+      <StepIndicator currentStep={1} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

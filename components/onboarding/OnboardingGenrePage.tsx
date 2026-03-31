@@ -4,34 +4,17 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { OnboardingRole } from "@/components/onboarding/OnboardingRolePage";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
+import { GENRES, type Genre, type OnboardingRole } from "@/lib/constants";
+import { StepIndicator } from "@/components/onboarding/StepIndicator";
 
-const GENRES = [
-  "House",
-  "Techno",
-  "Drum & Bass",
-  "Hip-Hop",
-  "R&B",
-  "Afrobeats",
-  "Dancehall",
-  "Reggaeton",
-  "Pop",
-  "Latin",
-  "Soul",
-  "Disco",
-] as const;
-
-export type Genre = (typeof GENRES)[number];
+export type { Genre };
 
 export type OnboardingGenrePageProps = Readonly<{
   role: OnboardingRole;
   onContinue?: (selected: Genre[]) => void;
   onSkip?: () => void;
 }>;
-
-const STEP_COUNT = 3;
-const CURRENT_STEP = 2;
 
 const copy: Record<OnboardingRole, { heading: string; description: string }> = {
   dj: {
@@ -57,18 +40,7 @@ export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenr
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      {/* Step indicator */}
-      <div className="mb-8 flex items-center gap-1.5">
-        {Array.from({ length: STEP_COUNT }, (_, i) => i).map((step) => (
-          <div
-            key={step}
-            className={cn(
-              "h-1 rounded-full transition-opacity",
-              step < CURRENT_STEP ? "w-6 bg-primary" : "w-3 bg-muted-foreground/30",
-            )}
-          />
-        ))}
-      </div>
+      <StepIndicator currentStep={2} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">
