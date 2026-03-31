@@ -34,7 +34,12 @@ export function GenreSelector({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-md font-medium text-foreground">Genres</span>
-          <span className={cn("text-xs text-muted-foreground", selected.length === 0 && "invisible")}>
+          <span
+            className={cn(
+              "text-xs text-muted-foreground",
+              selected.length === 0 && "invisible",
+            )}
+          >
             {selected.length} selected
           </span>
         </div>
@@ -79,7 +84,6 @@ export function GenreSelector({
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-
     </div>
   );
 }

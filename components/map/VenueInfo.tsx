@@ -56,7 +56,7 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="mx-auto max-w-lg gap-0 rounded-t-2xl p-0"
+        className="mx-auto max-w-xl gap-0 rounded-t-2xl p-0"
       >
         {/* Hero */}
         {event.image ? (

@@ -19,8 +19,15 @@ type Story = StoryObj<typeof SearchBar>;
 
 export const Default: Story = {};
 
-export const WithFilterOpen: Story = {
+export const DefaultOpened: Story = {
   args: {
     showFilter: true,
+  },
+};
+
+export const WithStatus: Story = {
+  args: {
+    showFilter: true,
+    showStatus: true,
   },
 };

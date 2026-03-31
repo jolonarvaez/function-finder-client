@@ -24,7 +24,7 @@ const defaultArgs = {
   address: "456 Downtown Ave, City",
   distance: "0.8 km",
   genre: "House",
-  imageSrc: "https://picsum.photos/seed/pulse/200/200",
+  imageSrc: "https://placehold.co/200x200/1a1a2e/e94560?text=Pulse",
 };
 
 export const Default: Story = {
@@ -52,5 +52,23 @@ export const NoImage: Story = {
   args: {
     ...defaultArgs,
     imageSrc: undefined,
+  },
+};
+
+export const MultipleGenres: Story = {
+  args: {
+    ...defaultArgs,
+    genre: ["House", "Techno", "Disco"],
+    dj: "DJ Nexus",
+  },
+};
+
+export const WithGoNow: Story = {
+  args: {
+    ...defaultArgs,
+    dj: "DJ Nexus",
+    isLive: true,
+    genre: ["House", "Techno"],
+    onGoNow: () => {},
   },
 };

@@ -5,20 +5,30 @@ import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { GenreSelector } from "@/components/GenreSelector";
+import { VenueFilterSelector } from "@/components/venue/VenueFilterSelector";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { cn } from "@/lib/utils";
 
 export type SearchBarProps = Readonly<{
   showFilter?: boolean;
+  showStatus?: boolean;
   className?: string;
 }>;
 
 export function SearchBar({
   showFilter = false,
+  showStatus = false,
   className,
 }: SearchBarProps) {
   const [filterOpen, setFilterOpen] = React.useState(showFilter);
-  const { selectedGenres, query, setSelectedGenres, setQuery } = useMapFilterStore();
+  const {
+    selectedGenres,
+    query,
+    activeFilter,
+    setSelectedGenres,
+    setQuery,
+    setActiveFilter,
+  } = useMapFilterStore();
 
   return (
     <div className={cn("space-y-3", className)}>
@@ -37,14 +47,22 @@ export function SearchBar({
           variant="ghost"
           size="icon"
           onClick={() => setFilterOpen((prev: boolean) => !prev)}
-          className={cn("absolute right-1 size-8")}
+          className={cn("absolute right-1 size-8", filterOpen && "text-primary")}
         >
           <SlidersHorizontalIcon size={15} />
         </Button>
       </div>
 
       {filterOpen && (
-        <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
+        <div className="space-y-1">
+          {showStatus && (
+            <VenueFilterSelector
+              selected={activeFilter}
+              onChange={setActiveFilter}
+            />
+          )}
+          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
+        </div>
       )}
     </div>
   );

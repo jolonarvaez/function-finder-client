@@ -15,6 +15,7 @@ export type MapVenue = Readonly<{
   lng: number;
   lat: number;
   live?: boolean;
+  distance?: string;
   event: VenueEvent;
 }>;
 

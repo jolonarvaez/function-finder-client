@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { MapPinIcon, MusicIcon } from "lucide-react";
+import { MapPinIcon } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -11,10 +12,11 @@ export type LocationItemProps = Readonly<{
   name: string;
   address: string;
   distance: string;
-  genre: string;
+  genre: string | string[];
   imageSrc?: string;
   dj?: string;
   isLive?: boolean;
+  onGoNow?: () => void;
   className?: string;
 }>;
 
@@ -26,8 +28,11 @@ export function LocationItem({
   imageSrc,
   dj,
   isLive = false,
+  onGoNow,
   className,
 }: LocationItemProps) {
+  const genres = Array.isArray(genre) ? genre : [genre];
+
   return (
     <Card className={cn("gap-3", className)}>
       <CardContent className="flex flex-col gap-3">
@@ -41,6 +46,13 @@ export function LocationItem({
                 fill
                 className="object-cover"
               />
+              {isLive && (
+                <div className="absolute top-1.5 left-1.5">
+                  <Badge variant="default" className="h-auto px-2.5 py-0.5 text-xs">
+                    Live
+                  </Badge>
+                </div>
+              )}
             </div>
           )}
 
@@ -55,23 +67,33 @@ export function LocationItem({
               </span>
             </div>
 
+            {dj && (
+              <span className="text-sm text-primary">
+                {dj}
+              </span>
+            )}
+
             <span className="flex items-center gap-1 text-sm text-muted-foreground">
               <MapPinIcon className="size-3 shrink-0" />
               {address}
             </span>
 
-            <span className="flex items-center gap-1 text-sm text-primary">
-              <MusicIcon className="size-3 shrink-0" />
-              {dj ? `${dj} · ${genre}` : genre}
-            </span>
+            <div className="flex flex-wrap gap-1">
+              {genres.map((g) => (
+                <Badge key={g} variant="outline" className="h-auto px-2.5 py-0.5 text-xs">
+                  {g}
+                </Badge>
+              ))}
+            </div>
 
-            {isLive && (
-              <Badge variant="default" className="w-fit">
-                Live
-              </Badge>
-            )}
           </div>
         </div>
+
+        {onGoNow && (
+          <Button size="sm" className="w-full" onClick={onGoNow}>
+            Go Now
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
