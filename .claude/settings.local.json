@@ -9,7 +9,10 @@
       "Bash(mv components/OnboardingSummaryPage.tsx components/onboarding/OnboardingSummaryPage.tsx)",
       "Bash(mv stories/Pages/OnboardingFlow.stories.tsx stories/Pages/onboarding/OnboardingFlow.stories.tsx)",
       "Bash(npx tsc:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.mapcn.dev)",
+      "Bash(npx shadcn@latest add @mapcn/map)",
+      "Bash(node screenshot.mjs http://localhost:3000/map map-page)"
     ]
   }
 }

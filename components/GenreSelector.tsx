@@ -46,17 +46,23 @@ export function GenreSelector({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <span className="text-md font-medium text-foreground">Genres</span>
-        {selected.length > 0 && (
-          <Button
-            variant="ghost"
-            onClick={clearAll}
-            className="h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <XIcon />
-            Clear all
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-md font-medium text-foreground">Genres</span>
+          <span className={cn("text-xs text-muted-foreground", selected.length === 0 && "invisible")}>
+            {selected.length} selected
+          </span>
+        </div>
+        <Button
+          variant="ghost"
+          onClick={clearAll}
+          className={cn(
+            "h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground",
+            selected.length === 0 && "pointer-events-none invisible",
+          )}
+        >
+          <XIcon />
+          Clear all
+        </Button>
       </div>
 
       <ScrollArea className="w-full">
@@ -88,11 +94,6 @@ export function GenreSelector({
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
 
-      {selected.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          {selected.length} genre{selected.length !== 1 ? "s" : ""} selected
-        </p>
-      )}
     </div>
   );
 }
