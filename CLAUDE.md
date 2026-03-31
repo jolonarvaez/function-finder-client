@@ -30,10 +30,12 @@ app/                    # Next.js App Router pages and layouts
 app/map/page.tsx        # Map page route
 components/             # Shared feature components
   ui/                   # shadcn/ui primitives
+  onboarding/           # Onboarding flow components
 lib/
   maps/                 # Stadia Maps helpers and types
   utils.ts              # cn() utility (clsx + tailwind-merge)
 stories/                # Storybook stories
+  Pages/onboarding/     # Onboarding page stories
 .storybook/             # Storybook config
 ```
 
@@ -46,6 +48,13 @@ stories/                # Storybook stories
 - **Path alias**: `@/` maps to the project root
 - **Stories**: Mirror component files with `.stories.tsx` suffix in `stories/`
 
+## File Organization
+
+- **Group related components into feature folders** under `components/` (e.g., `components/onboarding/`, `components/auth/`). Don't leave multiple related components loose at the top level of `components/`.
+- **Mirror the component folder structure in `stories/`**. If components live in `components/onboarding/`, their stories go in `stories/Pages/onboarding/` (for page-level stories) or `stories/onboarding/` (for component-level stories).
+- **Storybook titles should reflect the folder hierarchy** using `/` separators (e.g., `Pages/Onboarding/OnboardingFlow`).
+- **Keep `components/ui/`** reserved exclusively for shadcn/ui primitives — never put feature components there.
+
 ## Environment Variables
 
 | Variable | Purpose |
@@ -54,7 +63,7 @@ stories/                # Storybook stories
 
 ## State Management
 
-No global state library. Use:
+- **Zustand** for shared/cross-component state (e.g., onboarding flow). Place stores alongside the feature components they serve (e.g., `components/onboarding/use-onboarding-store.ts`).
 - `useState` for local component state
 - Props + callbacks for parent-child communication
 - `next-themes` context for theme state

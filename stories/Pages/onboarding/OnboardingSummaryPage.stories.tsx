@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { OnboardingSummaryPage } from "@/components/OnboardingSummaryPage";
+import { OnboardingSummaryPage } from "@/components/onboarding/OnboardingSummaryPage";
 
 const meta: Meta<typeof OnboardingSummaryPage> = {
-  title: "Pages/OnboardingSummaryPage",
+  title: "Pages/Onboarding/OnboardingSummaryPage",
   component: OnboardingSummaryPage,
   tags: ["autodocs"],
   parameters: {

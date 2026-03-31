@@ -1,22 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { OnboardingRolePage } from "@/components/OnboardingRolePage";
-import type { OnboardingRole } from "@/components/OnboardingRolePage";
-import { OnboardingGenrePage } from "@/components/OnboardingGenrePage";
-import type { Genre } from "@/components/OnboardingGenrePage";
-import { OnboardingSummaryPage } from "@/components/OnboardingSummaryPage";
+import { OnboardingRolePage } from "@/components/onboarding/OnboardingRolePage";
+import { OnboardingGenrePage } from "@/components/onboarding/OnboardingGenrePage";
+import { OnboardingSummaryPage } from "@/components/onboarding/OnboardingSummaryPage";
+import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
 
 export type OnboardingFlowProps = Readonly<{
   onComplete?: () => void;
 }>;
 
-type Step = 1 | 2 | 3;
-
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const [step, setStep] = React.useState<Step>(1);
-  const [role, setRole] = React.useState<OnboardingRole | null>(null);
-  const [genres, setGenres] = React.useState<Genre[]>([]);
+  const { step, role, genres, setStep, setRole, setGenres } =
+    useOnboardingStore();
 
   return (
     <>
@@ -32,7 +27,6 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       {step === 2 && role && (
         <OnboardingGenrePage
           role={role}
-          onBack={() => setStep(1)}
           onContinue={(selectedGenres) => {
             setGenres(selectedGenres);
             setStep(3);
@@ -48,6 +42,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <OnboardingSummaryPage
           role={role}
           genres={genres}
+          onBack={() => setStep(2)}
+          onEditRole={() => setStep(1)}
+          onEditGenres={() => setStep(2)}
           onFinish={onComplete}
         />
       )}

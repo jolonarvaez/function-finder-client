@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
 
 export type OnboardingRole = "dj" | "event-goer";
 
@@ -28,7 +29,8 @@ const roles: { value: OnboardingRole; label: string; description: string }[] = [
 ];
 
 export function OnboardingRolePage({ onContinue }: OnboardingRolePageProps) {
-  const [selected, setSelected] = React.useState<OnboardingRole | null>(null);
+  const storedRole = useOnboardingStore((s) => s.role);
+  const [selected, setSelected] = React.useState<OnboardingRole | null>(storedRole);
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">

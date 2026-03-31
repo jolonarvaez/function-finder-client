@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { OnboardingRole } from "@/components/OnboardingRolePage";
+import type { OnboardingRole } from "@/components/onboarding/OnboardingRolePage";
+import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
 
 const GENRES = [
   "House",
@@ -26,7 +26,6 @@ export type Genre = (typeof GENRES)[number];
 
 export type OnboardingGenrePageProps = Readonly<{
   role: OnboardingRole;
-  onBack?: () => void;
   onContinue?: (selected: Genre[]) => void;
   onSkip?: () => void;
 }>;
@@ -45,8 +44,9 @@ const copy: Record<OnboardingRole, { heading: string; description: string }> = {
   },
 };
 
-export function OnboardingGenrePage({ role, onBack, onContinue, onSkip }: OnboardingGenrePageProps) {
-  const [selected, setSelected] = React.useState<Genre[]>([]);
+export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenrePageProps) {
+  const storedGenres = useOnboardingStore((s) => s.genres);
+  const [selected, setSelected] = React.useState<Genre[]>(storedGenres);
   const { heading, description } = copy[role];
 
   const toggle = (genre: Genre) => {

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { OnboardingRolePage } from "@/components/OnboardingRolePage";
+import { OnboardingRolePage } from "@/components/onboarding/OnboardingRolePage";
 
 const meta: Meta<typeof OnboardingRolePage> = {
-  title: "Pages/OnboardingRolePage",
+  title: "Pages/Onboarding/OnboardingRolePage",
   component: OnboardingRolePage,
   tags: ["autodocs"],
   parameters: {

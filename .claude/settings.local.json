@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(npx shadcn@latest add label --yes)",
-      "Bash(npx shadcn@latest add scroll-area --yes)"
+      "Bash(npx shadcn@latest add scroll-area --yes)",
+      "Bash(mv components/OnboardingFlow.tsx components/onboarding/OnboardingFlow.tsx)",
+      "Bash(mv components/OnboardingRolePage.tsx components/onboarding/OnboardingRolePage.tsx)",
+      "Bash(mv components/OnboardingGenrePage.tsx components/onboarding/OnboardingGenrePage.tsx)",
+      "Bash(mv components/OnboardingSummaryPage.tsx components/onboarding/OnboardingSummaryPage.tsx)",
+      "Bash(mv stories/Pages/OnboardingFlow.stories.tsx stories/Pages/onboarding/OnboardingFlow.stories.tsx)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
