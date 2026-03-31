@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { VenueFilterSelector } from "@/components/venue/VenueFilterSelector";
+import { VenueFilterSelector } from "@/components/VenueFilterSelector";
 import type { VenueFilter } from "@/lib/constants";
 
 function VenueFilterSelectorDemo({ initial = "live-now" }: { initial?: VenueFilter }) {
@@ -9,7 +9,7 @@ function VenueFilterSelectorDemo({ initial = "live-now" }: { initial?: VenueFilt
 }
 
 const meta: Meta<typeof VenueFilterSelector> = {
-  title: "Components/Venue/VenueFilterSelector",
+  title: "Components/Filters/VenueFilterSelector",
   component: VenueFilterSelector,
   tags: ["autodocs"],
   decorators: [

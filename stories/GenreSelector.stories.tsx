@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GenreSelector, type Genre } from "@/components/GenreSelector";
 
 const meta: Meta<typeof GenreSelector> = {
-  title: "Components/GenreSelector",
+  title: "Components/Filters/GenreSelector",
   component: GenreSelector,
   tags: ["autodocs"],
   decorators: [

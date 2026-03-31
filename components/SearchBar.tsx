@@ -5,7 +5,7 @@ import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { GenreSelector } from "@/components/GenreSelector";
-import { VenueFilterSelector } from "@/components/venue/VenueFilterSelector";
+import { VenueFilterSelector } from "@/components/VenueFilterSelector";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { cn } from "@/lib/utils";
 
