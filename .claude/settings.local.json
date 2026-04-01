@@ -16,7 +16,18 @@
       "Bash(xargs grep:*)",
       "Bash(npx storybook:*)",
       "Bash(npx shadcn@latest add sheet)",
-      "Bash(npx shadcn@latest add sheet --overwrite)"
+      "Bash(npx shadcn@latest add sheet --overwrite)",
+      "Bash(find c:/Users/jolon/Documents/GitHub/function-finder-client/src -type f -name *.tsx -o -name *.ts)",
+      "Bash(find c:/Users/jolon/Documents/GitHub/function-finder-client -type f \\\\\\(-name *.tsx -o -name *.ts \\\\\\) -path */map* -o -path */Map*)",
+      "Bash(npx shadcn@latest add select calendar popover -y)",
+      "Bash(npx shadcn@latest add select calendar popover --overwrite)",
+      "Bash(npx shadcn@latest add select popover --overwrite)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(gh search:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(npx prettier:*)",
+      "Bash(npx shadcn@latest add field --overwrite)"
     ]
   }
 }
