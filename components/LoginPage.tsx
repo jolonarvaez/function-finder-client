@@ -2,12 +2,23 @@
 
 import * as React from "react";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/lib/supabase";
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
+
+  async function signInWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${globalThis.location.origin}/auth/callback`,
+      },
+    });
+  }
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
@@ -86,20 +97,19 @@ export function LoginPage() {
         <Button
           variant="outline"
           size="icon"
-          disabled
           title="Sign in with Google"
-          className="size-12 rounded-xl text-sm font-bold"
-        >
-          G
+          className="size-12 rounded-xl"
+          aria-label="Sign in with Google"          onClick={signInWithGoogle}        >
+          <FaGoogle className="size-4" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          disabled
           title="Sign in with Facebook"
-          className="size-12 rounded-xl text-base font-bold"
+          className="size-12 rounded-xl"
+          aria-label="Sign in with Facebook"
         >
-          f
+          <FaFacebook className="size-4" />
         </Button>
       </div>
 
@@ -114,19 +124,19 @@ export function LoginPage() {
 
       <p className="text-center text-xs text-muted-foreground">
         By continuing, you agree to Nyte&apos;s{" "}
-        <a
-          href="#"
+        <button
+          type="button"
           className="text-primary hover:underline focus-visible:outline-none"
         >
           Terms of Service
-        </a>{" "}
+        </button>{" "}
         and{" "}
-        <a
-          href="#"
+        <button
+          type="button"
           className="text-primary hover:underline focus-visible:outline-none"
         >
           Privacy Policy
-        </a>
+        </button>
       </p>
     </div>
   );
