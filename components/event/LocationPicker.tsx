@@ -58,7 +58,10 @@ export function LocationPicker({
 
         <TabsContent value="map">
           <div className="space-y-2">
-            <div className="h-56 overflow-hidden rounded-xl border border-border">
+            <section
+              aria-label="Event location map — drag the pin to set location"
+              className="h-56 overflow-hidden rounded-xl border border-border"
+            >
               <Map
                 className="h-full w-full"
                 center={[coordinates.lng, coordinates.lat]}
@@ -81,6 +84,8 @@ export function LocationPicker({
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         className="text-primary"
+                        role="img"
+                        aria-label="Draggable location pin"
                       >
                         <path
                           d="M18 0C8.059 0 0 8.059 0 18c0 12.6 18 28 18 28s18-15.4 18-28C36 8.059 27.941 0 18 0z"
@@ -98,7 +103,7 @@ export function LocationPicker({
                   </MarkerContent>
                 </MapMarker>
               </Map>
-            </div>
+            </section>
           </div>
         </TabsContent>
 
@@ -109,6 +114,7 @@ export function LocationPicker({
               const venue = MOCK_VENUES.find((v) => v.id === id);
               if (venue) onVenueSelect(id, venue);
             }}
+            aria-label="Select a venue"
           >
             <SelectTrigger className="h-12 w-full rounded-xl dark:bg-card">
               <SelectValue placeholder="Select a venue" />

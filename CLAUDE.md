@@ -146,6 +146,19 @@ className={cn("base-classes", condition && "conditional-class", className)}
 ## Storybook — Pages
 - All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
 
+## Accessibility (WCAG AA)
+- **Color contrast**: All text must meet WCAG AA minimum contrast ratios — 4.5:1 for normal text, 3:1 for large text (18px+ or 14px+ bold). Non-text UI elements (icons, borders, form controls) must meet 3:1 against their background.
+- **Semantic HTML**: Use correct elements (`<button>`, `<a>`, `<nav>`, `<main>`, `<header>`, `<section>`, `<h1>`–`<h6>` in order). Never use `<div>` or `<span>` for interactive elements.
+- **Keyboard navigation**: Every interactive element must be reachable and operable via keyboard. Logical tab order, visible focus indicators (minimum 2px outline, 3:1 contrast). Never remove focus outlines without providing an alternative.
+- **ARIA usage**: Use ARIA only when native HTML semantics are insufficient. Always provide `aria-label` or `aria-labelledby` for icon-only buttons, inputs without visible labels, and landmark regions. Never use `aria-hidden="true"` on focusable elements.
+- **Images and icons**: All `<img>` elements must have meaningful `alt` text or `alt=""` if purely decorative. Icon-only buttons must have `aria-label` or visually hidden text.
+- **Form inputs**: Every input must have an associated `<label>` (use `htmlFor`/`id` pairing or wrap the input). Required fields must be indicated programmatically (`aria-required="true"` or `required`). Error messages must be linked via `aria-describedby`.
+- **Touch targets**: Interactive elements must have a minimum tap target of 44×44px (or sufficient spacing to meet the equivalent).
+- **Motion and animation**: Respect `prefers-reduced-motion` — wrap animations in `@media (prefers-reduced-motion: no-preference)` or use Tailwind's `motion-safe:` variant. Never use motion as the sole way to convey information.
+- **Page structure**: Every page must have exactly one `<main>`, a descriptive `<title>`, and a skip-to-content link as the first focusable element.
+- **Dynamic content**: Live regions (`aria-live="polite"` or `"assertive"`) must announce status changes, loading states, and errors to screen readers. Route changes in Next.js must announce the new page title.
+- **Color independence**: Never convey information through color alone — always pair with text, icons, or patterns.
+
 ## Hard Rules
 - Do not add sections, features, or content not in the reference
 - Do not "improve" a reference design — match it

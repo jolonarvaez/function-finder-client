@@ -43,17 +43,16 @@ export function GenreSelector({
             {selected.length} selected
           </span>
         </div>
-        <Button
-          variant="ghost"
-          onClick={clearAll}
-          className={cn(
-            "h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground",
-            selected.length === 0 && "pointer-events-none invisible",
-          )}
-        >
-          <XIcon />
-          Clear all
-        </Button>
+        {selected.length > 0 && (
+          <Button
+            variant="ghost"
+            onClick={clearAll}
+            className="h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <XIcon />
+            Clear all
+          </Button>
+        )}
       </div>
 
       <ScrollArea className="w-full">
@@ -64,6 +63,7 @@ export function GenreSelector({
               <button
                 key={genre}
                 type="button"
+                aria-pressed={isSelected}
                 onClick={() => toggle(genre)}
                 className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               >

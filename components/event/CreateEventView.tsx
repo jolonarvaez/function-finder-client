@@ -47,9 +47,9 @@ const MAKATI_CENTER = { lng: 121.0244, lat: 14.5547 };
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
       {children}
-    </p>
+    </h2>
   );
 }
 
@@ -96,7 +96,14 @@ export function CreateEventView() {
     address.trim();
 
   return (
-    <div className="flex flex-col">
+    <main className="flex flex-col">
+      <a
+        href="#create-event-form"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to form
+      </a>
+
       {/* Header */}
       <div className="px-4 pt-12 pb-2">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -109,7 +116,11 @@ export function CreateEventView() {
 
       {/* Form */}
       <div className="flex-1">
-        <div className="space-y-4 px-4 pt-3 pb-6">
+        <form
+          id="create-event-form"
+          onSubmit={(e) => e.preventDefault()}
+          className="space-y-4 px-4 pt-3 pb-6"
+        >
           {/* ── Details ─────────────────────────────────── */}
           <SectionHeader>Details</SectionHeader>
 
@@ -133,9 +144,9 @@ export function CreateEventView() {
 
           {/* Category */}
           <Field>
-            <FieldLabel>Category</FieldLabel>
+            <FieldLabel htmlFor="category">Category</FieldLabel>
             <Select value={category} onValueChange={setCategory} required>
-              <SelectTrigger className="h-11 w-full rounded-xl dark:bg-card">
+              <SelectTrigger id="category" className="h-11 w-full rounded-xl dark:bg-card">
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4 text-muted-foreground" />
                   <SelectValue placeholder="Select a category" />
@@ -158,10 +169,11 @@ export function CreateEventView() {
 
           {/* Date */}
           <Field>
-            <FieldLabel>Date</FieldLabel>
+            <FieldLabel htmlFor="date-picker">Date</FieldLabel>
             <Popover open={dateOpen} onOpenChange={setDateOpen}>
               <PopoverTrigger asChild>
                 <Button
+                  id="date-picker"
                   variant="outline"
                   className={cn(
                     "h-11 w-full justify-between rounded-xl font-normal dark:bg-card",
@@ -279,18 +291,20 @@ export function CreateEventView() {
               />
             </div>
           </Field>
-        </div>
+        </form>
       </div>
 
       {/* Sticky submit */}
       <div className="sticky bottom-0 border-t border-border bg-background px-4 py-3">
         <Button
+          type="submit"
+          form="create-event-form"
           disabled={!isValid}
           className="h-12 w-full rounded-xl text-sm font-semibold"
         >
           Create Event
         </Button>
       </div>
-    </div>
+    </main>
   );
 }
