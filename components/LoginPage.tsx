@@ -1,23 +1,57 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function LoginPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/");
+    }
+  }, [user, authLoading, router]);
 
   async function signInWithGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${globalThis.location.origin}/auth/callback`,
+        redirectTo: `${globalThis.location.origin}`,
       },
     });
+  }
+
+  async function signInWithEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+    } else {
+      router.replace("/");
+    }
   }
 
   return (
@@ -26,12 +60,18 @@ export function LoginPage() {
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Welcome Back
         </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Sign in to continue your nightlife journey
         </p>
       </div>
 
-      <div className="mb-6 space-y-4">
+      <form onSubmit={signInWithEmail} className="mb-6 space-y-4">
+        {error && (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
         <div className="space-y-1.5">
           <Label htmlFor="login-email" className="text-xs text-foreground">
             Email Address
@@ -41,6 +81,9 @@ export function LoginPage() {
             <Input
               id="login-email"
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="h-12 rounded-xl pl-10 dark:bg-card"
             />
@@ -56,11 +99,15 @@ export function LoginPage() {
             <Input
               id="login-password"
               type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="h-12 rounded-xl pl-10 pr-10 dark:bg-card"
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none active:opacity-70"
             >
@@ -74,18 +121,23 @@ export function LoginPage() {
         </div>
 
         <div className="flex justify-end">
-          <button className="text-xs text-primary hover:underline focus-visible:outline-none focus-visible:underline">
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline focus-visible:outline-none focus-visible:underline"
+          >
             Forgot password?
           </button>
         </div>
 
         <Button
+          type="submit"
+          disabled={loading}
           variant="outline"
           className="h-12 w-full rounded-xl text-sm font-medium dark:bg-card"
         >
-          Sign In
+          {loading ? "Signing in..." : "Sign In"}
         </Button>
-      </div>
+      </form>
 
       <div className="mb-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
@@ -99,12 +151,15 @@ export function LoginPage() {
           size="icon"
           title="Sign in with Google"
           className="size-12 rounded-xl"
-          aria-label="Sign in with Google"          onClick={signInWithGoogle}        >
+          aria-label="Sign in with Google"
+          onClick={signInWithGoogle}
+        >
           <FaGoogle className="size-4" />
         </Button>
         <Button
           variant="outline"
           size="icon"
+          disabled
           title="Sign in with Facebook"
           className="size-12 rounded-xl"
           aria-label="Sign in with Facebook"
@@ -117,9 +172,12 @@ export function LoginPage() {
         <span className="text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
         </span>
-        <button className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline">
+        <Link
+          href="/signup"
+          className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
+        >
           Sign Up
-        </button>
+        </Link>
       </div>
 
       <p className="text-center text-xs text-muted-foreground">

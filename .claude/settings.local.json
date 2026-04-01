@@ -27,7 +27,9 @@
       "Bash(gh search:*)",
       "WebFetch(domain:api.github.com)",
       "Bash(npx prettier:*)",
-      "Bash(npx shadcn@latest add field --overwrite)"
+      "Bash(npx shadcn@latest add field --overwrite)",
+      "Bash(find /c/Users/jolon/Documents/GitHub/function-finder-client -maxdepth 2 -type f \\\\\\(-name README* -o -name FLOW* -o -name *.md \\\\\\))",
+      "Bash(xargs ls:*)"
     ]
   }
 }

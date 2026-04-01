@@ -1,13 +1,62 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from "lucide-react";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function SignUpPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/");
+    }
+  }, [user, authLoading, router]);
+
+  async function signUpWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${globalThis.location.origin}`,
+      },
+    });
+  }
+
+  async function signUpWithEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+    } else {
+      router.replace("/");
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
@@ -20,7 +69,13 @@ export function SignUpPage() {
         </p>
       </div>
 
-      <div className="mb-6 space-y-4">
+      <form onSubmit={signUpWithEmail} className="mb-6 space-y-4">
+        {error && (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
         <div className="space-y-1.5">
           <Label htmlFor="signup-name" className="text-xs text-foreground">
             Full Name
@@ -30,6 +85,9 @@ export function SignUpPage() {
             <Input
               id="signup-name"
               type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
               className="h-12 rounded-xl pl-10 dark:bg-card"
             />
@@ -45,6 +103,9 @@ export function SignUpPage() {
             <Input
               id="signup-email"
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="h-12 rounded-xl pl-10 dark:bg-card"
             />
@@ -60,11 +121,16 @@ export function SignUpPage() {
             <Input
               id="signup-password"
               type={showPassword ? "text" : "password"}
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="h-12 rounded-xl pl-10 pr-10 dark:bg-card"
             />
             <button
               type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none active:opacity-70"
             >
@@ -78,12 +144,14 @@ export function SignUpPage() {
         </div>
 
         <Button
+          type="submit"
+          disabled={loading}
           variant="outline"
           className="h-12 w-full rounded-xl text-sm font-medium dark:bg-card"
         >
-          Create Account
+          {loading ? "Creating account..." : "Create Account"}
         </Button>
-      </div>
+      </form>
 
       <div className="mb-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
@@ -95,20 +163,22 @@ export function SignUpPage() {
         <Button
           variant="outline"
           size="icon"
-          disabled
           title="Sign up with Google"
-          className="size-12 rounded-xl text-sm font-bold"
+          className="size-12 rounded-xl"
+          aria-label="Sign up with Google"
+          onClick={signUpWithGoogle}
         >
-          G
+          <FaGoogle className="size-4" />
         </Button>
         <Button
           variant="outline"
           size="icon"
           disabled
           title="Sign up with Facebook"
-          className="size-12 rounded-xl text-base font-bold"
+          className="size-12 rounded-xl"
+          aria-label="Sign up with Facebook"
         >
-          f
+          <FaFacebook className="size-4" />
         </Button>
       </div>
 
@@ -116,26 +186,29 @@ export function SignUpPage() {
         <span className="text-sm text-muted-foreground">
           Already have an account?{" "}
         </span>
-        <button className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline">
+        <Link
+          href="/login"
+          className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
+        >
           Sign In
-        </button>
+        </Link>
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
         By continuing, you agree to Nyte&apos;s{" "}
-        <a
-          href="#"
+        <button
+          type="button"
           className="text-primary hover:underline focus-visible:outline-none"
         >
           Terms of Service
-        </a>{" "}
+        </button>{" "}
         and{" "}
-        <a
-          href="#"
+        <button
+          type="button"
           className="text-primary hover:underline focus-visible:outline-none"
         >
           Privacy Policy
-        </a>
+        </button>
       </p>
     </div>
   );

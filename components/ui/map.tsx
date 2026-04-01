@@ -243,12 +243,18 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       // else we have to force update every layer on setStyle change
       styleTimeoutRef.current = setTimeout(() => {
         setIsStyleLoaded(true);
-        if (projection) {
-          map.setProjection(projection);
-        }
       }, 100);
     };
-    const loadHandler = () => setIsLoaded(true);
+    const loadHandler = () => {
+      setIsLoaded(true);
+      if (projection) {
+        try {
+          map.setProjection(projection);
+        } catch {
+          // projection not supported by this style
+        }
+      }
+    };
 
     // Viewport change handler - skip if triggered by internal update
     const handleMove = () => {

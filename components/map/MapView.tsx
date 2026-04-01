@@ -1,10 +1,14 @@
 "use client";
 
 import { useDeferredValue, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { LogOutIcon } from "lucide-react";
 import { Map, MapControls } from "@/components/ui/map";
 import { SearchBar } from "@/components/SearchBar";
 import { VenueMarker } from "@/components/map/VenueMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { Button } from "@/components/ui/button";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 
 // Makati, Philippines
@@ -31,8 +35,15 @@ function venueMatchesGenres(venue: MapVenue, genres: string[]): boolean {
 }
 
 export function MapView({ venues = [] }: MapViewProps) {
+  const router = useRouter();
+  const { signOut } = useAuth();
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const deferredGenres = useDeferredValue(selectedGenres);
+
+  async function handleSignOut() {
+    await signOut();
+    router.replace("/login");
+  }
 
   const filteredVenues = useMemo(() => {
     if (deferredGenres.length === 0) return venues;
@@ -44,6 +55,15 @@ export function MapView({ venues = [] }: MapViewProps) {
       {/* Search bar panel */}
       <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 pb-4 pt-14">
         <SearchBar showFilter />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSignOut}
+          className="mt-2 gap-1.5"
+        >
+          <LogOutIcon className="size-3.5" />
+          Sign Out
+        </Button>
       </div>
 
       {/* Full-screen map */}
