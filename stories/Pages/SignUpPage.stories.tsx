@@ -8,6 +8,7 @@ const meta: Meta<typeof SignUpPage> = {
   parameters: {
     layout: "fullscreen",
     viewport: { defaultViewport: "mobile1" },
+    nextjs: { appDirectory: true },
   },
   decorators: [
     (Story) => (

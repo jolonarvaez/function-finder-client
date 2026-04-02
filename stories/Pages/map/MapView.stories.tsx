@@ -202,6 +202,7 @@ const meta: Meta<typeof MapView> = {
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
+    nextjs: { appDirectory: true },
   },
   decorators: [
     (Story) => (
