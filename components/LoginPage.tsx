@@ -48,7 +48,8 @@ export function LoginPage() {
     setLoading(false);
 
     if (error) {
-      setError(error.message);
+      // Generic message to prevent user enumeration
+      setError("Invalid email or password.");
     } else {
       router.replace("/");
     }

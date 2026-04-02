@@ -42,17 +42,24 @@ export function SignUpPage() {
     setLoading(true);
 
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
       options: {
-        data: { full_name: name },
+        data: { full_name: name.trim().slice(0, 100) },
       },
     });
 
     setLoading(false);
 
     if (error) {
-      setError(error.message);
+      const msg = error.message.toLowerCase();
+      if (msg.includes("already registered") || msg.includes("already exists")) {
+        setError("An account with this email already exists.");
+      } else if (msg.includes("password")) {
+        setError("Password must be at least 6 characters.");
+      } else {
+        setError("Could not create account. Please try again.");
+      }
     } else {
       router.replace("/");
     }
