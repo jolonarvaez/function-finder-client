@@ -197,7 +197,7 @@ const MOCK_VENUES: MapVenue[] = [
 ];
 
 const meta: Meta<typeof MapView> = {
-  title: "Pages/Map/MapView",
+  title: "Pages/MapView",
   component: MapView,
   tags: ["autodocs"],
   parameters: {

@@ -31,7 +31,7 @@ export function SearchBar({
   } = useMapFilterStore();
 
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-3 ", className)}>
       <div className="relative flex items-center">
         <SearchIcon
           size={15}
@@ -41,7 +41,7 @@ export function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search venues, genres, and DJs..."
-          className="h-10 border-border bg-muted/40 pl-9 pr-10 text-sm"
+          className="h-10 bg-muted/40 pl-9 pr-10 text-sm"
         />
         <Button
           variant="ghost"
