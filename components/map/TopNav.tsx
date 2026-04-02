@@ -8,12 +8,14 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 export type TopNavProps = Readonly<{
   name?: string;
   email?: string;
   avatarUrl?: string;
+  defaultOpen?: boolean;
   onProfile?: () => void;
   onSettings?: () => void;
   onSignOut?: () => void;
@@ -34,12 +36,13 @@ export function TopNav({
   name,
   email,
   avatarUrl,
+  defaultOpen = false,
   onProfile,
   onSettings,
   onSignOut,
   className,
 }: TopNavProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const initials = getInitials(name);
 
   function handleAction(fn?: () => void) {
@@ -82,19 +85,19 @@ export function TopNav({
           {/* Identity */}
           {(name || email) && (
             <>
-              <div className="px-2 py-2">
+              <div className="px-2 pt-2 pb-1">
                 {name && (
-                  <p className="truncate text-sm font-medium text-foreground">
+                  <p className="truncate text-md font-medium text-foreground">
                     {name}
                   </p>
                 )}
                 {email && (
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="truncate text-sm text-muted-foreground">
                     {email}
                   </p>
                 )}
               </div>
-              <div className="my-1 h-px bg-border" />
+              <Separator/>
             </>
           )}
 
@@ -118,7 +121,7 @@ export function TopNav({
               Settings
             </button>
 
-            <div className="my-1 h-px bg-border" />
+            <Separator className="my-1" />
 
             <button
               role="menuitem"

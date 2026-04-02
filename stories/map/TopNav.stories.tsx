@@ -39,6 +39,14 @@ export const WithInitials: Story = {
   },
 };
 
+export const DropdownOpen: Story = {
+  args: {
+    name: "Jolo Narvaez",
+    email: "jolo@example.com",
+    defaultOpen: true,
+  },
+};
+
 export const NoUser: Story = {
   args: {},
 };

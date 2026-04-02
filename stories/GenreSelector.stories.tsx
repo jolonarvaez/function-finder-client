@@ -18,20 +18,38 @@ const meta: Meta<typeof GenreSelector> = {
 export default meta;
 type Story = StoryObj<typeof GenreSelector>;
 
-export const Default: Story = {
+export const ScrollDefault: Story = {
   render: () => {
     const [selected, setSelected] = React.useState<Genre[]>([]);
-    return <GenreSelector selected={selected} onChange={setSelected} />;
+    return <GenreSelector selected={selected} onChange={setSelected} variant="scroll" />;
   },
 };
 
-export const WithPreselected: Story = {
+export const ScrollWithPreselected: Story = {
   render: () => {
     const [selected, setSelected] = React.useState<Genre[]>([
       "House",
       "Techno",
       "Drum & Bass",
     ]);
-    return <GenreSelector selected={selected} onChange={setSelected} />;
+    return <GenreSelector selected={selected} onChange={setSelected} variant="scroll" />;
+  },
+};
+
+export const WrapDefault: Story = {
+  render: () => {
+    const [selected, setSelected] = React.useState<Genre[]>([]);
+    return <GenreSelector selected={selected} onChange={setSelected} variant="wrap" />;
+  },
+};
+
+export const WrapWithPreselected: Story = {
+  render: () => {
+    const [selected, setSelected] = React.useState<Genre[]>([
+      "House",
+      "Techno",
+      "Drum & Bass",
+    ]);
+    return <GenreSelector selected={selected} onChange={setSelected} variant="wrap" />;
   },
 };

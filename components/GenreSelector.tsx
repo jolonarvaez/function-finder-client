@@ -9,15 +9,44 @@ import { GENRES, type Genre } from "@/lib/constants";
 
 export { GENRES, type Genre };
 
+type GenreToggleProps = {
+  genre: Genre;
+  isSelected: boolean;
+  onToggle: (genre: Genre) => void;
+};
+
+function GenreToggle({ genre, isSelected, onToggle }: GenreToggleProps) {
+  return (
+    <button
+      type="button"
+      aria-pressed={isSelected}
+      onClick={() => onToggle(genre)}
+      className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+    >
+      <Badge
+        variant={isSelected ? "default" : "secondary"}
+        className={cn(
+          "cursor-pointer px-4 py-1 text-xs transition-opacity h-auto",
+          isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+        )}
+      >
+        {genre}
+      </Badge>
+    </button>
+  );
+}
+
 export type GenreSelectorProps = Readonly<{
   selected?: Genre[];
   onChange?: (selected: Genre[]) => void;
+  variant?: "scroll" | "wrap";
   className?: string;
 }>;
 
 export function GenreSelector({
   selected = [],
   onChange,
+  variant = "scroll",
   className,
 }: GenreSelectorProps) {
   const toggle = (genre: Genre) => {
@@ -55,35 +84,32 @@ export function GenreSelector({
         )}
       </div>
 
-      <ScrollArea className="w-full">
-        <div className="flex gap-2 pb-3">
-          {GENRES.map((genre) => {
-            const isSelected = selected.includes(genre);
-            return (
-              <button
+      {variant === "scroll" ? (
+        <ScrollArea className="w-full">
+          <div className="flex gap-2 pb-3">
+            {GENRES.map((genre) => (
+              <GenreToggle
                 key={genre}
-                type="button"
-                aria-pressed={isSelected}
-                onClick={() => toggle(genre)}
-                className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-              >
-                <Badge
-                  variant={isSelected ? "default" : "secondary"}
-                  className={cn(
-                    "cursor-pointer px-4 py-1 text-xs transition-opacity h-auto",
-                    isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted",
-                  )}
-                >
-                  {genre}
-                </Badge>
-              </button>
-            );
-          })}
+                genre={genre}
+                isSelected={selected.includes(genre)}
+                onToggle={toggle}
+              />
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {GENRES.map((genre) => (
+            <GenreToggle
+              key={genre}
+              genre={genre}
+              isSelected={selected.includes(genre)}
+              onToggle={toggle}
+            />
+          ))}
         </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      )}
     </div>
   );
 }
