@@ -1,0 +1,135 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronDownIcon, ArrowLeftIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { EventCard } from "./EventCard";
+import { EditEventDrawer } from "./EditEventDrawer";
+import { getStatus, type DJEvent } from "./dj-event.types";
+
+export type { DJEvent };
+
+function SectionLabel({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+      {children}
+    </p>
+  );
+}
+
+export type DJEventsViewProps = Readonly<{
+  events?: DJEvent[];
+}>;
+
+export function DJEventsView({ events: initialEvents = [] }: DJEventsViewProps) {
+  const router = useRouter();
+  const [events, setEvents] = useState<DJEvent[]>(initialEvents);
+  const [editingEvent, setEditingEvent] = useState<DJEvent | null>(null);
+
+  const handleSave = (updated: Partial<DJEvent>) => {
+    if (!editingEvent) return;
+    setEvents((prev) =>
+      prev.map((e) => (e.id === editingEvent.id ? { ...e, ...updated } : e)),
+    );
+    setEditingEvent(null);
+  };
+
+  const liveEvents = events.filter((e) => getStatus(e) === "live");
+  const upcomingEvents = events
+    .filter((e) => getStatus(e) === "upcoming")
+    .sort((a, b) =>
+      a.date === b.date ? a.startTime.localeCompare(b.startTime) : a.date.localeCompare(b.date),
+    );
+  const pastEvents = events
+    .filter((e) => getStatus(e) === "past")
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  return (
+    <>
+      <main className="flex flex-col pb-8 px-4">
+        {/* Header */}
+        <div className="flex items-center gap-2 pt-12 pb-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Go back"
+            className="size-9 rounded-lg"
+            onClick={() => router.back()}
+          >
+            <ArrowLeftIcon className="size-5" />
+          </Button>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">My Events</h1>
+        </div>
+
+        <div className="space-y-6">
+          {/* ── Live Now ──────────────────────────────── */}
+          {liveEvents.length > 0 && (
+            <section aria-label="Live events">
+              <SectionLabel>Live Now</SectionLabel>
+              <div className="mt-2 space-y-3">
+                {liveEvents.map((e) => (
+                  <EventCard key={e.id} event={e} status="live" />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ── Upcoming ──────────────────────────────── */}
+          <section aria-label="Upcoming events">
+            <Collapsible defaultOpen>
+              <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                <SectionLabel>Upcoming ({upcomingEvents.length})</SectionLabel>
+                <ChevronDownIcon className="size-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2 space-y-3">
+                {upcomingEvents.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No upcoming events.</p>
+                ) : (
+                  upcomingEvents.map((e) => (
+                    <EventCard
+                      key={e.id}
+                      event={e}
+                      status="upcoming"
+                      onEdit={() => setEditingEvent(e)}
+                    />
+                  ))
+                )}
+              </CollapsibleContent>
+            </Collapsible>
+          </section>
+
+          {/* ── Past ──────────────────────────────────── */}
+          <section aria-label="Past events">
+            <Collapsible>
+              <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                <SectionLabel>Past ({pastEvents.length})</SectionLabel>
+                <ChevronDownIcon className="size-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2 space-y-3">
+                {pastEvents.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No past events.</p>
+                ) : (
+                  pastEvents.map((e) => (
+                    <EventCard key={e.id} event={e} status="past" />
+                  ))
+                )}
+              </CollapsibleContent>
+            </Collapsible>
+          </section>
+        </div>
+      </main>
+
+      <EditEventDrawer
+        event={editingEvent}
+        onSave={handleSave}
+        onClose={() => setEditingEvent(null)}
+      />
+    </>
+  );
+}

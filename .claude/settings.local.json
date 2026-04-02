@@ -30,7 +30,9 @@
       "Bash(npx shadcn@latest add field --overwrite)",
       "Bash(find /c/Users/jolon/Documents/GitHub/function-finder-client -maxdepth 2 -type f \\\\\\(-name README* -o -name FLOW* -o -name *.md \\\\\\))",
       "Bash(xargs ls:*)",
-      "Bash(npx shadcn@latest add spinner)"
+      "Bash(npx shadcn@latest add spinner)",
+      "Bash(npx shadcn@latest add collapsible --yes)",
+      "Bash(npx shadcn@latest add drawer --yes)"
     ]
   }
 }
