@@ -31,3 +31,17 @@ export const WithStatus: Story = {
     showStatus: true,
   },
 };
+
+export const WithDatePreselected: Story = {
+  args: {
+    showFilter: true,
+    defaultDate: new Date("2026-04-05"),
+  },
+};
+
+export const WithDateToday: Story = {
+  args: {
+    showFilter: true,
+    defaultDate: new Date(),
+  },
+};

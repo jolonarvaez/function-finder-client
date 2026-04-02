@@ -33,6 +33,8 @@ export type VenueEvent = Readonly<{
   image?: string;
   address: string;
   category: string;
+  /** ISO date string e.g. "2026-04-02" */
+  date?: string;
   startTime: string;
   endTime: string;
   entryPrice?: number;

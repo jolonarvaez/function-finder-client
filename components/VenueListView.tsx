@@ -27,13 +27,21 @@ function venueMatchesQuery(venue: MapVenue, query: string): boolean {
   );
 }
 
+function venueMatchesDate(venue: MapVenue, date: Date): boolean {
+  if (!venue.event.date) return true;
+  const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  return venue.event.date === iso;
+}
+
 export function VenueListView({ venues = [] }: VenueListViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const query = useMapFilterStore((s) => s.query);
   const activeFilter = useMapFilterStore((s) => s.activeFilter);
+  const selectedDate = useMapFilterStore((s) => s.selectedDate);
 
   const deferredGenres = useDeferredValue(selectedGenres);
   const deferredQuery = useDeferredValue(query);
+  const deferredDate = useDeferredValue(selectedDate);
 
   const filteredVenues = useMemo(() => {
     let result = venues;
@@ -44,6 +52,10 @@ export function VenueListView({ venues = [] }: VenueListViewProps) {
 
     if (deferredGenres.length > 0) {
       result = result.filter((v) => venueMatchesGenres(v, deferredGenres));
+    }
+
+    if (deferredDate) {
+      result = result.filter((v) => venueMatchesDate(v, deferredDate));
     }
 
     switch (activeFilter) {
@@ -57,7 +69,7 @@ export function VenueListView({ venues = [] }: VenueListViewProps) {
     }
 
     return result;
-  }, [venues, deferredQuery, deferredGenres, activeFilter]);
+  }, [venues, deferredQuery, deferredGenres, deferredDate, activeFilter]);
 
   return (
     <div className="flex h-dvh flex-col bg-background">
