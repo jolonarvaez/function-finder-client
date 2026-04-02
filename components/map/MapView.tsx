@@ -10,11 +10,9 @@ import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
 import { Button } from "@/components/ui/button";
 import { Locate, LocateOff, X } from "lucide-react";
+import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import type { VenueEvent } from "@/components/map/VenueInfo";
-
-const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
-const DEFAULT_ZOOM = 14;
 
 export type MapVenue = Readonly<{
   lng: number;
@@ -55,22 +53,25 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
   const [locationVisible, setLocationVisible] = useState(false);
   const [deniedDismissed, setDeniedDismissed] = useState(false);
 
-  // Center on first location fix
+  const flyToLocation = (c: { lng: number; lat: number }) => {
+    mapRef.current?.flyTo({ center: [c.lng, c.lat], zoom: DEFAULT_ZOOM, duration: 1500 });
+  };
+
+  // Center when coords arrive after the toggle (first fix)
   useEffect(() => {
     if (!coords || hasCenteredRef.current) return;
     hasCenteredRef.current = true;
-    mapRef.current?.flyTo({
-      center: [coords.lng, coords.lat],
-      zoom: DEFAULT_ZOOM,
-      duration: 1500,
-    });
+    flyToLocation(coords);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
 
   const handleLocationToggle = () => {
     if (!locationVisible) {
-      start(); // called directly from user gesture → browser shows permission prompt
+      start();
       setLocationVisible(true);
       setDeniedDismissed(false);
+      hasCenteredRef.current = false; // reset so re-enabling always re-centers
+      if (coords) flyToLocation(coords); // fly immediately if already have a fix
     } else {
       stop();
       setLocationVisible(false);

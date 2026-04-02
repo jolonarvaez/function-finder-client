@@ -29,21 +29,8 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { cn } from "@/lib/utils";
-import type { Genre } from "@/lib/constants";
+import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
 import type { MockVenue } from "./mock-venues";
-
-const CATEGORIES = [
-  "Nightclub",
-  "Bar",
-  "Lounge",
-  "Club",
-  "Underground",
-  "Festival",
-  "Rooftop",
-  "Others",
-] as const;
-
-const MAKATI_CENTER = { lng: 121.0244, lat: 14.5547 };
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -65,7 +52,10 @@ export function CreateEventView() {
   const [address, setAddress] = useState("");
 
   const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
-  const [coordinates, setCoordinates] = useState(MAKATI_CENTER);
+  const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>({
+    lng: MAKATI_CENTER[0],
+    lat: MAKATI_CENTER[1],
+  });
   const [selectedVenueId, setSelectedVenueId] = useState("");
 
   const handleCoordinatesChange = useCallback(
@@ -137,7 +127,7 @@ export function CreateEventView() {
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
                 placeholder="Friday Night Fever"
-                className="h-11 rounded-xl pl-10 dark:bg-card"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
               />
             </div>
           </Field>
@@ -146,14 +136,14 @@ export function CreateEventView() {
           <Field>
             <FieldLabel htmlFor="category">Category</FieldLabel>
             <Select value={category} onValueChange={setCategory} required>
-              <SelectTrigger id="category" className="h-11 w-full rounded-xl dark:bg-card">
+              <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4 text-muted-foreground" />
                   <SelectValue placeholder="Select a category" />
                 </div>
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
+                {EVENT_CATEGORIES.map((cat) => (
                   <SelectItem key={cat} value={cat}>
                     {cat}
                   </SelectItem>
@@ -176,7 +166,7 @@ export function CreateEventView() {
                   id="date-picker"
                   variant="outline"
                   className={cn(
-                    "h-11 w-full justify-between rounded-xl font-normal dark:bg-card",
+                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
                     !date && "text-muted-foreground",
                   )}
                 >
@@ -214,7 +204,7 @@ export function CreateEventView() {
                 required
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 appearance-none rounded-xl dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             </Field>
 
@@ -228,7 +218,7 @@ export function CreateEventView() {
                 required
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 appearance-none rounded-xl dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             </Field>
           </div>
@@ -249,7 +239,7 @@ export function CreateEventView() {
                 value={entryPrice}
                 onChange={(e) => setEntryPrice(e.target.value)}
                 placeholder="0.00"
-                className="h-11 rounded-xl pl-10 dark:bg-card"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
               />
             </div>
           </Field>
@@ -287,7 +277,7 @@ export function CreateEventView() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Vibe Central"
-                className="h-11 rounded-xl pl-10 dark:bg-card"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
               />
             </div>
           </Field>
@@ -300,7 +290,7 @@ export function CreateEventView() {
           type="submit"
           form="create-event-form"
           disabled={!isValid}
-          className="h-12 w-full rounded-xl text-sm font-semibold"
+          className="h-12 w-full rounded-lg text-sm font-semibold"
         >
           Create Event
         </Button>

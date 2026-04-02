@@ -1,11 +1,13 @@
 "use client";
 
-import { BuildingIcon, MapPinIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { BuildingIcon, Locate, LocateOff, MapPinIcon } from "lucide-react";
 import {
   Map,
   MapMarker,
   MarkerContent,
   MapControls,
+  type MapRef,
 } from "@/components/ui/map";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -15,10 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { MOCK_VENUES, type MockVenue } from "./mock-venues";
 
-const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
+type LocationStatus = "idle" | "loading" | "granted" | "denied" | "unavailable";
 
 export type LocationPickerProps = Readonly<{
   mode: "map" | "venue";
@@ -39,6 +42,31 @@ export function LocationPicker({
   onVenueSelect,
   className,
 }: LocationPickerProps) {
+  const mapRef = useRef<MapRef>(null);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+
+  const handleLocate = () => {
+    if (!("geolocation" in navigator)) {
+      setLocationStatus("unavailable");
+      return;
+    }
+
+    setLocationStatus("loading");
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = { lng: pos.coords.longitude, lat: pos.coords.latitude };
+        setLocationStatus("granted");
+        onCoordinatesChange(coords);
+        mapRef.current?.flyTo({ center: [coords.lng, coords.lat], zoom: 15, duration: 1200 });
+      },
+      (err) => {
+        setLocationStatus(err.code === err.PERMISSION_DENIED ? "denied" : "unavailable");
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
   return (
     <div className={cn("space-y-3", className)}>
       <Tabs
@@ -60,14 +88,41 @@ export function LocationPicker({
           <div className="space-y-2">
             <section
               aria-label="Event location map — drag the pin to set location"
-              className="h-56 overflow-hidden rounded-xl border border-border"
+              className="relative h-56 overflow-hidden rounded-lg border border-border"
             >
               <Map
+                ref={mapRef}
                 className="h-full w-full"
                 center={[coordinates.lng, coordinates.lat]}
                 zoom={14}
               >
                 <MapControls position="bottom-right" showZoom />
+
+                {/* Current location toggle */}
+                <div className="absolute bottom-2 left-2 z-10">
+                  <button
+                    type="button"
+                    onClick={handleLocate}
+                    disabled={locationStatus === "loading"}
+                    aria-label="Use my current location"
+                    className={cn(
+                      "flex size-8 items-center justify-center rounded-lg border shadow-sm transition-colors",
+                      locationStatus === "granted"
+                        ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
+                        : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40",
+                      locationStatus === "loading" && "pointer-events-none opacity-70",
+                    )}
+                  >
+                    {locationStatus === "loading" ? (
+                      <Spinner className="size-4" />
+                    ) : locationStatus === "denied" ? (
+                      <LocateOff className="size-4" />
+                    ) : (
+                      <Locate className="size-4" />
+                    )}
+                  </button>
+                </div>
+
                 <MapMarker
                   longitude={coordinates.lng}
                   latitude={coordinates.lat}
@@ -104,6 +159,22 @@ export function LocationPicker({
                 </MapMarker>
               </Map>
             </section>
+
+            {/* Denied notice */}
+            {locationStatus === "denied" && (
+              <p
+                role="alert"
+                className="flex items-center gap-1.5 text-xs text-muted-foreground"
+              >
+                <LocateOff className="size-3.5 shrink-0" />
+                Location access denied. Enable it in your browser settings and try again.
+              </p>
+            )}
+            {locationStatus === "unavailable" && (
+              <p role="alert" className="text-xs text-muted-foreground">
+                Location unavailable on this device.
+              </p>
+            )}
           </div>
         </TabsContent>
 

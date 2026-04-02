@@ -30,6 +30,29 @@ export const GENRES = [
 
 export type Genre = (typeof GENRES)[number];
 
+// ── Event Categories ─────────────────────────────────────────
+
+export const EVENT_CATEGORIES = [
+  "Nightclub",
+  "Bar",
+  "Lounge",
+  "Club",
+  "Underground",
+  "Festival",
+  "Rooftop",
+  "Others",
+] as const;
+
+export type EventCategory = (typeof EVENT_CATEGORIES)[number];
+
+// ── Map Defaults ─────────────────────────────────────────────
+
+/** Default map center — Makati, Philippines [lng, lat] */
+export const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
+
+/** Default zoom level for venue/event maps */
+export const DEFAULT_ZOOM = 14;
+
 // ── Venue Filters ───────────────────────────────────────────
 
 export const VENUE_FILTERS = ["live-now", "nearest", "best-match"] as const;
