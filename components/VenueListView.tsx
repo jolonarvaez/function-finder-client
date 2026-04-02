@@ -9,6 +9,7 @@ import type { MapVenue } from "@/components/map/MapView";
 
 export type VenueListViewProps = Readonly<{
   venues?: MapVenue[];
+  defaultDate?: Date;
 }>;
 
 function venueMatchesGenres(venue: MapVenue, genres: string[]): boolean {
@@ -33,7 +34,7 @@ function venueMatchesDate(venue: MapVenue, date: Date): boolean {
   return venue.event.date === iso;
 }
 
-export function VenueListView({ venues = [] }: VenueListViewProps) {
+export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const query = useMapFilterStore((s) => s.query);
   const activeFilter = useMapFilterStore((s) => s.activeFilter);
@@ -75,7 +76,7 @@ export function VenueListView({ venues = [] }: VenueListViewProps) {
     <div className="flex h-dvh flex-col bg-background">
       <div className="px-4 pt-14">
         <h2 className="mb-3 text-lg font-semibold">Venues</h2>
-        <SearchBar showStatus />
+        <SearchBar showStatus defaultDate={defaultDate} />
       </div>
 
       <ScrollArea className="min-h-0 flex-1 px-4 pt-3">
