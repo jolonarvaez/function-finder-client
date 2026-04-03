@@ -74,7 +74,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
 
   return (
     <div className="flex h-dvh flex-col bg-background">
-      <div className="px-4 pt-14">
+      <div className="px-4 pt-4">
         <h2 className="mb-3 text-lg font-semibold">Venues</h2>
         <SearchBar showStatus defaultDate={defaultDate} />
       </div>

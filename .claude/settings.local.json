@@ -32,7 +32,12 @@
       "Bash(xargs ls:*)",
       "Bash(npx shadcn@latest add spinner)",
       "Bash(npx shadcn@latest add collapsible --yes)",
-      "Bash(npx shadcn@latest add drawer --yes)"
+      "Bash(npx shadcn@latest add drawer --yes)",
+      "Bash(mkdir -p \"app/\\(app\\)/map\" \"app/\\(app\\)/profile\" \"app/\\(app\\)/dj/events\")",
+      "Bash(mv \"app/page.tsx\" \"app/\\(app\\)/page.tsx\")",
+      "Bash(mv \"app/map/page.tsx\" \"app/\\(app\\)/map/page.tsx\")",
+      "Bash(mv \"app/profile/page.tsx\" \"app/\\(app\\)/profile/page.tsx\")",
+      "Bash(mv \"app/dj/events/page.tsx\" \"app/\\(app\\)/dj/events/page.tsx\")"
     ]
   }
 }

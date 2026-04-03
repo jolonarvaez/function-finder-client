@@ -4,8 +4,8 @@ import { MapView, type MapVenue } from "@/components/map/MapView";
 const MOCK_VENUES: MapVenue[] = [
   // ── Monday Mar 30 ──────────────────────────────────────────
   {
-    lng: 121.0210,
-    lat: 14.5590,
+    lng: 121.021,
+    lat: 14.559,
     event: {
       name: "The Vinyl Room",
       address: "3F Legaspi Towers, Makati",
@@ -15,7 +15,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "2AM",
       featured: false,
       attending: 54,
-      dj: { name: "Smooth Mike", avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM", genre: "Soul" },
+      dj: {
+        name: "Smooth Mike",
+        avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
+        genre: "Soul",
+      },
     },
   },
   {
@@ -32,13 +36,17 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 10,
       featured: false,
       attending: 145,
-      dj: { name: "DJ Fuego", avatar: "https://placehold.co/80x80/ef4444/fff?text=DF", genre: "Latin" },
+      dj: {
+        name: "DJ Fuego",
+        avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
+        genre: "Latin",
+      },
     },
   },
 
   // ── Tuesday Mar 31 ─────────────────────────────────────────
   {
-    lng: 121.0220,
+    lng: 121.022,
     lat: 14.5545,
     event: {
       name: "The Cypher",
@@ -50,12 +58,16 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "3AM",
       featured: false,
       attending: 132,
-      dj: { name: "DJ Phonix", avatar: "https://placehold.co/80x80/ea580c/fff?text=DP", genre: ["Hip-Hop", "R&B"] },
+      dj: {
+        name: "DJ Phonix",
+        avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
+        genre: ["Hip-Hop", "R&B"],
+      },
     },
   },
   {
     lng: 121.0185,
-    lat: 14.5560,
+    lat: 14.556,
     event: {
       name: "Tribe",
       image: "https://placehold.co/600x300/422006/facc15?text=Tribe",
@@ -67,14 +79,18 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 12,
       featured: false,
       attending: 165,
-      dj: { name: "Kwame", avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW", genre: "Afrobeats" },
+      dj: {
+        name: "Kwame",
+        avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
+        genre: "Afrobeats",
+      },
     },
   },
 
   // ── Wednesday Apr 1 ────────────────────────────────────────
   {
     lng: 121.0195,
-    lat: 14.5530,
+    lat: 14.553,
     event: {
       name: "Noir Lounge",
       image: "https://placehold.co/600x300/0d0d0d/ffffff?text=Noir",
@@ -85,7 +101,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "3AM",
       featured: false,
       attending: 89,
-      dj: { name: "Mara Santos", avatar: "https://placehold.co/80x80/9333ea/fff?text=MS", genre: "Techno" },
+      dj: {
+        name: "Mara Santos",
+        avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
+        genre: "Techno",
+      },
     },
   },
   {
@@ -102,7 +122,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 18,
       featured: true,
       attending: 280,
-      dj: { name: "MIKA", avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK", genre: "Pop" },
+      dj: {
+        name: "MIKA",
+        avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK",
+        genre: "Pop",
+      },
     },
   },
 
@@ -122,11 +146,15 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 15,
       featured: true,
       attending: 247,
-      dj: { name: "DJ Nexus", avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN", genre: ["House", "Techno", "Disco"] },
+      dj: {
+        name: "DJ Nexus",
+        avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
+        genre: ["House", "Techno", "Disco"],
+      },
     },
   },
   {
-    lng: 121.0270,
+    lng: 121.027,
     lat: 14.5555,
     live: true,
     event: {
@@ -140,14 +168,18 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 10,
       featured: true,
       attending: 178,
-      dj: { name: "PRISM", avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR", genre: "Drum & Bass" },
+      dj: {
+        name: "PRISM",
+        avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
+        genre: "Drum & Bass",
+      },
     },
   },
 
   // ── Friday Apr 3 ───────────────────────────────────────────
   {
-    lng: 121.0290,
-    lat: 14.5510,
+    lng: 121.029,
+    lat: 14.551,
     live: true,
     event: {
       name: "Fuego",
@@ -160,12 +192,16 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 20,
       featured: true,
       attending: 312,
-      dj: { name: "DJ Caliente", avatar: "https://placehold.co/80x80/dc2626/fff?text=DC", genre: ["Reggaeton", "Latin", "Dancehall"] },
+      dj: {
+        name: "DJ Caliente",
+        avatar: "https://placehold.co/80x80/dc2626/fff?text=DC",
+        genre: ["Reggaeton", "Latin", "Dancehall"],
+      },
     },
   },
   {
-    lng: 121.0260,
-    lat: 14.5580,
+    lng: 121.026,
+    lat: 14.558,
     event: {
       name: "Velvet",
       image: "https://placehold.co/600x300/4a1942/f472b6?text=Velvet",
@@ -176,14 +212,18 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "2AM",
       featured: true,
       attending: 98,
-      dj: { name: "Soulée", avatar: "https://placehold.co/80x80/ec4899/fff?text=SL", genre: "R&B" },
+      dj: {
+        name: "Soulée",
+        avatar: "https://placehold.co/80x80/ec4899/fff?text=SL",
+        genre: "R&B",
+      },
     },
   },
 
   // ── Saturday Apr 4 ─────────────────────────────────────────
   {
     lng: 121.03,
-    lat: 14.5540,
+    lat: 14.554,
     live: true,
     event: {
       name: "Yard",
@@ -195,7 +235,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "1AM",
       featured: false,
       attending: 74,
-      dj: { name: "Selecta Jay", avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ", genre: "Dancehall" },
+      dj: {
+        name: "Selecta Jay",
+        avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
+        genre: "Dancehall",
+      },
     },
   },
 
@@ -215,7 +259,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 15,
       featured: true,
       attending: 203,
-      dj: { name: "Groove Master G", avatar: "https://placehold.co/80x80/d97706/fff?text=GM", genre: ["Disco", "Soul", "House"] },
+      dj: {
+        name: "Groove Master G",
+        avatar: "https://placehold.co/80x80/d97706/fff?text=GM",
+        genre: ["Disco", "Soul", "House"],
+      },
     },
   },
 ];
@@ -230,7 +278,7 @@ const meta: Meta<typeof MapView> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full overflow-hidden bg-background">
+      <div className="h-svh w-full">
         <Story />
       </div>
     ),

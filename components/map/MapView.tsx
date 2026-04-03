@@ -4,7 +4,6 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { Map, MapControls, type MapRef } from "@/components/ui/map";
 import { SearchBar } from "@/components/SearchBar";
 import { VenueMarker } from "@/components/map/VenueMarker";
-import { ConnectedTopNav } from "@/components/map/ConnectedTopNav";
 import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
@@ -54,7 +53,11 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
   const [deniedDismissed, setDeniedDismissed] = useState(false);
 
   const flyToLocation = (c: { lng: number; lat: number }) => {
-    mapRef.current?.flyTo({ center: [c.lng, c.lat], zoom: DEFAULT_ZOOM, duration: 1500 });
+    mapRef.current?.flyTo({
+      center: [c.lng, c.lat],
+      zoom: DEFAULT_ZOOM,
+      duration: 1500,
+    });
   };
 
   // Center when coords arrive after the toggle (first fix)
@@ -62,7 +65,7 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
     if (!coords || hasCenteredRef.current) return;
     hasCenteredRef.current = true;
     flyToLocation(coords);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
 
   const handleLocationToggle = () => {
@@ -85,7 +88,8 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
 
   const filteredVenues = useMemo(() => {
     return venues.filter((v) => {
-      if (deferredGenres.length > 0 && !venueMatchesGenres(v, deferredGenres)) return false;
+      if (deferredGenres.length > 0 && !venueMatchesGenres(v, deferredGenres))
+        return false;
       if (deferredDate && !venueMatchesDate(v, deferredDate)) return false;
       return true;
     });
@@ -95,10 +99,10 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
   const showDeniedBanner = isDenied && !deniedDismissed;
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden">
-      {/* Top nav + search panel */}
-      <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-4 space-y-3 border-b border-border">
-        <ConnectedTopNav />
+    <div className="relative h-full w-full overflow-hidden">
+      {/* Search panel */}
+      <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-3 border-b border-border">
+        <h2 className="mb-3 text-lg font-semibold">Map View</h2>
         <SearchBar showFilter defaultDate={defaultDate} />
       </div>
 
@@ -116,7 +120,9 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
           <button
             type="button"
             onClick={handleLocationToggle}
-            aria-label={locationVisible ? "Hide my location" : "Show my location"}
+            aria-label={
+              locationVisible ? "Hide my location" : "Show my location"
+            }
             aria-pressed={locationVisible}
             className={cn(
               "flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors",

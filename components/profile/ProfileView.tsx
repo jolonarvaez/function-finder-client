@@ -57,11 +57,11 @@ export function ProfileView() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-border px-4 py-4">
+      <div className="flex items-center gap-2 border-b border-border px-4 py-4">
         <button
           onClick={() => router.back()}
           aria-label="Go back"
-          className="rounded-full p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-lg p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ArrowLeftIcon className="size-5" />
         </button>

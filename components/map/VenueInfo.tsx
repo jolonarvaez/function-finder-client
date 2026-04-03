@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Sheet,
   SheetContent,
@@ -17,7 +18,6 @@ import {
   MusicIcon,
   ClockIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Genre } from "@/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────
@@ -63,9 +63,11 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
         {/* Hero */}
         {event.image ? (
           <div className="relative">
-            <img
+            <Image
               src={event.image}
               alt={event.name}
+              width={600}
+              height={192}
               className="h-48 w-full rounded-t-2xl object-cover"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />

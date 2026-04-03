@@ -2,15 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { TopNav } from "./TopNav";
+import { AppSidebar } from "@/components/sidebar/AppSidebar";
+import type { OnboardingRole } from "@/lib/constants";
 
-export function ConnectedTopNav() {
+export function ConnectedAppSidebar() {
   const router = useRouter();
   const { user, signOut } = useAuth();
 
   const name = user?.user_metadata?.full_name as string | undefined;
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
   const email = user?.email;
+  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
+  const role = user?.user_metadata?.role as OnboardingRole | undefined;
 
   async function handleSignOut() {
     await signOut();
@@ -18,7 +20,8 @@ export function ConnectedTopNav() {
   }
 
   return (
-    <TopNav
+    <AppSidebar
+      role={role}
       name={name}
       email={email}
       avatarUrl={avatarUrl}
