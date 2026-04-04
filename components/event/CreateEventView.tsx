@@ -148,7 +148,7 @@ export function CreateEventView() {
 
       {/* Header */}
       <div className="p-4">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <h1 className="text-xl font-bold tracking-tight text-foreground">
           Create Event
         </h1>
         <p className="mt-0.5 text-sm text-muted-foreground">

@@ -63,16 +63,7 @@ export function DJEventsView() {
     <>
       <main className="flex flex-col pb-8 px-4">
         {/* Header */}
-        <div className="flex items-center gap-2 pt-12 pb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Go back"
-            className="size-9 rounded-lg"
-            onClick={() => router.back()}
-          >
-            <ArrowLeftIcon className="size-5" />
-          </Button>
+        <div className="flex items-center gap-2 py-4">
           <h1 className="text-xl font-bold tracking-tight text-foreground">My Events</h1>
         </div>
 
