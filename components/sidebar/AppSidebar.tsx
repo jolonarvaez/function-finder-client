@@ -8,6 +8,8 @@ import {
   SettingsIcon,
   UserIcon,
   CalendarDaysIcon,
+  CalendarPlus2Icon,
+
 } from "lucide-react";
 import type { OnboardingRole } from "@/lib/constants";
 import {
@@ -23,6 +25,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileFooter, type ProfileFooterProps } from "./ProfileFooter";
 
 const NAV_ITEMS = [
@@ -33,15 +36,18 @@ const NAV_ITEMS = [
 ] as const;
 
 const DJ_ITEMS = [
-  { label: "Events Manager", href: "/dj/events", icon: CalendarDaysIcon },
+  { label: "Events Manager", href: "/dj/event-manager", icon: CalendarDaysIcon },
+  { label: "Create Event", href: "/dj/create-event", icon: CalendarPlus2Icon },
 ] as const;
 
 export type AppSidebarProps = ProfileFooterProps & Readonly<{
   role?: OnboardingRole;
+  loading?: boolean;
 }>;
 
 export function AppSidebar({
   role,
+  loading = false,
   name,
   email,
   avatarUrl,
@@ -82,7 +88,17 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {role === "dj" && (
+        {loading ? (
+          <>
+            <SidebarSeparator />
+            <SidebarGroup>
+              <Skeleton className="mb-2 h-3 w-16" />
+              <SidebarGroupContent>
+                <Skeleton className="h-8 w-full rounded-lg" />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        ) : role === "dj" && (
           <>
             <SidebarSeparator />
             <SidebarGroup>
@@ -112,14 +128,24 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter>
-        <ProfileFooter
-          name={name}
-          email={email}
-          avatarUrl={avatarUrl}
-          onProfile={onProfile}
-          onSettings={onSettings}
-          onSignOut={onSignOut}
-        />
+        {loading ? (
+          <div className="flex items-center gap-3 px-2 py-2">
+            <Skeleton className="size-8 shrink-0 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </div>
+        ) : (
+          <ProfileFooter
+            name={name}
+            email={email}
+            avatarUrl={avatarUrl}
+            onProfile={onProfile}
+            onSettings={onSettings}
+            onSignOut={onSignOut}
+          />
+        )}
       </SidebarFooter>
     </Sidebar>
   );

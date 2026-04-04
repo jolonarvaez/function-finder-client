@@ -30,7 +30,8 @@ export function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${globalThis.location.origin}`,
+        redirectTo: `${globalThis.location.origin}/auth/callback`,
+        scopes: "openid email profile",
       },
     });
   }

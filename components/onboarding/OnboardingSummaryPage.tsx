@@ -13,9 +13,10 @@ export type OnboardingSummaryPageProps = Readonly<{
   onEditRole?: () => void;
   onEditGenres?: () => void;
   onFinish?: () => void;
+  submitting?: boolean;
 }>;
 
-export function OnboardingSummaryPage({ role, genres, onBack, onEditRole, onEditGenres, onFinish }: OnboardingSummaryPageProps) {
+export function OnboardingSummaryPage({ role, genres, onBack, onEditRole, onEditGenres, onFinish, submitting }: OnboardingSummaryPageProps) {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
       <StepIndicator currentStep={3} className="mb-8" />
@@ -81,8 +82,9 @@ export function OnboardingSummaryPage({ role, genres, onBack, onEditRole, onEdit
         <Button
           className="h-12 w-full rounded-xl text-sm font-medium"
           onClick={onFinish}
+          disabled={submitting}
         >
-          Get Started
+          {submitting ? "Saving..." : "Get Started"}
         </Button>
         <Button
           type="button"

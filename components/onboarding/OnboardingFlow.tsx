@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { OnboardingRolePage } from "@/components/onboarding/OnboardingRolePage";
 import { OnboardingGenrePage } from "@/components/onboarding/OnboardingGenrePage";
 import { OnboardingSummaryPage } from "@/components/onboarding/OnboardingSummaryPage";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
+import { updateUser } from "@/lib/services/users";
+import { supabase } from "@/lib/supabase";
 
 export type OnboardingFlowProps = Readonly<{
   onComplete?: () => void;
@@ -12,6 +15,20 @@ export type OnboardingFlowProps = Readonly<{
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const { step, role, genres, setStep, setRole, setGenres } =
     useOnboardingStore();
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleFinish() {
+    if (!role) return;
+    setSubmitting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      await updateUser(session.user.id, { profile_type: role, genre_tags: genres });
+      onComplete?.();
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <>
@@ -45,7 +62,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           onBack={() => setStep(2)}
           onEditRole={() => setStep(1)}
           onEditGenres={() => setStep(2)}
-          onFinish={onComplete}
+          onFinish={handleFinish}
+          submitting={submitting}
         />
       )}
     </>
