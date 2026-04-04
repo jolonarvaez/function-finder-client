@@ -22,8 +22,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GenreSelector } from "@/components/GenreSelector";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useUserStore } from "@/components/auth/use-user-store";
+import { updateUser } from "@/lib/services/users";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import type { Genre } from "@/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────
@@ -86,25 +89,31 @@ function SettingsRow({
 export function SettingsView() {
   const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { profile, setProfile } = useUserStore();
 
-  const name = user?.user_metadata?.full_name as string | undefined;
+  const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
-  const savedGenres = (user?.user_metadata?.genres ?? []) as Genre[];
 
   // Preferences state
-  const [genres, setGenres] = useState<Genre[]>(savedGenres);
+  const [genres, setGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
   const [genresSaving, setGenresSaving] = useState(false);
-  const [genresSaved, setGenresSaved] = useState(false);
   // Danger zone state
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   async function handleSaveGenres() {
+    if (!profile) return;
     setGenresSaving(true);
-    setGenresSaving(false);
-    setGenresSaved(true);
-    setTimeout(() => setGenresSaved(false), 2000);
+    try {
+      await updateUser(profile.id, { profile_type: profile.profile_type!, genre_tags: genres });
+      setProfile({ ...profile, genre_tags: genres });
+      toast.success("Genre preferences saved.");
+    } catch {
+      toast.error("Failed to save preferences.");
+    } finally {
+      setGenresSaving(false);
+    }
   }
 
   async function handleSignOut() {
@@ -207,11 +216,7 @@ export function SettingsView() {
             disabled={genresSaving}
             className="rounded-lg"
           >
-            {genresSaved
-              ? "Saved!"
-              : genresSaving
-                ? "Saving..."
-                : "Save Genres"}
+            {genresSaving ? "Saving..." : "Save Genres"}
           </Button>
         </div>
       </section>

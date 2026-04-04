@@ -7,8 +7,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { GenreSelector } from "@/components/GenreSelector";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { supabase } from "@/lib/supabase";
-import type { Genre } from "@/lib/constants";
+import { useUserStore } from "@/components/auth/use-user-store";
+import { updateUser } from "@/lib/services/users";
+import { toast } from "sonner";
 
 function getInitials(name?: string): string {
   if (!name) return "";
@@ -18,22 +19,27 @@ function getInitials(name?: string): string {
 export function ProfileView() {
   const router = useRouter();
   const { user } = useAuth();
+  const { profile, setProfile } = useUserStore();
 
-  const name = user?.user_metadata?.full_name as string | undefined;
+  const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
-  const savedGenres = (user?.user_metadata?.genres ?? []) as Genre[];
 
-  const [genres, setGenres] = useState<Genre[]>(savedGenres);
+  const [genres, setGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   async function handleSaveGenres() {
+    if (!profile) return;
     setSaving(true);
-    await supabase.auth.updateUser({ data: { genres } });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      await updateUser(profile.id, { profile_type: profile.profile_type!, genre_tags: genres });
+      setProfile({ ...profile, genre_tags: genres });
+      toast.success("Genre preferences saved.");
+    } catch {
+      toast.error("Failed to save preferences.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -75,7 +81,7 @@ export function ProfileView() {
             disabled={saving}
             className="h-10 w-full rounded-lg text-sm font-medium"
           >
-            {saved ? "Saved!" : saving ? "Saving..." : "Save Genres"}
+            {saving ? "Saving..." : "Save Genres"}
           </Button>
         </section>
 

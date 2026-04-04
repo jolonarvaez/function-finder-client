@@ -12,6 +12,7 @@ import { Locate, LocateOff, X } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { getEvents } from "@/lib/services/events";
+import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 
 export type MapVenue = Readonly<{
@@ -29,6 +30,8 @@ export type MapViewProps = Readonly<{
 export function MapView({ defaultDate }: MapViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const selectedDate = useMapFilterStore((s) => s.selectedDate);
+  const setSelectedGenres = useMapFilterStore((s) => s.setSelectedGenres);
+  const profile = useUserStore((s) => s.profile);
 
   const [venues, setVenues] = useState<MapVenue[]>([]);
 
@@ -72,6 +75,14 @@ export function MapView({ defaultDate }: MapViewProps) {
     start();
     setDeniedDismissed(false);
   };
+
+  // Seed genres from profile on first load if user hasn't manually filtered yet
+  useEffect(() => {
+    if (profile?.genre_tags?.length && selectedGenres.length === 0) {
+      setSelectedGenres(profile.genre_tags);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
   useEffect(() => {
     getEvents({ date: selectedDate, genres: selectedGenres.length > 0 ? selectedGenres : undefined })

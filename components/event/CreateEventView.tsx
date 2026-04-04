@@ -52,7 +52,7 @@ export function CreateEventView() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [entryPrice, setEntryPrice] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
   const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
