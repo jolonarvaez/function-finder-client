@@ -45,15 +45,36 @@ export function todayISO(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export function getStatus(event: DJEvent): EventStatus {
-  const today = todayISO();
+function nextDayISO(isoDate: string): string {
+  const d = new Date(`${isoDate}T00:00:00`);
+  d.setDate(d.getDate() + 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function sameDayStatus(event: DJEvent, today: string, nowTime: string): EventStatus {
   if (event.date < today) return "past";
   if (event.date > today) return "upcoming";
-  const now = new Date();
-  const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
   if (nowTime < event.startTime) return "upcoming";
   if (nowTime > event.endTime) return "past";
   return "live";
+}
+
+function overnightStatus(event: DJEvent, today: string, nowTime: string): EventStatus {
+  const nextDay = nextDayISO(event.date);
+  if (today < event.date) return "upcoming";
+  if (today === event.date) return nowTime >= event.startTime ? "live" : "upcoming";
+  if (today === nextDay) return nowTime <= event.endTime ? "live" : "past";
+  return "past";
+}
+
+export function getStatus(event: DJEvent): EventStatus {
+  const today = todayISO();
+  const now = new Date();
+  const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  return event.endTime >= event.startTime
+    ? sameDayStatus(event, today, nowTime)
+    : overnightStatus(event, today, nowTime);
 }
 
 export function formatTime(t: string) {
