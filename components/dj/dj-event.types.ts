@@ -79,7 +79,7 @@ export function getStatus(event: DJEvent): EventStatus {
 
 export function formatTime(t: string) {
   const [h, m] = t.split(":").map(Number);
-  const suffix = h >= 12 ? "AM" : "PM";
+  const suffix = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
   return m === 0 ? `${hour}${suffix}` : `${hour}:${String(m).padStart(2, "0")}${suffix}`;
 }
