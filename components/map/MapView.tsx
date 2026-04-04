@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Map, MapControls, type MapRef } from "@/components/ui/map";
 import { SearchBar } from "@/components/SearchBar";
 import { VenueMarker } from "@/components/map/VenueMarker";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Locate, LocateOff, X } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { getEvents } from "@/lib/services/events";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 
 export type MapVenue = Readonly<{
@@ -22,28 +23,14 @@ export type MapVenue = Readonly<{
 }>;
 
 export type MapViewProps = Readonly<{
-  venues?: MapVenue[];
   defaultDate?: Date;
 }>;
 
-function venueMatchesGenres(venue: MapVenue, genres: string[]): boolean {
-  const djGenres = Array.isArray(venue.event.dj.genre)
-    ? venue.event.dj.genre
-    : [venue.event.dj.genre];
-  return djGenres.some((g) => genres.includes(g));
-}
-
-function venueMatchesDate(venue: MapVenue, date: Date): boolean {
-  if (!venue.event.date) return true;
-  const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-  return venue.event.date === iso;
-}
-
-export function MapView({ venues = [], defaultDate }: MapViewProps) {
+export function MapView({ defaultDate }: MapViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const selectedDate = useMapFilterStore((s) => s.selectedDate);
-  const deferredGenres = useDeferredValue(selectedGenres);
-  const deferredDate = useDeferredValue(selectedDate);
+
+  const [venues, setVenues] = useState<MapVenue[]>([]);
 
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);
@@ -86,17 +73,16 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
     setDeniedDismissed(false);
   };
 
-  const filteredVenues = useMemo(() => {
-    return venues.filter((v) => {
-      if (deferredGenres.length > 0 && !venueMatchesGenres(v, deferredGenres))
-        return false;
-      if (deferredDate && !venueMatchesDate(v, deferredDate)) return false;
-      return true;
-    });
-  }, [venues, deferredGenres, deferredDate]);
+  useEffect(() => {
+    getEvents({ date: selectedDate, genres: selectedGenres.length > 0 ? selectedGenres : undefined })
+      .then(setVenues)
+      .catch(() => setVenues([]));
+  }, [selectedDate, selectedGenres]);
 
   const isDenied = status === "denied";
   const showDeniedBanner = isDenied && !deniedDismissed;
+
+  console.log(venues)
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -145,7 +131,7 @@ export function MapView({ venues = [], defaultDate }: MapViewProps) {
         )}
 
         {/* Venue markers */}
-        {filteredVenues.map((venue) => (
+        {venues.map((venue) => (
           <VenueMarker
             key={venue.event.name}
             longitude={venue.lng}
