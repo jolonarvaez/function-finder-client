@@ -1,5 +1,6 @@
 import api from "@/lib/axios";
 import type { OnboardingRole, Genre } from "@/lib/constants";
+import type { DJEvent } from "@/components/dj/dj-event.types";
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -26,6 +27,24 @@ type UpdateUserBody = {
   genre_tags: Genre[];
 };
 
+type ApiEvent = {
+  id: string;
+  name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  entry_price: number | null;
+  category: string;
+  genres: string[];
+  custom_location: { latitude: number; longitude: number; address: string } | null;
+};
+
+type ApiUserEventsResponse = {
+  status: number;
+  message: string;
+  data: ApiEvent[];
+};
+
 // ── Service functions ─────────────────────────────────────────
 
 async function getUser(id: string): Promise<UserProfile> {
@@ -33,8 +52,27 @@ async function getUser(id: string): Promise<UserProfile> {
   return data.data;
 }
 
+async function getUserEvents(id: string): Promise<DJEvent[]> {
+  const { data } = await api.get<ApiUserEventsResponse>(`/users/${id}/events`);
+  return data.data.map((e): DJEvent => ({
+    id: e.id,
+    name: e.name,
+    venue: "",
+    address: e.custom_location?.address ?? "",
+    category: e.category,
+    date: e.date,
+    startTime: e.start_time.slice(0, 5),
+    endTime: e.end_time.slice(0, 5),
+    entryPrice: e.entry_price ?? undefined,
+    genres: e.genres as Genre[],
+    coordinates: e.custom_location
+      ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
+      : undefined,
+  }));
+}
+
 async function updateUser(id: string, body: UpdateUserBody): Promise<void> {
   await api.patch(`/users/${id}`, body);
 }
 
-export { getUser, updateUser };
+export { getUser, getUserEvents, updateUser };

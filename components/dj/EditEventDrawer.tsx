@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from "react";
 import { format } from "date-fns";
-import { ChevronDownIcon, PhilippinePesoIcon } from "lucide-react";
+import { toast } from "sonner";
+import { ChevronDownIcon, PhilippinePesoIcon, TagIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,10 +16,19 @@ import {
   DrawerDescription,
   DrawerFooter,
 } from "@/components/ui/drawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { GenreSelector } from "@/components/GenreSelector";
+import { EVENT_CATEGORIES } from "@/lib/constants";
 import { LocationPicker } from "@/components/event/LocationPicker";
 import { reverseGeocode } from "@/lib/geocode";
 import type { MockVenue } from "@/components/event/mock-venues";
+import { updateEvent } from "@/lib/services/events";
 import {
   draftFromEvent,
   draftToPartial,
@@ -40,6 +50,7 @@ export type EditEventDrawerProps = {
 
 export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps) {
   const [draft, setDraft] = useState<EditDraft | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const open = event !== null;
   if (open && draft === null) setDraft(draftFromEvent(event!));
@@ -69,9 +80,30 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
     [],
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!draft || !event) return;
-    onSave(draftToPartial(draft, event));
+    setSubmitting(true);
+    try {
+      const partial = draftToPartial(draft, event);
+      await updateEvent(event.id, {
+        name: partial.name ?? event.name,
+        category: partial.category ?? event.category,
+        date: partial.date ?? event.date,
+        start_time: partial.startTime ?? event.startTime,
+        end_time: partial.endTime ?? event.endTime,
+        entry_price: partial.entryPrice ?? null,
+        genres: partial.genres ?? event.genres,
+        custom_location: partial.coordinates
+          ? { latitude: partial.coordinates.lat, longitude: partial.coordinates.lng, address: partial.address ?? event.address }
+          : null,
+      });
+      onSave(partial);
+      toast.success("Event updated successfully.");
+    } catch {
+      toast.error("Failed to update event. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -93,6 +125,27 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
                   onChange={(e) => setDraft((d) => d && { ...d, name: e.target.value })}
                   className="h-10 rounded-lg dark:bg-background"
                 />
+              </div>
+
+              {/* Category */}
+              <div className="space-y-1.5">
+                <FieldLabel>Category</FieldLabel>
+                <Select
+                  value={draft.category}
+                  onValueChange={(v) => setDraft((d) => d && { ...d, category: v })}
+                >
+                  <SelectTrigger className="h-10 w-full rounded-lg dark:bg-background">
+                    <div className="flex items-center gap-2">
+                      <TagIcon className="size-4 text-muted-foreground" />
+                      <SelectValue placeholder="Select a category" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EVENT_CATEGORIES.map((cat) => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Date */}
@@ -204,8 +257,8 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
         </div>
 
         <DrawerFooter>
-          <Button className="rounded-lg" onClick={handleSave}>
-            Save changes
+          <Button className="rounded-lg" onClick={handleSave} disabled={submitting}>
+            {submitting ? "Saving..." : "Save changes"}
           </Button>
           <Button variant="outline" className="rounded-lg" onClick={onClose}>
             Cancel

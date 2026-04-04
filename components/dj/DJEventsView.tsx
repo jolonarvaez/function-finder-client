@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon, ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "./EventCard";
 import { EditEventDrawer } from "./EditEventDrawer";
 import { getStatus, type DJEvent } from "./dj-event.types";
+import { getUserEvents } from "@/lib/services/users";
+import { useUserStore } from "@/components/auth/use-user-store";
 
 export type { DJEvent };
 
@@ -23,13 +26,19 @@ function SectionLabel({ children }: Readonly<{ children: React.ReactNode }>) {
   );
 }
 
-export type DJEventsViewProps = Readonly<{
-  events?: DJEvent[];
-}>;
-
-export function DJEventsView({ events: initialEvents = [] }: DJEventsViewProps) {
+export function DJEventsView() {
   const router = useRouter();
-  const [events, setEvents] = useState<DJEvent[]>(initialEvents);
+  const { profile } = useUserStore();
+  const [events, setEvents] = useState<DJEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!profile) return;
+    setLoading(true);
+    getUserEvents(profile.id)
+      .then(setEvents)
+      .finally(() => setLoading(false));
+  }, [profile]);
   const [editingEvent, setEditingEvent] = useState<DJEvent | null>(null);
 
   const handleSave = (updated: Partial<DJEvent>) => {
@@ -66,6 +75,14 @@ export function DJEventsView({ events: initialEvents = [] }: DJEventsViewProps) 
           </Button>
           <h1 className="text-xl font-bold tracking-tight text-foreground">My Events</h1>
         </div>
+
+        {loading && (
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
+            ))}
+          </div>
+        )}
 
         <div className="space-y-6">
           {/* ── Live Now ──────────────────────────────── */}

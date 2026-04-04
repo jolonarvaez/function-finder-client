@@ -25,6 +25,7 @@ export type EventStatus = "live" | "upcoming" | "past";
 
 export type EditDraft = {
   name: string;
+  category: string;
   date: Date;
   dateOpen: boolean;
   startTime: string;
@@ -65,6 +66,7 @@ export function formatTime(t: string) {
 export function draftFromEvent(e: DJEvent): EditDraft {
   return {
     name: e.name,
+    category: e.category,
     date: parseISO(e.date),
     dateOpen: false,
     startTime: e.startTime,
@@ -81,6 +83,7 @@ export function draftFromEvent(e: DJEvent): EditDraft {
 export function draftToPartial(draft: EditDraft, original: DJEvent): Partial<DJEvent> {
   return {
     name: draft.name.trim() || original.name,
+    category: draft.category || original.category,
     date: `${draft.date.getFullYear()}-${String(draft.date.getMonth() + 1).padStart(2, "0")}-${String(draft.date.getDate()).padStart(2, "0")}`,
     startTime: draft.startTime,
     endTime: draft.endTime,

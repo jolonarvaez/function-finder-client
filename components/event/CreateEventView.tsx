@@ -30,6 +30,9 @@ import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
+import { createEvent, toIsoDate } from "@/lib/services/events";
+import { useUserStore } from "@/components/auth/use-user-store";
+import { toast } from "sonner";
 import type { MockVenue } from "./mock-venues";
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -41,6 +44,7 @@ function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
 }
 
 export function CreateEventView() {
+  const { profile } = useUserStore();
   const [eventName, setEventName] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState<Date>();
@@ -50,6 +54,7 @@ export function CreateEventView() {
   const [entryPrice, setEntryPrice] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
   const [address, setAddress] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
   const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>({
@@ -75,6 +80,53 @@ export function CreateEventView() {
     if (!category) setCategory(venue.category);
   };
 
+  function resetForm() {
+    setEventName("");
+    setCategory("");
+    setDate(undefined);
+    setStartTime("");
+    setEndTime("");
+    setEntryPrice("");
+    setSelectedGenres([]);
+    setAddress("");
+    setLocationMode("map");
+    setCoordinates({ lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] });
+    setSelectedVenueId("");
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!date || !profile) return;
+    setSubmitting(true);
+    try {
+      await createEvent({
+        name: eventName.trim(),
+        category,
+        date: toIsoDate(date),
+        start_time: startTime,
+        end_time: endTime,
+        entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
+        genres: selectedGenres,
+        created_by: profile.id,
+        location: locationMode === "venue" ? selectedVenueId : null,
+        custom_location:
+          locationMode === "map"
+            ? {
+                latitude: coordinates.lat,
+                longitude: coordinates.lng,
+                address: address.trim(),
+              }
+            : null,
+      });
+      toast.success("Event created successfully.");
+      resetForm();
+    } catch {
+      toast.error("Failed to create event. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   const isValid =
     eventName.trim() &&
     category &&
@@ -95,7 +147,7 @@ export function CreateEventView() {
       </a>
 
       {/* Header */}
-      <div className="px-4 pt-12 pb-2">
+      <div className="p-4">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Create Event
         </h1>
@@ -108,7 +160,7 @@ export function CreateEventView() {
       <div className="flex-1">
         <form
           id="create-event-form"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
           className="space-y-4 px-4 pt-3 pb-6"
         >
           {/* ── Details ─────────────────────────────────── */}
@@ -116,9 +168,7 @@ export function CreateEventView() {
 
           {/* Event Name */}
           <Field>
-            <FieldLabel htmlFor="event-name">
-              Event Name
-            </FieldLabel>
+            <FieldLabel htmlFor="event-name">Event Name</FieldLabel>
             <div className="relative">
               <SparklesIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -136,7 +186,10 @@ export function CreateEventView() {
           <Field>
             <FieldLabel htmlFor="category">Category</FieldLabel>
             <Select value={category} onValueChange={setCategory} required>
-              <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
+              <SelectTrigger
+                id="category"
+                className="h-11 w-full rounded-lg dark:bg-card"
+              >
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4 text-muted-foreground" />
                   <SelectValue placeholder="Select a category" />
@@ -195,12 +248,11 @@ export function CreateEventView() {
           {/* Start / End Time */}
           <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
             <Field>
-              <FieldLabel htmlFor="start-time">
-                Start Time
-              </FieldLabel>
+              <FieldLabel htmlFor="start-time">Start Time</FieldLabel>
               <Input
                 id="start-time"
                 type="time"
+                step={60}
                 required
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
@@ -209,12 +261,11 @@ export function CreateEventView() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="end-time">
-                End Time
-              </FieldLabel>
+              <FieldLabel htmlFor="end-time">End Time</FieldLabel>
               <Input
                 id="end-time"
                 type="time"
+                step={60}
                 required
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
@@ -266,9 +317,7 @@ export function CreateEventView() {
 
           {/* Address */}
           <Field>
-            <FieldLabel htmlFor="address">
-              Address
-            </FieldLabel>
+            <FieldLabel htmlFor="address">Address</FieldLabel>
             <div className="relative">
               <MapPinIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -289,10 +338,10 @@ export function CreateEventView() {
         <Button
           type="submit"
           form="create-event-form"
-          disabled={!isValid}
+          disabled={!isValid || submitting}
           className="h-12 w-full rounded-lg text-sm font-semibold"
         >
-          Create Event
+          {submitting ? "Creating..." : "Create Event"}
         </Button>
       </div>
     </main>

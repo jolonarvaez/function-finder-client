@@ -86,9 +86,23 @@ type GetEventsParams = {
   genres?: Genre[];
 };
 
+export type CreateEventBody = {
+  name: string;
+  category: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  entry_price: number | null;
+  genres: Genre[];
+  created_by: string;
+  location: string | null;
+  custom_location: ApiCustomLocation | null;
+};
+
 function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
+
 
 async function getEvents({ date, genres }: GetEventsParams = {}): Promise<MapVenue[]> {
   const params: Record<string, string> = {};
@@ -108,4 +122,24 @@ async function getEvents({ date, genres }: GetEventsParams = {}): Promise<MapVen
   });
 }
 
-export { getEvents };
+export type UpdateEventBody = {
+  name: string;
+  category: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  entry_price: number | null;
+  genres: Genre[];
+  custom_location: ApiCustomLocation | null;
+};
+
+async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
+  const { data } = await api.post<{ status: number; message: string; data: ApiEvent }>("/events", body);
+  return data.data;
+}
+
+async function updateEvent(id: string, body: UpdateEventBody): Promise<void> {
+  await api.patch(`/events/${id}`, body);
+}
+
+export { getEvents, createEvent, updateEvent, toIsoDate };
