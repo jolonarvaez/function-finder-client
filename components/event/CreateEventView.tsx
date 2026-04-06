@@ -14,11 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -54,9 +50,7 @@ export function CreateEventView() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [entryPrice, setEntryPrice] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(
-    profile?.genre_tags ?? [],
-  );
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
   const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -67,15 +61,12 @@ export function CreateEventView() {
   });
   const [selectedVenueId, setSelectedVenueId] = useState("");
 
-  const handleCoordinatesChange = useCallback(
-    (coords: { lng: number; lat: number }) => {
-      setCoordinates(coords);
-      reverseGeocode(coords.lat, coords.lng).then((result) => {
-        if (result) setAddress(result);
-      });
-    },
-    [],
-  );
+  const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
+    setCoordinates(coords);
+    reverseGeocode(coords.lat, coords.lng).then((result) => {
+      if (result) setAddress(result);
+    });
+  }, []);
 
   const handleVenueSelect = (id: string, venue: MockVenue) => {
     setSelectedVenueId(id);
@@ -155,11 +146,7 @@ export function CreateEventView() {
 
       {/* Form */}
       <div className="flex-1">
-        <form
-          id="create-event-form"
-          onSubmit={handleSubmit}
-          className="space-y-4  pb-6"
-        >
+        <form id="create-event-form" onSubmit={handleSubmit} className="space-y-4  pb-6">
           {/* ── Details ─────────────────────────────────── */}
           <SectionHeader>Details</SectionHeader>
 
@@ -183,10 +170,7 @@ export function CreateEventView() {
           <Field>
             <FieldLabel htmlFor="category">Category</FieldLabel>
             <Select value={category} onValueChange={setCategory} required>
-              <SelectTrigger
-                id="category"
-                className="h-11 w-full rounded-lg dark:bg-card"
-              >
+              <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4 text-muted-foreground" />
                   <SelectValue placeholder="Select a category" />
@@ -217,7 +201,7 @@ export function CreateEventView() {
                   variant="outline"
                   className={cn(
                     "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
-                    !date && "text-muted-foreground",
+                    !date && "text-muted-foreground"
                   )}
                 >
                   {date ? format(date, "PPP") : "Select date"}
@@ -234,9 +218,7 @@ export function CreateEventView() {
                     setDate(d);
                     setDateOpen(false);
                   }}
-                  disabled={(d) =>
-                    d < new Date(new Date().setHours(0, 0, 0, 0))
-                  }
+                  disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0))}
                 />
               </PopoverContent>
             </Popover>
@@ -274,8 +256,7 @@ export function CreateEventView() {
           {/* Entry Price (Optional) */}
           <Field>
             <FieldLabel htmlFor="entry-price">
-              Entry Price{" "}
-              <span className="text-muted-foreground">(Optional)</span>
+              Entry Price <span className="text-muted-foreground">(Optional)</span>
             </FieldLabel>
             <div className="relative">
               <PhilippinePesoIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -293,10 +274,7 @@ export function CreateEventView() {
           </Field>
 
           {/* Genre Selection */}
-          <GenreSelector
-            selected={selectedGenres}
-            onChange={setSelectedGenres}
-          />
+          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
 
           {/* ── Location ────────────────────────────────── */}
           <div className="border-t border-border pt-4">

@@ -15,9 +15,7 @@ export function PublicUpcomingEvents({ events, displayName }: PublicUpcomingEven
         Upcoming Events
       </h2>
       {events.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {displayName} has no upcoming events.
-        </p>
+        <p className="text-sm text-muted-foreground">{displayName} has no upcoming events.</p>
       ) : (
         <div className="space-y-3">
           {events.map((event) => (

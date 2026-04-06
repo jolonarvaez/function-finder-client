@@ -22,5 +22,6 @@ export const useMapFilterStore = create<MapFilterState>((set) => ({
   setQuery: (query) => set({ query }),
   setActiveFilter: (filter) => set({ activeFilter: filter }),
   setSelectedDate: (date) => set({ selectedDate: date }),
-  reset: () => set({ selectedGenres: [], query: "", activeFilter: "live-now", selectedDate: undefined }),
+  reset: () =>
+    set({ selectedGenres: [], query: "", activeFilter: "live-now", selectedDate: undefined }),
 }));

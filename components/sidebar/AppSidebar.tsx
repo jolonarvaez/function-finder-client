@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  MapIcon,
-  SettingsIcon,
-  UserIcon,
-  CalendarDaysIcon,
-  CalendarPlus2Icon,
-} from "lucide-react";
+import { MapIcon, SettingsIcon, UserIcon, CalendarDaysIcon, CalendarPlus2Icon } from "lucide-react";
 import type { OnboardingRole } from "@/lib/constants";
 import {
   Sidebar,

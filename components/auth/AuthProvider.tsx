@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/lib/supabase";
 import { getUser } from "@/lib/services/users";
 import { useUserStore } from "@/components/auth/use-user-store";
@@ -77,9 +71,5 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   };
 
-  return (
-    <AuthContext value={{ user, loading, signOut }}>
-      {children}
-    </AuthContext>
-  );
+  return <AuthContext value={{ user, loading, signOut }}>{children}</AuthContext>;
 }

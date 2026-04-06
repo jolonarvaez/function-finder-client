@@ -59,9 +59,7 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Welcome Back
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
         <p className="mt-0.5 text-sm text-muted-foreground">
           Sign in to continue your nightlife journey
         </p>
@@ -69,7 +67,10 @@ export function LoginPage() {
 
       <form onSubmit={signInWithEmail} className="mb-6 space-y-4">
         {error && (
-          <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
             {error}
           </p>
         )}
@@ -113,11 +114,7 @@ export function LoginPage() {
               onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none active:opacity-70"
             >
-              {showPassword ? (
-                <EyeOffIcon className="size-4" />
-              ) : (
-                <EyeIcon className="size-4" />
-              )}
+              {showPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
             </button>
           </div>
         </div>
@@ -171,9 +168,7 @@ export function LoginPage() {
       </div>
 
       <div className="mb-6 text-center">
-        <span className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-        </span>
+        <span className="text-sm text-muted-foreground">Don&apos;t have an account? </span>
         <Link
           href="/signup"
           className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
@@ -184,17 +179,11 @@ export function LoginPage() {
 
       <p className="text-center text-xs text-muted-foreground">
         By continuing, you agree to Nyte&apos;s{" "}
-        <button
-          type="button"
-          className="text-primary hover:underline focus-visible:outline-none"
-        >
+        <button type="button" className="text-primary hover:underline focus-visible:outline-none">
           Terms of Service
         </button>{" "}
         and{" "}
-        <button
-          type="button"
-          className="text-primary hover:underline focus-visible:outline-none"
-        >
+        <button type="button" className="text-primary hover:underline focus-visible:outline-none">
           Privacy Policy
         </button>
       </p>

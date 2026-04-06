@@ -33,7 +33,7 @@ export function EventCard({ event, status, onEdit }: EventCardProps) {
     <div
       className={cn(
         "rounded-lg border border-border bg-card p-4 space-y-2",
-        isPast && "opacity-60",
+        isPast && "opacity-60"
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -45,9 +45,7 @@ export function EventCard({ event, status, onEdit }: EventCardProps) {
                 Live
               </span>
             )}
-            <p className="truncate text-lg font-semibold text-foreground">
-              {event.name}
-            </p>
+            <p className="truncate text-lg font-semibold text-foreground">{event.name}</p>
           </div>
           <div className="flex items-center gap-1 text-sm text-foreground">
             <MapPinIcon className="size-3.5 shrink-0" />
@@ -75,18 +73,12 @@ export function EventCard({ event, status, onEdit }: EventCardProps) {
         <span>
           {formatTime(event.startTime)} – {formatTime(event.endTime)}
         </span>
-        {event.entryPrice != null ? (
-          <span>₱{event.entryPrice}</span>
-        ) : (
-          <span>Free</span>
-        )}
+        {event.entryPrice != null ? <span>₱{event.entryPrice}</span> : <span>Free</span>}
       </div>
 
       <GenreChips genres={event.genres} />
 
-      {event.address && (
-        <p className="text-sm text-foreground">{event.address}</p>
-      )}
+      {event.address && <p className="text-sm text-foreground">{event.address}</p>}
     </div>
   );
 }

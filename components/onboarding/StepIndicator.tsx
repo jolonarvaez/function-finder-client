@@ -19,7 +19,7 @@ export function StepIndicator({
           key={i}
           className={cn(
             "h-1 rounded-full transition-opacity",
-            i < currentStep ? "w-6 bg-primary" : "w-3 bg-muted-foreground/30",
+            i < currentStep ? "w-6 bg-primary" : "w-3 bg-muted-foreground/30"
           )}
         />
       ))}

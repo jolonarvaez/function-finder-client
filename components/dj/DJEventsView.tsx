@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDownIcon, CalendarDaysIcon } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "./EventCard";
 import { EditEventDrawer } from "./EditEventDrawer";
@@ -19,9 +15,7 @@ export type { DJEvent };
 
 function SectionLabel({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-      {children}
-    </p>
+    <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">{children}</p>
   );
 }
 
@@ -32,7 +26,6 @@ export function DJEventsView() {
 
   useEffect(() => {
     if (!profile) return;
-    setLoading(true);
     getUserEvents(profile.id)
       .then(setEvents)
       .finally(() => setLoading(false));
@@ -41,9 +34,7 @@ export function DJEventsView() {
 
   const handleSave = (updated: Partial<DJEvent>) => {
     if (!editingEvent) return;
-    setEvents((prev) =>
-      prev.map((e) => (e.id === editingEvent.id ? { ...e, ...updated } : e)),
-    );
+    setEvents((prev) => prev.map((e) => (e.id === editingEvent.id ? { ...e, ...updated } : e)));
     setEditingEvent(null);
   };
 
@@ -51,9 +42,7 @@ export function DJEventsView() {
   const upcomingEvents = events
     .filter((e) => getStatus(e) === "upcoming")
     .sort((a, b) =>
-      a.date === b.date
-        ? a.startTime.localeCompare(b.startTime)
-        : a.date.localeCompare(b.date),
+      a.date === b.date ? a.startTime.localeCompare(b.startTime) : a.date.localeCompare(b.date)
     );
   const pastEvents = events
     .filter((e) => getStatus(e) === "past")
@@ -94,9 +83,7 @@ export function DJEventsView() {
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2 space-y-3">
               {upcomingEvents.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No upcoming events.
-                </p>
+                <p className="text-sm text-muted-foreground">No upcoming events.</p>
               ) : (
                 upcomingEvents.map((e) => (
                   <EventCard
@@ -122,9 +109,7 @@ export function DJEventsView() {
               {pastEvents.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No past events.</p>
               ) : (
-                pastEvents.map((e) => (
-                  <EventCard key={e.id} event={e} status="past" />
-                ))
+                pastEvents.map((e) => <EventCard key={e.id} event={e} status="past" />)
               )}
             </CollapsibleContent>
           </Collapsible>

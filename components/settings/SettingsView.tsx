@@ -96,9 +96,7 @@ function SettingsRow({
     <div className="flex items-center justify-between gap-4 py12">
       <div className="min-w-0">
         <p className="text-sm font-medium text-foreground">{label}</p>
-        {description && (
-          <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground mt-0.5">{description}</p>}
       </div>
       {children && <div className="shrink-0">{children}</div>}
     </div>
@@ -127,16 +125,18 @@ export function SettingsView() {
   // Social links state
   const [socials, setSocials] = useState<SocialEntry[]>(() => {
     const links = profile?.socmed_links ?? {};
-    const entries = (Object.entries(links) as [SocialPlatform, string][])
-      .filter(([p]) => p === "twitter" || p === "instagram");
+    const entries = (Object.entries(links) as [SocialPlatform, string][]).filter(
+      ([p]) => p === "twitter" || p === "instagram"
+    );
     return entries.length > 0 ? entries.map(([platform, value]) => ({ platform, value })) : [];
   });
   const [socialsSaving, setSocialsSaving] = useState(false);
 
   useEffect(() => {
     const links = profile?.socmed_links ?? {};
-    const entries = (Object.entries(links) as [SocialPlatform, string][])
-      .filter(([p]) => p === "twitter" || p === "instagram");
+    const entries = (Object.entries(links) as [SocialPlatform, string][]).filter(
+      ([p]) => p === "twitter" || p === "instagram"
+    );
     setSocials(entries.length > 0 ? entries.map(([platform, value]) => ({ platform, value })) : []);
   }, [profile?.socmed_links]);
   // Preferences state
@@ -189,9 +189,7 @@ export function SettingsView() {
     setSocialsSaving(true);
     try {
       const socmed_links = Object.fromEntries(
-        socials
-          .filter((s) => s.platform && s.value.trim())
-          .map((s) => [s.platform, s.value.trim()])
+        socials.filter((s) => s.platform && s.value.trim()).map((s) => [s.platform, s.value.trim()])
       );
       await updateUser(profile.id, {
         profile_type: profile.profile_type!,
@@ -238,7 +236,6 @@ export function SettingsView() {
   return (
     <PageContainer>
       <div className="flex flex-col gap-10">
-
         {/* ── Account ─────────────────────────────────────── */}
         <section aria-labelledby="account-heading" className="flex flex-col gap-4">
           <div>
@@ -255,12 +252,8 @@ export function SettingsView() {
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              {name && (
-                <p className="truncate text-sm font-semibold text-foreground">{name}</p>
-              )}
-              {email && (
-                <p className="truncate text-sm text-muted-foreground">{email}</p>
-              )}
+              {name && <p className="truncate text-sm font-semibold text-foreground">{name}</p>}
+              {email && <p className="truncate text-sm text-muted-foreground">{email}</p>}
             </div>
           </div>
 
@@ -281,17 +274,35 @@ export function SettingsView() {
                 }}
               />
               <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" className="rounded-lg" onClick={() => setEditingName(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg"
+                  onClick={() => setEditingName(false)}
+                >
                   Cancel
                 </Button>
-                <Button size="sm" className="rounded-lg" onClick={handleSaveName} disabled={nameSaving || !nameValue.trim()}>
+                <Button
+                  size="sm"
+                  className="rounded-lg"
+                  onClick={handleSaveName}
+                  disabled={nameSaving || !nameValue.trim()}
+                >
                   {nameSaving ? "Saving…" : "Save"}
                 </Button>
               </div>
             </div>
           ) : (
             <SettingsRow label="Display Name" description={name ?? "Not set"}>
-              <Button variant="outline" size="sm" className="rounded-lg" onClick={() => { setNameValue(name ?? ""); setEditingName(true); }}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg"
+                onClick={() => {
+                  setNameValue(name ?? "");
+                  setEditingName(true);
+                }}
+              >
                 <UserIcon className="size-3.5" />
                 Edit
               </Button>
@@ -331,7 +342,11 @@ export function SettingsView() {
                 <SelectContent>
                   {COUNTRIES.map((c) => (
                     <SelectItem key={c} value={c}>
-                      <ReactCountryFlag countryCode={COUNTRY_ISO[c]} svg style={{ width: "1.2em", height: "1.2em" }} />
+                      <ReactCountryFlag
+                        countryCode={COUNTRY_ISO[c]}
+                        svg
+                        style={{ width: "1.2em", height: "1.2em" }}
+                      />
                       {c}
                     </SelectItem>
                   ))}
@@ -340,7 +355,12 @@ export function SettingsView() {
             </div>
 
             <div className="flex justify-end">
-              <Button size="sm" onClick={handleSaveProfile} disabled={profileSaving} className="rounded-lg">
+              <Button
+                size="sm"
+                onClick={handleSaveProfile}
+                disabled={profileSaving}
+                className="rounded-lg"
+              >
                 {profileSaving ? "Saving…" : "Save Profile"}
               </Button>
             </div>
@@ -352,7 +372,9 @@ export function SettingsView() {
           <div className="flex flex-col gap-4">
             <div>
               <p className="text-sm font-medium text-foreground">Social Links</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Connect your social media profiles</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Connect your social media profiles
+              </p>
             </div>
 
             {socials.length > 0 && (
@@ -374,7 +396,11 @@ export function SettingsView() {
                         </SelectTrigger>
                         <SelectContent>
                           {SOCIAL_PLATFORMS.map((p) => (
-                            <SelectItem key={p.value} value={p.value} disabled={usedPlatforms.includes(p.value)}>
+                            <SelectItem
+                              key={p.value}
+                              value={p.value}
+                              disabled={usedPlatforms.includes(p.value)}
+                            >
                               {p.label}
                             </SelectItem>
                           ))}
@@ -417,7 +443,12 @@ export function SettingsView() {
                 Add link
               </Button>
               {socials.length > 0 && (
-                <Button size="sm" className="rounded-lg" onClick={handleSaveSocials} disabled={socialsSaving}>
+                <Button
+                  size="sm"
+                  className="rounded-lg"
+                  onClick={handleSaveSocials}
+                  disabled={socialsSaving}
+                >
                   {socialsSaving ? "Saving…" : "Save Links"}
                 </Button>
               )}
@@ -435,11 +466,18 @@ export function SettingsView() {
           <div className="flex flex-col gap-3">
             <div>
               <p className="text-sm font-medium text-foreground">Genre Preferences</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Used to personalise your map feed</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Used to personalise your map feed
+              </p>
             </div>
             <GenreSelector selected={genres} onChange={setGenres} variant="wrap" />
             <div className="flex justify-end">
-              <Button size="sm" onClick={handleSaveGenres} disabled={genresSaving} className="rounded-lg">
+              <Button
+                size="sm"
+                onClick={handleSaveGenres}
+                disabled={genresSaving}
+                className="rounded-lg"
+              >
                 {genresSaving ? "Saving…" : "Save Genres"}
               </Button>
             </div>
@@ -471,7 +509,7 @@ export function SettingsView() {
                     "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors",
                     theme === value
                       ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
                   )}
                 >
                   <Icon className="size-3.5" />
@@ -515,7 +553,10 @@ export function SettingsView() {
           </SettingsRow>
           <Separator />
           <SettingsRow label="Send Feedback">
-            <a href="mailto:feedback@functionfinder.app" className="flex items-center gap-1 text-sm text-primary hover:underline">
+            <a
+              href="mailto:feedback@functionfinder.app"
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
               Email us <ExternalLinkIcon className="size-3.5" />
             </a>
           </SettingsRow>
@@ -529,32 +570,49 @@ export function SettingsView() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <Button variant="outline" onClick={handleSignOut} className="h-10 w-full rounded-lg text-sm">
+            <Button
+              variant="outline"
+              onClick={handleSignOut}
+              className="h-10 w-full rounded-lg text-sm"
+            >
               <LogOutIcon className="size-4" />
               Sign Out
             </Button>
 
             {confirmDelete ? (
               <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 flex flex-col gap-3">
-                <p className="text-sm font-medium text-destructive">Are you sure? This cannot be undone.</p>
+                <p className="text-sm font-medium text-destructive">
+                  Are you sure? This cannot be undone.
+                </p>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setConfirmDelete(false)} className="h-9 flex-1 rounded-lg text-sm">
+                  <Button
+                    variant="outline"
+                    onClick={() => setConfirmDelete(false)}
+                    className="h-9 flex-1 rounded-lg text-sm"
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={handleDeleteAccount} disabled={deleting} className="h-9 flex-1 rounded-lg bg-destructive text-sm text-destructive-foreground hover:bg-destructive/90">
+                  <Button
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                    className="h-9 flex-1 rounded-lg bg-destructive text-sm text-destructive-foreground hover:bg-destructive/90"
+                  >
                     {deleting ? "Deleting…" : "Yes, delete"}
                   </Button>
                 </div>
               </div>
             ) : (
-              <Button variant="ghost" onClick={handleDeleteAccount} className="h-10 w-full rounded-lg text-sm text-destructive hover:bg-destructive/10 hover:text-destructive">
+              <Button
+                variant="ghost"
+                onClick={handleDeleteAccount}
+                className="h-10 w-full rounded-lg text-sm text-destructive hover:bg-destructive/10 hover:text-destructive"
+              >
                 <Trash2Icon className="size-4" />
                 Delete Account
               </Button>
             )}
           </div>
         </section>
-
       </div>
     </PageContainer>
   );

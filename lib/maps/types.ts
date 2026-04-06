@@ -16,4 +16,3 @@ export interface MapViewState {
   pitch?: number;
   bearing?: number;
 }
-

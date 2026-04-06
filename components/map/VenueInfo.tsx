@@ -1,24 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetFooter,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/Persona";
-import {
-  HeartIcon,
-  XIcon,
-  MapPinIcon,
-  MusicIcon,
-  ClockIcon,
-  CalendarIcon,
-} from "lucide-react";
+import { HeartIcon, XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { Genre } from "@/lib/constants";
 
@@ -79,8 +65,7 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
             <div className="absolute top-3 left-3">
               {live && (
                 <Badge className="bg-primary text-white">
-                  <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />
-                  {" "}
+                  <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />{" "}
                   Live Now
                 </Badge>
               )}
@@ -106,8 +91,7 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
             <div className="flex items-center gap-2">
               {live && (
                 <Badge className="bg-primary text-white">
-                  <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />
-                  {" "}
+                  <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />{" "}
                   Live Now
                 </Badge>
               )}
@@ -170,7 +154,13 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
               </p>
             </div>
           )}
-          <div className={event.date ? "rounded-xl border border-border bg-card p-3" : "col-span-2 rounded-xl border border-border bg-card p-3"}>
+          <div
+            className={
+              event.date
+                ? "rounded-xl border border-border bg-card p-3"
+                : "col-span-2 rounded-xl border border-border bg-card p-3"
+            }
+          >
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <ClockIcon className="size-3.5" />
               Hours

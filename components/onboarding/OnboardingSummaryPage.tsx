@@ -16,16 +16,22 @@ export type OnboardingSummaryPageProps = Readonly<{
   submitting?: boolean;
 }>;
 
-export function OnboardingSummaryPage({ role, genres, onBack, onEditRole, onEditGenres, onFinish, submitting }: OnboardingSummaryPageProps) {
+export function OnboardingSummaryPage({
+  role,
+  genres,
+  onBack,
+  onEditRole,
+  onEditGenres,
+  onFinish,
+  submitting,
+}: OnboardingSummaryPageProps) {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
       <StepIndicator currentStep={3} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          You&apos;re all set!
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">You&apos;re all set!</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Here&apos;s a summary of your profile before we get started.
         </p>
@@ -35,7 +41,9 @@ export function OnboardingSummaryPage({ role, genres, onBack, onEditRole, onEdit
       <div className="space-y-6 rounded-2xl border border-border bg-card p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Role</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Role
+            </p>
             <p className="text-base font-semibold text-foreground">{ROLE_LABELS[role]}</p>
           </div>
           <button

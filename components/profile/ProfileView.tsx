@@ -39,28 +39,24 @@ export function ProfileView() {
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              {name && (
-                <p className="truncate text-base font-semibold text-foreground">{name}</p>
-              )}
-              {email && (
-                <p className="truncate text-sm text-muted-foreground">{email}</p>
-              )}
+              {name && <p className="truncate text-base font-semibold text-foreground">{name}</p>}
+              {email && <p className="truncate text-sm text-muted-foreground">{email}</p>}
               {country && (
                 <p className="flex items-center gap-1.5 truncate text-sm text-muted-foreground">
                   {COUNTRY_ISO[country] && (
-                    <ReactCountryFlag countryCode={COUNTRY_ISO[country]} svg style={{ width: "1.2em", height: "1.2em" }} />
+                    <ReactCountryFlag
+                      countryCode={COUNTRY_ISO[country]}
+                      svg
+                      style={{ width: "1.2em", height: "1.2em" }}
+                    />
                   )}
                   {country}
                 </p>
               )}
             </div>
           </div>
-          {bio && (
-            <p className="text-sm text-foreground leading-relaxed">{bio}</p>
-          )}
-          {profile?.socmed_links && (
-            <SocialLinks links={profile.socmed_links} />
-          )}
+          {bio && <p className="text-sm text-foreground leading-relaxed">{bio}</p>}
+          {profile?.socmed_links && <SocialLinks links={profile.socmed_links} />}
         </div>
 
         <div className="h-px bg-border" />
@@ -71,9 +67,7 @@ export function ProfileView() {
             <h2 id="genres-heading" className="text-base font-semibold text-foreground">
               Preferred Genres
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Used to personalise your map feed.
-            </p>
+            <p className="text-sm text-muted-foreground">Used to personalise your map feed.</p>
           </div>
           {genres.length > 0 ? (
             <div className="flex flex-wrap gap-2">
@@ -84,9 +78,7 @@ export function ProfileView() {
           ) : (
             <p className="text-sm text-muted-foreground">No genres selected.</p>
           )}
-          <p className="text-xs text-muted-foreground">
-            To change your genres, go to Settings.
-          </p>
+          <p className="text-xs text-muted-foreground">To change your genres, go to Settings.</p>
         </section>
 
         <div className="h-px bg-border" />

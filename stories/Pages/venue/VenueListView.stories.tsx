@@ -17,7 +17,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "2AM",
       featured: false,
       attending: 54,
-      dj: { name: "Smooth Mike", avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM", genre: "Soul" },
+      dj: {
+        name: "Smooth Mike",
+        avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
+        genre: "Soul",
+      },
     },
   },
   {
@@ -35,7 +39,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 10,
       featured: false,
       attending: 145,
-      dj: { name: "DJ Fuego", avatar: "https://placehold.co/80x80/ef4444/fff?text=DF", genre: "Latin" },
+      dj: {
+        name: "DJ Fuego",
+        avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
+        genre: "Latin",
+      },
     },
   },
 
@@ -55,7 +63,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "3AM",
       featured: false,
       attending: 132,
-      dj: { name: "DJ Phonix", avatar: "https://placehold.co/80x80/ea580c/fff?text=DP", genre: ["Hip-Hop", "R&B"] },
+      dj: {
+        name: "DJ Phonix",
+        avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
+        genre: ["Hip-Hop", "R&B"],
+      },
     },
   },
   {
@@ -73,7 +85,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 12,
       featured: false,
       attending: 165,
-      dj: { name: "Kwame", avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW", genre: "Afrobeats" },
+      dj: {
+        name: "Kwame",
+        avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
+        genre: "Afrobeats",
+      },
     },
   },
 
@@ -92,7 +108,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "3AM",
       featured: false,
       attending: 89,
-      dj: { name: "Mara Santos", avatar: "https://placehold.co/80x80/9333ea/fff?text=MS", genre: "Techno" },
+      dj: {
+        name: "Mara Santos",
+        avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
+        genre: "Techno",
+      },
     },
   },
   {
@@ -131,7 +151,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 15,
       featured: true,
       attending: 247,
-      dj: { name: "DJ Nexus", avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN", genre: ["House", "Techno", "Disco"] },
+      dj: {
+        name: "DJ Nexus",
+        avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
+        genre: ["House", "Techno", "Disco"],
+      },
     },
   },
   {
@@ -150,7 +174,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 10,
       featured: true,
       attending: 178,
-      dj: { name: "PRISM", avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR", genre: "Drum & Bass" },
+      dj: {
+        name: "PRISM",
+        avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
+        genre: "Drum & Bass",
+      },
     },
   },
 
@@ -171,7 +199,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 20,
       featured: true,
       attending: 312,
-      dj: { name: "DJ Caliente", avatar: "https://placehold.co/80x80/dc2626/fff?text=DC", genre: ["Reggaeton", "Latin", "Dancehall"] },
+      dj: {
+        name: "DJ Caliente",
+        avatar: "https://placehold.co/80x80/dc2626/fff?text=DC",
+        genre: ["Reggaeton", "Latin", "Dancehall"],
+      },
     },
   },
   {
@@ -208,7 +240,11 @@ const MOCK_VENUES: MapVenue[] = [
       endTime: "1AM",
       featured: false,
       attending: 74,
-      dj: { name: "Selecta Jay", avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ", genre: "Dancehall" },
+      dj: {
+        name: "Selecta Jay",
+        avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
+        genre: "Dancehall",
+      },
     },
   },
 
@@ -229,7 +265,11 @@ const MOCK_VENUES: MapVenue[] = [
       entryPrice: 15,
       featured: true,
       attending: 203,
-      dj: { name: "Groove Master G", avatar: "https://placehold.co/80x80/d97706/fff?text=GM", genre: ["Disco", "Soul", "House"] },
+      dj: {
+        name: "Groove Master G",
+        avatar: "https://placehold.co/80x80/d97706/fff?text=GM",
+        genre: ["Disco", "Soul", "House"],
+      },
     },
   },
 ];

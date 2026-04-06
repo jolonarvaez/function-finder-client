@@ -14,20 +14,19 @@
  * NEXT_PUBLIC_STADIA_API_KEY=your_api_key_here
  */
 
-const STADIA_BASE_URL = 'https://tiles.stadiamaps.com/styles';
+const STADIA_BASE_URL = "https://tiles.stadiamaps.com/styles";
 
 // Fallback to MapLibre demo tiles when no API key is present
-const DEMO_STYLE_URL =
-  'https://demotiles.maplibre.org/style.json';
+const DEMO_STYLE_URL = "https://demotiles.maplibre.org/style.json";
 
 export type StadiaStyleId =
-  | 'alidade_smooth'
-  | 'alidade_smooth_dark'
-  | 'outdoors'
-  | 'osm_bright'
-  | 'stamen_toner'
-  | 'stamen_terrain'
-  | 'stamen_watercolor';
+  | "alidade_smooth"
+  | "alidade_smooth_dark"
+  | "outdoors"
+  | "osm_bright"
+  | "stamen_toner"
+  | "stamen_terrain"
+  | "stamen_watercolor";
 
 /**
  * Generate a Stadia Maps style URL with API key authentication
@@ -37,16 +36,16 @@ export type StadiaStyleId =
  * @returns The full style URL with api_key query parameter
  */
 export function getStadiaStyleUrl(
-  styleId: StadiaStyleId = 'alidade_smooth',
+  styleId: StadiaStyleId = "alidade_smooth",
   apiKey?: string
 ): string {
   const key = apiKey ?? process.env.NEXT_PUBLIC_STADIA_API_KEY;
 
   if (!key) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.warn(
-        '[Stadia Maps] No API key found. Set NEXT_PUBLIC_STADIA_API_KEY in .env.local\n' +
-          'Falling back to MapLibre demo tiles (limited functionality).'
+        "[Stadia Maps] No API key found. Set NEXT_PUBLIC_STADIA_API_KEY in .env.local\n" +
+          "Falling back to MapLibre demo tiles (limited functionality)."
       );
     }
     return DEMO_STYLE_URL;
@@ -59,6 +58,5 @@ export function getStadiaStyleUrl(
  * Get the default Stadia style URL using environment variable
  */
 export function getDefaultStadiaStyleUrl(): string {
-  return getStadiaStyleUrl('alidade_smooth');
+  return getStadiaStyleUrl("alidade_smooth");
 }
-

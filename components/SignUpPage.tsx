@@ -68,17 +68,16 @@ export function SignUpPage() {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Create Account
-        </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          Join the nightlife community
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Create Account</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">Join the nightlife community</p>
       </div>
 
       <form onSubmit={signUpWithEmail} className="mb-6 space-y-4">
         {error && (
-          <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
             {error}
           </p>
         )}
@@ -141,11 +140,7 @@ export function SignUpPage() {
               onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none active:opacity-70"
             >
-              {showPassword ? (
-                <EyeOffIcon className="size-4" />
-              ) : (
-                <EyeIcon className="size-4" />
-              )}
+              {showPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
             </button>
           </div>
         </div>
@@ -190,9 +185,7 @@ export function SignUpPage() {
       </div>
 
       <div className="mb-6 text-center">
-        <span className="text-sm text-muted-foreground">
-          Already have an account?{" "}
-        </span>
+        <span className="text-sm text-muted-foreground">Already have an account? </span>
         <Link
           href="/login"
           className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
@@ -203,17 +196,11 @@ export function SignUpPage() {
 
       <p className="text-center text-xs text-muted-foreground">
         By continuing, you agree to Nyte&apos;s{" "}
-        <button
-          type="button"
-          className="text-primary hover:underline focus-visible:outline-none"
-        >
+        <button type="button" className="text-primary hover:underline focus-visible:outline-none">
           Terms of Service
         </button>{" "}
         and{" "}
-        <button
-          type="button"
-          className="text-primary hover:underline focus-visible:outline-none"
-        >
+        <button type="button" className="text-primary hover:underline focus-visible:outline-none">
           Privacy Policy
         </button>
       </p>

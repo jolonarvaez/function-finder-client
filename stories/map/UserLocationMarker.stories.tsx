@@ -27,7 +27,10 @@ const meta: Meta = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background" style={{ height: "600px" }}>
+      <div
+        className="mx-auto w-full max-w-107.5 overflow-hidden bg-background"
+        style={{ height: "600px" }}
+      >
         <Story />
       </div>
     ),

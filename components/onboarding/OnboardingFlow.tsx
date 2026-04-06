@@ -13,15 +13,16 @@ export type OnboardingFlowProps = Readonly<{
 }>;
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const { step, role, genres, setStep, setRole, setGenres } =
-    useOnboardingStore();
+  const { step, role, genres, setStep, setRole, setGenres } = useOnboardingStore();
   const [submitting, setSubmitting] = useState(false);
 
   async function handleFinish() {
     if (!role) return;
     setSubmitting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) return;
       await updateUser(session.user.id, { profile_type: role, genre_tags: genres });
       onComplete?.();

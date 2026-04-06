@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useCallback, useMemo, useState } from 'react';
-import Map, { Marker, NavigationControl, AttributionControl } from 'react-map-gl/maplibre';
-import type { MapLayerMouseEvent, MarkerDragEvent } from 'react-map-gl/maplibre';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { useCallback, useMemo, useState } from "react";
+import Map, { Marker, NavigationControl, AttributionControl } from "react-map-gl/maplibre";
+import type { MapLayerMouseEvent, MarkerDragEvent } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 
-import { getStadiaStyleUrl, type StadiaStyleId } from '@/lib/maps/stadia';
-import type { Waypoint, MapViewState } from '@/lib/maps/types';
+import { getStadiaStyleUrl, type StadiaStyleId } from "@/lib/maps/stadia";
+import type { Waypoint, MapViewState } from "@/lib/maps/types";
 
 interface StadiaMapProps {
   /** Stadia Maps style ID */
@@ -33,10 +33,10 @@ const DEFAULT_VIEW_STATE: MapViewState = {
 };
 
 export default function StadiaMap({
-  styleId = 'alidade_smooth',
+  styleId = "alidade_smooth",
   initialViewState,
-  height = '100%',
-  width = '100%',
+  height = "100%",
+  width = "100%",
   initialWaypoints = [],
   onWaypointsChange,
   draggableMarkers = true,
@@ -108,13 +108,13 @@ export default function StadiaMap({
   }, [onWaypointsChange]);
 
   return (
-    <div className="stadia-map-container" style={{ position: 'relative', width, height }}>
+    <div className="stadia-map-container" style={{ position: "relative", width, height }}>
       <Map
         initialViewState={viewState}
         mapStyle={mapStyle}
         onClick={handleMapClick}
         attributionControl={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="top-right" />
         <AttributionControl
@@ -137,12 +137,12 @@ export default function StadiaMap({
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: '50% 50% 50% 0',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                transform: 'rotate(-45deg)',
-                border: '3px solid white',
-                boxShadow: '0 3px 10px rgba(0,0,0,0.3)',
-                cursor: draggableMarkers ? 'grab' : 'pointer',
+                borderRadius: "50% 50% 50% 0",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                transform: "rotate(-45deg)",
+                border: "3px solid white",
+                boxShadow: "0 3px 10px rgba(0,0,0,0.3)",
+                cursor: draggableMarkers ? "grab" : "pointer",
               }}
             />
           </Marker>
@@ -153,45 +153,45 @@ export default function StadiaMap({
       <div
         className="waypoints-panel"
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 12,
           left: 12,
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(8px)',
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(8px)",
           borderRadius: 12,
           padding: 16,
           minWidth: 260,
           maxWidth: 320,
-          maxHeight: 'calc(100% - 24px)',
-          overflowY: 'auto',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          maxHeight: "calc(100% - 24px)",
+          overflowY: "auto",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+          fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             marginBottom: 12,
             paddingBottom: 12,
-            borderBottom: '1px solid #eee',
+            borderBottom: "1px solid #eee",
           }}
         >
-          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#333' }}>
+          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#333" }}>
             📍 Waypoints ({waypoints.length})
           </h3>
           {waypoints.length > 0 && (
             <button
               onClick={handleClearAll}
               style={{
-                background: '#ff4757',
-                color: 'white',
-                border: 'none',
+                background: "#ff4757",
+                color: "white",
+                border: "none",
                 borderRadius: 6,
-                padding: '4px 10px',
+                padding: "4px 10px",
                 fontSize: 12,
-                cursor: 'pointer',
+                cursor: "pointer",
                 fontWeight: 500,
               }}
             >
@@ -201,21 +201,21 @@ export default function StadiaMap({
         </div>
 
         {waypoints.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: 13, color: "#666", lineHeight: 1.5 }}>
             Click anywhere on the map to add waypoints.
-            {draggableMarkers && ' Drag markers to reposition them.'}
+            {draggableMarkers && " Drag markers to reposition them."}
           </p>
         ) : (
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {waypoints.map((waypoint, index) => (
               <li
                 key={waypoint.id}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '8px 0',
-                  borderBottom: index < waypoints.length - 1 ? '1px solid #f0f0f0' : 'none',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                  borderBottom: index < waypoints.length - 1 ? "1px solid #f0f0f0" : "none",
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -223,7 +223,7 @@ export default function StadiaMap({
                     style={{
                       fontSize: 13,
                       fontWeight: 500,
-                      color: '#333',
+                      color: "#333",
                       marginBottom: 2,
                     }}
                   >
@@ -232,8 +232,8 @@ export default function StadiaMap({
                   <div
                     style={{
                       fontSize: 11,
-                      color: '#888',
-                      fontFamily: 'ui-monospace, monospace',
+                      color: "#888",
+                      fontFamily: "ui-monospace, monospace",
                     }}
                   >
                     {waypoint.lat.toFixed(5)}, {waypoint.lng.toFixed(5)}
@@ -242,18 +242,18 @@ export default function StadiaMap({
                 <button
                   onClick={() => handleRemoveWaypoint(waypoint.id)}
                   style={{
-                    background: 'transparent',
-                    border: 'none',
-                    color: '#999',
-                    cursor: 'pointer',
+                    background: "transparent",
+                    border: "none",
+                    color: "#999",
+                    cursor: "pointer",
                     padding: 4,
                     fontSize: 18,
                     lineHeight: 1,
                     borderRadius: 4,
-                    transition: 'color 0.15s',
+                    transition: "color 0.15s",
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.color = '#ff4757')}
-                  onMouseOut={(e) => (e.currentTarget.style.color = '#999')}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#ff4757")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#999")}
                   aria-label={`Remove ${waypoint.label}`}
                 >
                   ×
@@ -266,4 +266,3 @@ export default function StadiaMap({
     </div>
   );
 }
-

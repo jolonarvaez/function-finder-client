@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { UserIcon, SettingsIcon, LogOutIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 
 function getInitials(name?: string): string {
@@ -55,24 +51,14 @@ export function ProfileFooter({
           className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
           <Avatar className="size-8 shrink-0">
-            {avatarUrl && (
-              <AvatarImage src={avatarUrl} alt={name ?? "User avatar"} />
-            )}
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "User avatar"} />}
             <AvatarFallback className="text-xs">
               {initials || <UserIcon className="size-4" />}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            {name && (
-              <p className="truncate text-sm font-medium text-sidebar-foreground">
-                {name}
-              </p>
-            )}
-            {email && (
-              <p className="truncate text-xs text-sidebar-foreground/60">
-                {email}
-              </p>
-            )}
+            {name && <p className="truncate text-sm font-medium text-sidebar-foreground">{name}</p>}
+            {email && <p className="truncate text-xs text-sidebar-foreground/60">{email}</p>}
           </div>
         </button>
       </PopoverTrigger>
@@ -87,16 +73,8 @@ export function ProfileFooter({
         {(name || email) && (
           <>
             <div className="px-2 pt-2 pb-1">
-              {name && (
-                <p className="truncate text-sm font-medium text-foreground">
-                  {name}
-                </p>
-              )}
-              {email && (
-                <p className="truncate text-xs text-muted-foreground">
-                  {email}
-                </p>
-              )}
+              {name && <p className="truncate text-sm font-medium text-foreground">{name}</p>}
+              {email && <p className="truncate text-xs text-muted-foreground">{email}</p>}
             </div>
             <Separator />
           </>

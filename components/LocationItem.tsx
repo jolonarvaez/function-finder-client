@@ -40,12 +40,7 @@ export function LocationItem({
           {/* Thumbnail */}
           {imageSrc && (
             <div className="relative size-24 shrink-0 overflow-hidden rounded-lg bg-muted">
-              <Image
-                src={imageSrc}
-                alt={name}
-                fill
-                className="object-cover"
-              />
+              <Image src={imageSrc} alt={name} fill className="object-cover" />
               {isLive && (
                 <div className="absolute top-1.5 left-1.5">
                   <Badge variant="default" className="h-auto px-2.5 py-0.5 text-xs">
@@ -59,19 +54,11 @@ export function LocationItem({
           {/* Info */}
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div className="flex items-start justify-between gap-2">
-              <span className="text-base font-semibold leading-tight">
-                {name}
-              </span>
-              <span className="shrink-0 text-sm text-muted-foreground">
-                {distance}
-              </span>
+              <span className="text-base font-semibold leading-tight">{name}</span>
+              <span className="shrink-0 text-sm text-muted-foreground">{distance}</span>
             </div>
 
-            {dj && (
-              <span className="text-sm text-primary">
-                {dj}
-              </span>
-            )}
+            {dj && <span className="text-sm text-primary">{dj}</span>}
 
             <span className="flex items-center gap-1 text-sm text-muted-foreground">
               <MapPinIcon className="size-3 shrink-0" />
@@ -85,7 +72,6 @@ export function LocationItem({
                 </Badge>
               ))}
             </div>
-
           </div>
         </div>
 

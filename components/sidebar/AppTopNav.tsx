@@ -18,9 +18,7 @@ export function AppTopNav() {
     <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-3">
       <div className="flex items-center gap-2">
         <SidebarTrigger />
-        <span className="text-xl font-bold tracking-tight text-foreground">
-          Function Finder
-        </span>
+        <span className="text-xl font-bold tracking-tight text-foreground">Function Finder</span>
       </div>
 
       <div className="flex items-center gap-1 rounded-lg border border-border p-1">

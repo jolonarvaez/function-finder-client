@@ -64,11 +64,21 @@ stories/                # Storybook stories
 - **Zustand** for shared state — store alongside the feature (e.g., `components/onboarding/use-onboarding-store.ts`)
 - `next-themes` for theme state
 
+## Verification
+
+After every code change, run both commands and resolve all issues before considering the task done:
+
+```bash
+npm run format   # Prettier — auto-formats all source files
+npm run lint     # ESLint — fix all errors and warnings
+```
+
 ## Key Patterns
 
 **Adding a shadcn component**: `npx shadcn@latest add <component>`
 
 **Using the cn utility**:
+
 ```ts
 import { cn } from "@/lib/utils"
 className={cn("base-classes", condition && "conditional-class", className)}
@@ -83,19 +93,23 @@ className={cn("base-classes", condition && "conditional-class", className)}
 # Frontend Website Rules
 
 ## Always Do First
+
 - **Invoke the `frontend-design` skill** before writing any frontend code, every session, no exceptions.
 
 ## Reference Images
+
 - If a reference image is provided: match layout, spacing, typography, and color exactly. Swap in placeholder content (images via `https://placehold.co/`, generic copy). Do not improve or add to the design.
 - If no reference image: design from scratch with high craft (see guardrails below).
 - Screenshot your output, compare against reference, fix mismatches, re-screenshot. Do at least 2 comparison rounds. Stop only when no visible differences remain or user says so.
 
 ## Brand Assets
+
 - Always check the `brand_assets/` folder before designing. It may contain logos, color guides, style guides, or images.
 - If assets exist there, use them. Do not use placeholders where real assets are available.
 - If a logo is present, use it. If a color palette is defined, use those exact values — do not invent brand colors.
 
 ## Anti-Generic Guardrails
+
 - **Colors:** Never use default Tailwind palette (indigo-500, blue-600, etc.). Pick a custom brand color and derive from it.
 - **Shadows:** Never use flat `shadow-md`. Use layered, color-tinted shadows with low opacity.
 - **Typography:** Never use the same font for headings and body. Pair a display/serif with a clean sans. Apply tight tracking (`-0.03em`) on large headings, generous line-height (`1.7`) on body.
@@ -107,6 +121,7 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - **Depth:** Surfaces should have a layering system (base → elevated → floating), not all sit at the same z-plane.
 
 ## Components & Styling
+
 - **Use shadcn/ui components** from `components/ui/` before building anything custom. Check what's available there first.
 - **Rely on `globals.css`** for all colors, spacing tokens, and theme variables — do not hardcode hex values or invent new CSS variables.
 - **Dark mode**: use the CSS variables defined in `globals.css` (e.g. `bg-background`, `text-foreground`, `border`) so components automatically adapt. Never use Tailwind's `dark:` variant to duplicate color values already handled by the theme.
@@ -115,9 +130,11 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - **Mapping raw colors**: if given a hex or `rgb()` value, read `globals.css`, find the closest matching CSS variable by visual similarity, and use that variable instead. Never use the raw value as-is.
 
 ## Storybook — Components
+
 - All component stories must wrap their decorator in `<div className="mx-auto max-w-200 bg-background p-6">` so the preview is never wider than 800px.
 
 ## Storybook — Pages
+
 - All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
 
 ## Accessibility (WCAG AA)
@@ -125,6 +142,7 @@ className={cn("base-classes", condition && "conditional-class", className)}
 Follow WCAG AA. Key rules: semantic HTML, keyboard nav with visible focus indicators, `aria-label` on icon-only buttons, 44×44px touch targets, respect `prefers-reduced-motion`, `aria-live` for dynamic content, never convey info by color alone.
 
 ## Hard Rules
+
 - Do not add sections, features, or content not in the reference
 - Do not "improve" a reference design — match it
 - Do not stop after one screenshot pass

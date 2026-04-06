@@ -22,8 +22,6 @@ export function PublicProfileView({ userId }: PublicProfileViewProps) {
   const [upcomingEvents, setUpcomingEvents] = useState<DJEvent[]>([]);
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
     Promise.all([getUser(userId), getUserEvents(userId)])
       .then(([fetchedProfile, events]) => {
         setProfile(fetchedProfile);
@@ -87,10 +85,7 @@ export function PublicProfileView({ userId }: PublicProfileViewProps) {
       <div className="flex flex-col gap-6">
         <PublicProfileHeader profile={profile} />
         <div className="h-px bg-border" />
-        <PublicUpcomingEvents
-          events={upcomingEvents}
-          displayName={profile.display_name}
-        />
+        <PublicUpcomingEvents events={upcomingEvents} displayName={profile.display_name} />
       </div>
     </PageContainer>
   );

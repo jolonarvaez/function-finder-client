@@ -1,11 +1,6 @@
 "use client";
 import { MapPinIcon, CalendarIcon } from "lucide-react";
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,10 +53,7 @@ export function Persona({
         </div>
 
         <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto">
-          <Button
-            variant="ghost"
-            className="shrink-0 text-muted-foreground"
-          >
+          <Button variant="ghost" className="shrink-0 text-muted-foreground">
             View Profile →
           </Button>
         </Link>

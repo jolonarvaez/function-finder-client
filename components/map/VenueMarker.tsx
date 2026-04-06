@@ -13,7 +13,13 @@ export type VenueMarkerProps = Readonly<{
   onClick?: (e: MouseEvent) => void;
 }>;
 
-export function VenueMarker({ longitude, latitude, live = false, event, onClick }: VenueMarkerProps) {
+export function VenueMarker({
+  longitude,
+  latitude,
+  live = false,
+  event,
+  onClick,
+}: VenueMarkerProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const handleClick = (e: MouseEvent) => {
@@ -39,9 +45,7 @@ export function VenueMarker({ longitude, latitude, live = false, event, onClick 
         </MarkerContent>
       </MapMarker>
 
-      {event && (
-        <VenueInfo event={event} open={sheetOpen} onOpenChange={setSheetOpen} />
-      )}
+      {event && <VenueInfo event={event} open={sheetOpen} onOpenChange={setSheetOpen} />}
     </>
   );
 }

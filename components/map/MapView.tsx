@@ -56,7 +56,6 @@ export function MapView({ defaultDate }: MapViewProps) {
     if (!coords || hasCenteredRef.current) return;
     hasCenteredRef.current = true;
     flyToLocation(coords);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coords]);
 
   const handleLocationToggle = () => {
@@ -106,12 +105,7 @@ export function MapView({ defaultDate }: MapViewProps) {
       </div>
 
       {/* Full-screen map */}
-      <Map
-        ref={mapRef}
-        className="h-full w-full"
-        center={MAKATI_CENTER}
-        zoom={DEFAULT_ZOOM}
-      >
+      <Map ref={mapRef} className="h-full w-full" center={MAKATI_CENTER} zoom={DEFAULT_ZOOM}>
         <MapControls position="bottom-right" showZoom showCompass />
 
         {/* Location toggle */}
@@ -119,15 +113,13 @@ export function MapView({ defaultDate }: MapViewProps) {
           <button
             type="button"
             onClick={handleLocationToggle}
-            aria-label={
-              locationVisible ? "Hide my location" : "Show my location"
-            }
+            aria-label={locationVisible ? "Hide my location" : "Show my location"}
             aria-pressed={locationVisible}
             className={cn(
               "flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors",
               locationVisible && status === "granted"
                 ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
-                : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40",
+                : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40"
             )}
           >
             {locationVisible && !isDenied ? (

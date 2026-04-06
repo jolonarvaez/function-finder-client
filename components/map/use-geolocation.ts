@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type GeolocationStatus =
-  | "idle"
-  | "loading"
-  | "granted"
-  | "denied"
-  | "unavailable";
+export type GeolocationStatus = "idle" | "loading" | "granted" | "denied" | "unavailable";
 
 export type GeolocationState = {
   coords: { lng: number; lat: number } | null;
@@ -47,7 +42,7 @@ export function useGeolocation(): GeolocationState {
         setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "unavailable");
         stop();
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   }, [stop]);
 
@@ -64,7 +59,9 @@ export function useGeolocation(): GeolocationState {
           else if (result.state === "prompt") setStatus("idle");
         });
       })
-      .catch(() => {/* permissions API not supported */});
+      .catch(() => {
+        /* permissions API not supported */
+      });
   }, []);
 
   // Clean up the watcher when the component unmounts

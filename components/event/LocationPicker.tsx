@@ -2,13 +2,7 @@
 
 import { useRef, useState } from "react";
 import { BuildingIcon, Locate, LocateOff, MapPinIcon } from "lucide-react";
-import {
-  Map,
-  MapMarker,
-  MarkerContent,
-  MapControls,
-  type MapRef,
-} from "@/components/ui/map";
+import { Map, MapMarker, MarkerContent, MapControls, type MapRef } from "@/components/ui/map";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
@@ -63,16 +57,13 @@ export function LocationPicker({
       (err) => {
         setLocationStatus(err.code === err.PERMISSION_DENIED ? "denied" : "unavailable");
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   };
 
   return (
     <div className={cn("space-y-3", className)}>
-      <Tabs
-        value={mode}
-        onValueChange={(v) => onModeChange(v as "map" | "venue")}
-      >
+      <Tabs value={mode} onValueChange={(v) => onModeChange(v as "map" | "venue")}>
         <TabsList className="w-full">
           <TabsTrigger value="map" className="flex-1 gap-1.5">
             <MapPinIcon className="size-3.5" />
@@ -110,7 +101,7 @@ export function LocationPicker({
                       locationStatus === "granted"
                         ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
                         : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40",
-                      locationStatus === "loading" && "pointer-events-none opacity-70",
+                      locationStatus === "loading" && "pointer-events-none opacity-70"
                     )}
                   >
                     {locationStatus === "loading" ? (
@@ -146,13 +137,7 @@ export function LocationPicker({
                           d="M18 0C8.059 0 0 8.059 0 18c0 12.6 18 28 18 28s18-15.4 18-28C36 8.059 27.941 0 18 0z"
                           fill="currentColor"
                         />
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="8"
-                          fill="white"
-                          fillOpacity="0.9"
-                        />
+                        <circle cx="18" cy="18" r="8" fill="white" fillOpacity="0.9" />
                       </svg>
                     </div>
                   </MarkerContent>
@@ -162,10 +147,7 @@ export function LocationPicker({
 
             {/* Denied notice */}
             {locationStatus === "denied" && (
-              <p
-                role="alert"
-                className="flex items-center gap-1.5 text-xs text-muted-foreground"
-              >
+              <p role="alert" className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <LocateOff className="size-3.5 shrink-0" />
                 Location access denied. Enable it in your browser settings and try again.
               </p>
@@ -194,10 +176,7 @@ export function LocationPicker({
               {MOCK_VENUES.map((venue) => (
                 <SelectItem key={venue.id} value={venue.id}>
                   <span className="font-medium">{venue.name}</span>
-                  <span className="text-muted-foreground">
-                    {" "}
-                    — {venue.address}
-                  </span>
+                  <span className="text-muted-foreground"> — {venue.address}</span>
                 </SelectItem>
               ))}
             </SelectContent>

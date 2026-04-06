@@ -104,7 +104,6 @@ function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-
 async function getEvents({ date, genres }: GetEventsParams = {}): Promise<MapVenue[]> {
   const params: Record<string, string> = {};
 
@@ -135,7 +134,10 @@ export type UpdateEventBody = {
 };
 
 async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
-  const { data } = await api.post<{ status: number; message: string; data: ApiEvent }>("/events", body);
+  const { data } = await api.post<{ status: number; message: string; data: ApiEvent }>(
+    "/events",
+    body
+  );
   return data.data;
 }
 

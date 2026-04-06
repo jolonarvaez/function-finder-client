@@ -27,7 +27,7 @@ function GenreToggle({ genre, isSelected, onToggle }: GenreToggleProps) {
         variant={isSelected ? "default" : "secondary"}
         className={cn(
           "cursor-pointer px-4 py-1 text-xs transition-opacity h-auto",
-          isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+          isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
         )}
       >
         {genre}
@@ -64,10 +64,7 @@ export function GenreSelector({
         <div className="flex items-center gap-2">
           <span className="text-md font-medium text-foreground">Genres</span>
           <span
-            className={cn(
-              "text-xs text-muted-foreground",
-              selected.length === 0 && "invisible",
-            )}
+            className={cn("text-xs text-muted-foreground", selected.length === 0 && "invisible")}
           >
             {selected.length} selected
           </span>

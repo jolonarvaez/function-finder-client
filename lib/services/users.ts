@@ -58,21 +58,23 @@ async function getUser(id: string): Promise<UserProfile> {
 
 async function getUserEvents(id: string): Promise<DJEvent[]> {
   const { data } = await api.get<ApiUserEventsResponse>(`/users/${id}/events`);
-  return data.data.map((e): DJEvent => ({
-    id: e.id,
-    name: e.name,
-    venue: "",
-    address: e.custom_location?.address ?? "",
-    category: e.category,
-    date: e.date,
-    startTime: e.start_time.slice(0, 5),
-    endTime: e.end_time.slice(0, 5),
-    entryPrice: e.entry_price ?? undefined,
-    genres: e.genres as Genre[],
-    coordinates: e.custom_location
-      ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
-      : undefined,
-  }));
+  return data.data.map(
+    (e): DJEvent => ({
+      id: e.id,
+      name: e.name,
+      venue: "",
+      address: e.custom_location?.address ?? "",
+      category: e.category,
+      date: e.date,
+      startTime: e.start_time.slice(0, 5),
+      endTime: e.end_time.slice(0, 5),
+      entryPrice: e.entry_price ?? undefined,
+      genres: e.genres as Genre[],
+      coordinates: e.custom_location
+        ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
+        : undefined,
+    })
+  );
 }
 
 async function updateUser(id: string, body: UpdateUserBody): Promise<void> {

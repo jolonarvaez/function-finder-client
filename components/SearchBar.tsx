@@ -42,7 +42,7 @@ export function SearchBar({
   // Seed the store with defaultDate (or today) on first mount
   React.useEffect(() => {
     setSelectedDate(defaultDate ?? new Date());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -72,12 +72,7 @@ export function SearchBar({
 
       {filterOpen && (
         <div className="space-y-3 pb-3">
-          {showStatus && (
-            <VenueFilterSelector
-              selected={activeFilter}
-              onChange={setActiveFilter}
-            />
-          )}
+          {showStatus && <VenueFilterSelector selected={activeFilter} onChange={setActiveFilter} />}
 
           {/* Genre */}
           <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
@@ -92,7 +87,7 @@ export function SearchBar({
                     variant="outline"
                     className={cn(
                       "h-9 flex-1 justify-start gap-2 rounded-lg text-sm font-normal",
-                      !selectedDate && "text-muted-foreground",
+                      !selectedDate && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="size-3.5 shrink-0" />

@@ -37,9 +37,7 @@ export function OnboardingRolePage({ onContinue }: OnboardingRolePageProps) {
 
       {/* Heading */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Who are you?
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Who are you?</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           This helps us show you the right content from the start.
         </p>
@@ -58,7 +56,7 @@ export function OnboardingRolePage({ onContinue }: OnboardingRolePageProps) {
                 "h-auto w-full flex-col items-start gap-1 rounded-xl px-5 py-4 whitespace-normal text-left ring-1 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:opacity-80",
                 isSelected
                   ? "bg-primary/10 ring-primary"
-                  : "bg-card ring-foreground/10 hover:ring-foreground/20",
+                  : "bg-card ring-foreground/10 hover:ring-foreground/20"
               )}
             >
               <span className="text-base font-semibold text-foreground">{label}</span>

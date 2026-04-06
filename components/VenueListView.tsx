@@ -82,9 +82,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
       <ScrollArea className="min-h-0 flex-1 px-4 pt-3">
         <div className="flex flex-col gap-3 pb-6">
           {filteredVenues.length === 0 ? (
-            <p className="py-12 text-center text-sm text-muted-foreground">
-              No venues found
-            </p>
+            <p className="py-12 text-center text-sm text-muted-foreground">No venues found</p>
           ) : (
             filteredVenues.map((venue) => (
               <LocationItem

@@ -1,0 +1,6 @@
+.next
+node_modules
+dist
+.storybook
+storybook-static
+public

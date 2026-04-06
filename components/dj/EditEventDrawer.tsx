@@ -29,17 +29,10 @@ import { LocationPicker } from "@/components/event/LocationPicker";
 import { reverseGeocode } from "@/lib/geocode";
 import type { MockVenue } from "@/components/event/mock-venues";
 import { updateEvent } from "@/lib/services/events";
-import {
-  draftFromEvent,
-  draftToPartial,
-  type DJEvent,
-  type EditDraft,
-} from "./dj-event.types";
+import { draftFromEvent, draftToPartial, type DJEvent, type EditDraft } from "./dj-event.types";
 
 function FieldLabel({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <p className="text-sm font-medium text-muted-foreground">{children}</p>
-  );
+  return <p className="text-sm font-medium text-muted-foreground">{children}</p>;
 }
 
 export type EditEventDrawerProps = {
@@ -56,29 +49,24 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
   if (open && draft === null) setDraft(draftFromEvent(event!));
   if (!open && draft !== null) setDraft(null);
 
-  const handleCoordinatesChange = useCallback(
-    (coords: { lng: number; lat: number }) => {
-      setDraft((d) => d && { ...d, coordinates: coords });
-      reverseGeocode(coords.lat, coords.lng).then((result) => {
-        if (result) setDraft((d) => d && { ...d, address: result });
-      });
-    },
-    [],
-  );
+  const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
+    setDraft((d) => d && { ...d, coordinates: coords });
+    reverseGeocode(coords.lat, coords.lng).then((result) => {
+      if (result) setDraft((d) => d && { ...d, address: result });
+    });
+  }, []);
 
-  const handleVenueSelect = useCallback(
-    (id: string, venue: MockVenue) => {
-      setDraft((d) =>
+  const handleVenueSelect = useCallback((id: string, venue: MockVenue) => {
+    setDraft(
+      (d) =>
         d && {
           ...d,
           selectedVenueId: id,
           address: `${venue.address}, ${venue.city}`,
           coordinates: { lng: venue.lng, lat: venue.lat },
-        },
-      );
-    },
-    [],
-  );
+        }
+    );
+  }, []);
 
   const handleSave = async () => {
     if (!draft || !event) return;
@@ -94,7 +82,11 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
         entry_price: partial.entryPrice ?? null,
         genres: partial.genres ?? event.genres,
         custom_location: partial.coordinates
-          ? { latitude: partial.coordinates.lat, longitude: partial.coordinates.lng, address: partial.address ?? event.address }
+          ? {
+              latitude: partial.coordinates.lat,
+              longitude: partial.coordinates.lng,
+              address: partial.address ?? event.address,
+            }
           : null,
       });
       onSave(partial);
@@ -107,7 +99,13 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
   };
 
   return (
-    <Drawer open={open} onOpenChange={(o) => { if (!o) onClose(); }} direction="bottom">
+    <Drawer
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose();
+      }}
+      direction="bottom"
+    >
       <DrawerContent className="max-h-[92vh]">
         <DrawerHeader className="text-left">
           <DrawerTitle>Edit Event</DrawerTitle>
@@ -142,7 +140,9 @@ export function EditEventDrawer({ event, onSave, onClose }: EditEventDrawerProps
                   </SelectTrigger>
                   <SelectContent>
                     {EVENT_CATEGORIES.map((cat) => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

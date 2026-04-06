@@ -11,7 +11,9 @@ const api = axios.create({
 // Attach the Supabase JWT to every request automatically.
 // getSession() reads from the in-memory cache — no network round-trip.
 api.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (session?.access_token) {
     config.headers.Authorization = `Bearer ${session.access_token}`;
   }

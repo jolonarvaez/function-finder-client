@@ -19,7 +19,8 @@ export type OnboardingGenrePageProps = Readonly<{
 const copy: Record<OnboardingRole, { heading: string; description: string }> = {
   dj: {
     heading: "What do you play?",
-    description: "Select the genres in your sets. We'll match you with the right venues and crowds.",
+    description:
+      "Select the genres in your sets. We'll match you with the right venues and crowds.",
   },
   "event-goer": {
     heading: "What's your sound?",
@@ -44,9 +45,7 @@ export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenr
 
       {/* Heading */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          {heading}
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">{heading}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
       </div>
 
@@ -67,7 +66,7 @@ export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenr
                   "h-auto cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-colors",
                   isSelected
                     ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80",
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
                 )}
               >
                 {genre}

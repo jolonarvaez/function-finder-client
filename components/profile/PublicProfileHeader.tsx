@@ -21,9 +21,7 @@ export function PublicProfileHeader({ profile }: PublicProfileHeaderProps) {
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-4">
           <Avatar className="size-14">
-            <AvatarFallback>
-              {initials || <UserIcon className="size-5" />}
-            </AvatarFallback>
+            <AvatarFallback>{initials || <UserIcon className="size-5" />}</AvatarFallback>
           </Avatar>
           <div className="min-w-0">
             {profile.display_name && (
@@ -34,19 +32,19 @@ export function PublicProfileHeader({ profile }: PublicProfileHeaderProps) {
             {profile.country && (
               <p className="flex items-center gap-1.5 truncate text-sm text-muted-foreground">
                 {COUNTRY_ISO[profile.country] && (
-                  <ReactCountryFlag countryCode={COUNTRY_ISO[profile.country]} svg style={{ width: "1.2em", height: "1.2em" }} />
+                  <ReactCountryFlag
+                    countryCode={COUNTRY_ISO[profile.country]}
+                    svg
+                    style={{ width: "1.2em", height: "1.2em" }}
+                  />
                 )}
                 {profile.country}
               </p>
             )}
           </div>
         </div>
-        {profile.bio && (
-          <p className="text-sm text-foreground leading-relaxed">{profile.bio}</p>
-        )}
-        {profile.socmed_links && (
-          <SocialLinks links={profile.socmed_links} />
-        )}
+        {profile.bio && <p className="text-sm text-foreground leading-relaxed">{profile.bio}</p>}
+        {profile.socmed_links && <SocialLinks links={profile.socmed_links} />}
       </div>
 
       {profile.genre_tags.length > 0 && (
