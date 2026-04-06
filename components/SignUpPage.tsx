@@ -58,6 +58,16 @@ export function SignUpPage() {
     });
   }
 
+  async function signUpWithFacebook() {
+    await supabase.auth.signInWithOAuth({
+      provider: "facebook",
+      options: {
+        redirectTo: `${globalThis.location.origin}/auth/callback`,
+        scopes: "email,public_profile",
+      },
+    });
+  }
+
   async function signUpWithEmail(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -279,10 +289,10 @@ export function SignUpPage() {
           <Button
             variant="outline"
             size="icon"
-            disabled
             title="Sign up with Facebook"
             className="size-12 rounded-xl"
             aria-label="Sign up with Facebook"
+            onClick={signUpWithFacebook}
           >
             <FaFacebook className="size-4" />
           </Button>
