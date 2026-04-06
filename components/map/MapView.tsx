@@ -86,6 +86,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   }, [profile]);
 
   useEffect(() => {
+    if (!selectedDate) return;
     getEvents({
       date: selectedDate,
       genres: selectedGenres.length > 0 ? selectedGenres : undefined,
