@@ -99,7 +99,7 @@ export function LocationPicker({
                     className={cn(
                       "flex size-8 items-center justify-center rounded-lg border shadow-sm transition-colors",
                       locationStatus === "granted"
-                        ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
+                        ? "bg-blue text-white hover:bg-blue-600"
                         : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40",
                       locationStatus === "loading" && "pointer-events-none opacity-70"
                     )}

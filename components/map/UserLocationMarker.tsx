@@ -11,7 +11,7 @@ export function UserLocationMarker({ longitude, latitude }: UserLocationMarkerPr
   return (
     <MapMarker longitude={longitude} latitude={latitude}>
       <MarkerContent className="pointer-events-none">
-        <span className="flex size-4 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-md" />
+        <span className="flex size-4 items-center justify-center rounded-full border-2 border-white bg-primary shadow-md" />
       </MarkerContent>
     </MapMarker>
   );

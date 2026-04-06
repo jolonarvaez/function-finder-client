@@ -119,7 +119,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
             className={cn(
               "flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors",
               locationVisible && status === "granted"
-                ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
+                ? "bg-primary text-white hover:bg-blue-600"
                 : "border-border bg-background text-foreground hover:bg-accent dark:hover:bg-accent/40"
             )}
           >
