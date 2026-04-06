@@ -117,8 +117,8 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
         {/* Venue info */}
         <SheetHeader className="px-5 pt-5 pb-0">
           <SheetTitle className="text-xl font-bold">{event.name}</SheetTitle>
-          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPinIcon className="size-3.5" />
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPinIcon className="size-3.5 shrink-0" />
             {event.address}
           </p>
         </SheetHeader>
@@ -126,8 +126,8 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
         {/* DJ */}
         <div className="border-t border-border mx-5 mt-4 pt-4">
           {live && (
-            <p className="mb-3 flex items-center gap-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              <MusicIcon className="size-3.5" />
+            <p className="mb-3 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              <MusicIcon className="size-3.5 shrink-0" />
               Now Playing
             </p>
           )}

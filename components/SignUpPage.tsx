@@ -53,7 +53,7 @@ export function SignUpPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${globalThis.location.origin}`,
+        redirectTo: `${globalThis.location.origin}/auth/callback`,
       },
     });
   }
