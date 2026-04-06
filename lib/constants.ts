@@ -1,6 +1,6 @@
 // ── Onboarding ──────────────────────────────────────────────
 
-export const ONBOARDING_STEP_COUNT = 3;
+export const ONBOARDING_STEP_COUNT = 4;
 
 export const ROLES = ["dj", "event-goer"] as const;
 

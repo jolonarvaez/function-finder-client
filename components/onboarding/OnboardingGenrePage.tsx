@@ -41,7 +41,7 @@ export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenr
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={2} className="mb-8" />
+      <StepIndicator currentStep={3} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

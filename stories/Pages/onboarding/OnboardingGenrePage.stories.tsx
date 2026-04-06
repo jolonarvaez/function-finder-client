@@ -11,7 +11,7 @@ const meta: Meta<typeof OnboardingGenrePage> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+      <div className="overflow-hidden bg-background">
         <Story />
       </div>
     ),

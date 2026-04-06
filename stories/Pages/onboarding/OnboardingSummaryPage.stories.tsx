@@ -11,7 +11,7 @@ const meta: Meta<typeof OnboardingSummaryPage> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+      <div className="overflow-hidden bg-background">
         <Story />
       </div>
     ),
@@ -24,6 +24,9 @@ type Story = StoryObj<typeof OnboardingSummaryPage>;
 export const AsEventGoer: Story = {
   args: {
     role: "event-goer",
+    displayName: "Night Owl",
+    bio: "Always chasing the perfect night out.",
+    country: "United Kingdom",
     genres: ["House", "Afrobeats", "R&B", "Dancehall"],
   },
 };
@@ -31,6 +34,9 @@ export const AsEventGoer: Story = {
 export const AsDJ: Story = {
   args: {
     role: "dj",
+    displayName: "DJ Nova",
+    bio: "Blending techno and drum & bass since 2018.",
+    country: "Germany",
     genres: ["Techno", "Drum & Bass", "House"],
   },
 };
@@ -38,6 +44,9 @@ export const AsDJ: Story = {
 export const NoGenres: Story = {
   args: {
     role: "event-goer",
+    displayName: "Wanderer",
+    bio: "",
+    country: "",
     genres: [],
   },
 };

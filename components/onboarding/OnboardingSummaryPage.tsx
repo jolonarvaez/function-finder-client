@@ -8,9 +8,13 @@ import { StepIndicator } from "@/components/onboarding/StepIndicator";
 
 export type OnboardingSummaryPageProps = Readonly<{
   role: OnboardingRole;
+  displayName: string;
+  bio: string;
+  country: string;
   genres: Genre[];
   onBack?: () => void;
   onEditRole?: () => void;
+  onEditProfile?: () => void;
   onEditGenres?: () => void;
   onFinish?: () => void;
   submitting?: boolean;
@@ -19,9 +23,13 @@ export type OnboardingSummaryPageProps = Readonly<{
 
 export function OnboardingSummaryPage({
   role,
+  displayName,
+  bio,
+  country,
   genres,
   onBack,
   onEditRole,
+  onEditProfile,
   onEditGenres,
   onFinish,
   submitting,
@@ -29,7 +37,7 @@ export function OnboardingSummaryPage({
 }: OnboardingSummaryPageProps) {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={3} className="mb-8" />
+      <StepIndicator currentStep={4} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">
@@ -41,9 +49,10 @@ export function OnboardingSummaryPage({
 
       {/* Summary card */}
       <div className="space-y-6 rounded-2xl border border-border bg-card p-5">
+        {/* Role */}
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Role
             </p>
             <p className="text-base font-semibold text-foreground">{ROLE_LABELS[role]}</p>
@@ -52,21 +61,44 @@ export function OnboardingSummaryPage({
             type="button"
             onClick={onEditRole}
             className="rounded-md p-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:opacity-70"
+            aria-label="Edit role"
           >
             <PencilIcon className="size-4" />
           </button>
         </div>
 
+        {/* Profile */}
+        <div className="flex items-start justify-between">
+          <div className="min-w-0 flex-1 space-y-1">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Profile
+            </p>
+            <p className="text-base font-semibold text-foreground">{displayName}</p>
+            {bio && <p className="text-sm text-muted-foreground">{bio}</p>}
+            {country && <p className="text-sm text-muted-foreground">{country}</p>}
+          </div>
+          <button
+            type="button"
+            onClick={onEditProfile}
+            className="ml-3 rounded-md p-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:opacity-70"
+            aria-label="Edit profile"
+          >
+            <PencilIcon className="size-4" />
+          </button>
+        </div>
+
+        {/* Genres */}
         {genres.length > 0 && (
           <div className="space-y-2.5">
             <div className="flex items-start justify-between">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 {role === "dj" ? "Genres You Play" : "Favourite Genres"}
               </p>
               <button
                 type="button"
                 onClick={onEditGenres}
                 className="rounded-md p-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:opacity-70"
+                aria-label="Edit genres"
               >
                 <PencilIcon className="size-4" />
               </button>

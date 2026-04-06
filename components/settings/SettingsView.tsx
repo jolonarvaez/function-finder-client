@@ -29,7 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { GenreSelector } from "@/components/GenreSelector";
+import { CountrySelect } from "@/components/reusables/CountrySelect";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { updateUser } from "@/lib/services/users";
@@ -37,8 +39,6 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Genre } from "@/lib/constants";
-import { COUNTRIES, COUNTRY_ISO } from "@/lib/constants";
-import ReactCountryFlag from "react-country-flag";
 import { PageContainer } from "../reusables/PageContainer";
 
 // ── Types ────────────────────────────────────────────────────
@@ -326,7 +326,7 @@ export function SettingsView() {
                 placeholder="Tell people a little about yourself…"
                 rows={3}
                 maxLength={300}
-                className="rounded-lg resize-none"
+                className="rounded-lg resize-none text-sm"
               />
               <p className="text-sm text-muted-foreground text-right">{bio.length}/300</p>
             </div>
@@ -335,23 +335,12 @@ export function SettingsView() {
               <label htmlFor="country" className="text-sm font-medium text-muted-foreground">
                 Country
               </label>
-              <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger id="country" className="rounded-lg w-full">
-                  <SelectValue placeholder="Select a country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {COUNTRIES.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      <ReactCountryFlag
-                        countryCode={COUNTRY_ISO[c]}
-                        svg
-                        style={{ width: "1.2em", height: "1.2em" }}
-                      />
-                      {c}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <CountrySelect
+                id="country"
+                value={country}
+                onValueChange={setCountry}
+                className="rounded-lg"
+              />
             </div>
 
             <div className="flex justify-end">
@@ -391,7 +380,7 @@ export function SettingsView() {
                           setSocials(updated);
                         }}
                       >
-                        <SelectTrigger className="w-36 shrink-0 rounded-lg">
+                        <SelectTrigger className="w-28 shrink-0 rounded-lg text-sm">
                           <SelectValue placeholder="Platform" />
                         </SelectTrigger>
                         <SelectContent>
@@ -414,7 +403,7 @@ export function SettingsView() {
                           setSocials(updated);
                         }}
                         placeholder="URL or handle"
-                        className="rounded-lg"
+                        className="rounded-lg text-sm"
                       />
                       <Button
                         variant="ghost"
@@ -539,8 +528,8 @@ export function SettingsView() {
           <SettingsRow label="Version" description="Function Finder">
             <span className="text-sm text-muted-foreground">1.0.0</span>
           </SettingsRow>
-          <Separator />
-          <SettingsRow label="Terms of Service">
+          {/* <Separator /> */}
+          {/* <SettingsRow label="Terms of Service">
             <a href="#" className="flex items-center gap-1 text-sm text-primary hover:underline">
               View <ExternalLinkIcon className="size-3.5" />
             </a>
@@ -550,7 +539,7 @@ export function SettingsView() {
             <a href="#" className="flex items-center gap-1 text-sm text-primary hover:underline">
               View <ExternalLinkIcon className="size-3.5" />
             </a>
-          </SettingsRow>
+          </SettingsRow> */}
           <Separator />
           <SettingsRow label="Send Feedback">
             <a
