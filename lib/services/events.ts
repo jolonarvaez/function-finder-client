@@ -71,6 +71,7 @@ function toMapVenue(event: ApiEvent): MapVenue | null {
       entryPrice: event.entry_price ?? undefined,
       featured: event.featured ?? false,
       attending: 0,
+      created_by: event.created_by,
       dj: {
         name: event.users.display_name,
         genre: event.genres as Genre[],

@@ -17,7 +17,9 @@ import {
   MapPinIcon,
   MusicIcon,
   ClockIcon,
+  CalendarIcon,
 } from "lucide-react";
+import { format, parseISO } from "date-fns";
 import type { Genre } from "@/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────
@@ -41,6 +43,7 @@ export type VenueEvent = Readonly<{
   featured: boolean;
   attending: number;
   dj: VenueDJ;
+  created_by: string;
 }>;
 
 export type VenueInfoProps = Readonly<{
@@ -145,6 +148,7 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
             </p>
           )}
           <Persona
+            userId={event.created_by}
             name={event.dj.name}
             genre={event.dj.genre}
             avatarSrc={event.dj.avatar}
@@ -154,13 +158,24 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
         </div>
 
         {/* Stats */}
-        <div className="mx-5 mt-4">
-          <div className="rounded-xl border border-border bg-card p-3">
-            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="mx-5 mt-4 grid grid-cols-2 gap-3">
+          {event.date && (
+            <div className="rounded-xl border border-border bg-card p-3">
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <CalendarIcon className="size-3.5" />
+                Date
+              </p>
+              <p className="mt-1 text-base font-bold text-foreground">
+                {format(parseISO(event.date), "MMM d, yyyy")}
+              </p>
+            </div>
+          )}
+          <div className={event.date ? "rounded-xl border border-border bg-card p-3" : "col-span-2 rounded-xl border border-border bg-card p-3"}>
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <ClockIcon className="size-3.5" />
               Hours
             </p>
-            <p className="mt-1 text-lg font-bold text-foreground">
+            <p className="mt-1 text-base font-bold text-foreground">
               {event.startTime} – {event.endTime}
             </p>
           </div>
@@ -168,9 +183,9 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
 
         {/* CTA */}
         <SheetFooter className="px-5 pt-4 pb-6">
-          <Button className="h-12 w-full rounded-xl text-sm font-semibold">
+          {/* <Button className="h-12 w-full rounded-xl text-sm font-semibold">
             Go Now
-          </Button>
+          </Button> */}
         </SheetFooter>
       </SheetContent>
     </Sheet>

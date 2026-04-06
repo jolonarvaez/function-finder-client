@@ -1,6 +1,4 @@
 "use client";
-
-import * as React from "react";
 import { MapPinIcon, CalendarIcon } from "lucide-react";
 import {
   Avatar,
@@ -12,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export type PersonaProps = Readonly<{
   name: string;
@@ -23,7 +22,7 @@ export type PersonaProps = Readonly<{
   nextEvent?: string;
   variant?: "full" | "min";
   className?: string;
-  onViewProfile?: () => void;
+  userId?: string;
 }>;
 
 export function Persona({
@@ -36,7 +35,7 @@ export function Persona({
   nextEvent,
   variant = "full",
   className,
-  onViewProfile,
+  userId,
 }: PersonaProps) {
   if (variant === "min") {
     return (
@@ -58,14 +57,14 @@ export function Persona({
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onViewProfile}
-          className="shrink-0 text-muted-foreground"
-        >
-          View Profile →
-        </Button>
+        <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto">
+          <Button
+            variant="ghost"
+            className="shrink-0 text-muted-foreground"
+          >
+            View Profile →
+          </Button>
+        </Link>
       </div>
     );
   }
@@ -81,9 +80,7 @@ export function Persona({
           </Avatar>
 
           <div className="flex flex-col gap-2">
-            <span className="text-lg font-semibold leading-tight">
-              {name}
-            </span>
+            <span className="text-lg font-semibold leading-tight">{name}</span>
             <div className="flex flex-wrap gap-1">
               {(Array.isArray(genre) ? genre : [genre]).map((g) => (
                 <Badge key={g} variant="outline" className="w-fit">
