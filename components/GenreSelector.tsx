@@ -69,16 +69,17 @@ export function GenreSelector({
             {selected.length} selected
           </span>
         </div>
-        {selected.length > 0 && (
-          <Button
-            variant="ghost"
-            onClick={clearAll}
-            className="h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <XIcon />
-            Clear all
-          </Button>
-        )}
+        <Button
+          variant="ghost"
+          onClick={clearAll}
+          className={cn(
+            "h-auto gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground",
+            selected.length === 0 && "invisible"
+          )}
+        >
+          <XIcon />
+          Clear all
+        </Button>
       </div>
 
       {variant === "scroll" ? (
