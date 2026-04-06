@@ -14,6 +14,7 @@ export type OnboardingSummaryPageProps = Readonly<{
   onEditGenres?: () => void;
   onFinish?: () => void;
   submitting?: boolean;
+  error?: string;
 }>;
 
 export function OnboardingSummaryPage({
@@ -24,6 +25,7 @@ export function OnboardingSummaryPage({
   onEditGenres,
   onFinish,
   submitting,
+  error,
 }: OnboardingSummaryPageProps) {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
@@ -87,6 +89,14 @@ export function OnboardingSummaryPage({
       <div className="flex-1" />
 
       <div className="mt-8 space-y-4">
+        {error && (
+          <p
+            role="alert"
+            className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            {error}
+          </p>
+        )}
         <Button
           className="h-12 w-full rounded-xl text-sm font-medium"
           onClick={onFinish}

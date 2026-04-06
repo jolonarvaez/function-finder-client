@@ -5,7 +5,8 @@ import { OnboardingRolePage } from "@/components/onboarding/OnboardingRolePage";
 import { OnboardingGenrePage } from "@/components/onboarding/OnboardingGenrePage";
 import { OnboardingSummaryPage } from "@/components/onboarding/OnboardingSummaryPage";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
-import { updateUser } from "@/lib/services/users";
+import { updateUser, getUser } from "@/lib/services/users";
+import { useUserStore } from "@/components/auth/use-user-store";
 import { supabase } from "@/lib/supabase";
 
 export type OnboardingFlowProps = Readonly<{
@@ -13,19 +14,31 @@ export type OnboardingFlowProps = Readonly<{
 }>;
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const { step, role, genres, setStep, setRole, setGenres } = useOnboardingStore();
+  const { step, role, genres, setStep, setRole, setGenres, reset } = useOnboardingStore();
+  const { setProfile } = useUserStore();
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleFinish() {
     if (!role) return;
     setSubmitting(true);
+    setError("");
     try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) {
+        setError("Session expired. Please sign in again.");
+        return;
+      }
       await updateUser(session.user.id, { profile_type: role, genre_tags: genres });
+      // Refresh the store so the profile page and sidebar show the updated data immediately.
+      const updated = await getUser(session.user.id);
+      setProfile(updated);
+      reset();
       onComplete?.();
+    } catch {
+      setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -65,6 +78,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           onEditGenres={() => setStep(2)}
           onFinish={handleFinish}
           submitting={submitting}
+          error={error}
         />
       )}
     </>
