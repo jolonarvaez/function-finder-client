@@ -69,17 +69,17 @@ export function LocationPicker({
             <MapPinIcon className="size-3.5" />
             Pin on Map
           </TabsTrigger>
-          <TabsTrigger value="venue" className="flex-1 gap-1.5">
+          {/* <TabsTrigger value="venue" className="flex-1 gap-1.5">
             <BuildingIcon className="size-3.5" />
             Existing Venue
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="map">
           <div className="space-y-2">
             <section
               aria-label="Event location map — drag the pin to set location"
-              className="relative h-56 overflow-hidden rounded-lg border border-border"
+              className="relative h-120 overflow-hidden rounded-lg border border-border"
             >
               <Map
                 ref={mapRef}
