@@ -18,6 +18,7 @@ const MOCK_EVENT: VenueEvent = {
     avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
     genre: ["House", "Techno", "Disco"],
   },
+  created_by: "user_123",
 };
 
 function VenueInfoDemo({ event, live }: Readonly<{ event: VenueEvent; live?: boolean }>) {

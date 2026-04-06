@@ -22,6 +22,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
         genre: "Soul",
       },
+      created_by: "user_123",
     },
   },
   {
@@ -44,6 +45,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
         genre: "Latin",
       },
+      created_by: "user_123",
     },
   },
 
@@ -68,6 +70,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
         genre: ["Hip-Hop", "R&B"],
       },
+      created_by: "user_123",
     },
   },
   {
@@ -90,6 +93,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
         genre: "Afrobeats",
       },
+      created_by: "user_123",
     },
   },
 
@@ -113,6 +117,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
         genre: "Techno",
       },
+      created_by: "user_123",
     },
   },
   {
@@ -131,6 +136,7 @@ const MOCK_VENUES: MapVenue[] = [
       featured: true,
       attending: 280,
       dj: { name: "MIKA", avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK", genre: "Pop" },
+      created_by: "user_123",
     },
   },
 
@@ -156,6 +162,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
         genre: ["House", "Techno", "Disco"],
       },
+      created_by: "user_123",
     },
   },
   {
@@ -179,6 +186,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
         genre: "Drum & Bass",
       },
+      created_by: "user_123",
     },
   },
 
@@ -204,6 +212,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/dc2626/fff?text=DC",
         genre: ["Reggaeton", "Latin", "Dancehall"],
       },
+      created_by: "user_123",
     },
   },
   {
@@ -221,6 +230,7 @@ const MOCK_VENUES: MapVenue[] = [
       featured: true,
       attending: 98,
       dj: { name: "Soulée", avatar: "https://placehold.co/80x80/ec4899/fff?text=SL", genre: "R&B" },
+      created_by: "user_123",
     },
   },
 
@@ -245,6 +255,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
         genre: "Dancehall",
       },
+      created_by: "user_123",
     },
   },
 
@@ -270,6 +281,7 @@ const MOCK_VENUES: MapVenue[] = [
         avatar: "https://placehold.co/80x80/d97706/fff?text=GM",
         genre: ["Disco", "Soul", "House"],
       },
+      created_by: "user_123",
     },
   },
 ];

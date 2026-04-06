@@ -20,6 +20,7 @@ const MOCK_EVENT: VenueEvent = {
     avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
     genre: ["House", "Techno"],
   },
+  created_by: "user_123",
 };
 
 const meta: Meta<typeof VenueMarker> = {

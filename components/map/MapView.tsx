@@ -26,15 +26,16 @@ export type MapVenue = Readonly<{
 
 export type MapViewProps = Readonly<{
   defaultDate?: Date;
+  venues?: MapVenue[];
 }>;
 
-export function MapView({ defaultDate }: MapViewProps) {
+export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const selectedDate = useMapFilterStore((s) => s.selectedDate);
   const setSelectedGenres = useMapFilterStore((s) => s.setSelectedGenres);
   const profile = useUserStore((s) => s.profile);
 
-  const [venues, setVenues] = useState<MapVenue[]>([]);
+  const [venues, setVenues] = useState<MapVenue[]>(initialVenues ?? []);
 
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);

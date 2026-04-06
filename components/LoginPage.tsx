@@ -76,7 +76,9 @@ export function LoginPage() {
     <PageContainer>
       <div className="flex min-h-screen flex-col pb-10 pt-14">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome to Function Finder</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            Welcome to Function Finder
+          </h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
             Sign in to continue your nightlife journey
           </p>
