@@ -28,6 +28,7 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Genre } from "@/lib/constants";
+import { PageContainer } from "../reusables/PageContainer";
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -50,14 +51,14 @@ function getInitials(name?: string): string {
 function SectionHeader({
   icon: Icon,
   label,
-}: {
+}: Readonly<{
   icon: React.ElementType;
   label: string;
-}) {
+}>) {
   return (
     <div className="flex items-center gap-2 pb-1">
-      <Icon className="size-4 text-foreground" />
-      <h2 className="text-md font-semibold text-foreground">{label}</h2>
+      <Icon className="size-5 text-foreground" />
+      <h2 className="text-lg font-semibold text-foreground">{label}</h2>
     </div>
   );
 }
@@ -66,11 +67,11 @@ function SettingsRow({
   label,
   description,
   children,
-}: {
+}: Readonly<{
   label: string;
   description?: string;
   children?: React.ReactNode;
-}) {
+}>) {
   return (
     <div className="flex items-center justify-between gap-4 py-3">
       <div className="min-w-0">
@@ -131,7 +132,7 @@ export function SettingsView() {
   }
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-6 space-y-8">
+    <PageContainer>
       {/* ── Account ─────────────────────────────────────── */}
       <section aria-labelledby="account-heading">
         <SectionHeader icon={UserIcon} label="Account" />
@@ -354,6 +355,6 @@ export function SettingsView() {
           </Button>
         )}
       </section>
-    </div>
+    </PageContainer>
   );
 }

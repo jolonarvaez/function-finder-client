@@ -10,6 +10,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { updateUser } from "@/lib/services/users";
 import { toast } from "sonner";
+import { PageContainer } from "../reusables/PageContainer";
 
 function getInitials(name?: string): string {
   if (!name) return "";
@@ -43,8 +44,8 @@ export function ProfileView() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-background">
-      <div className="flex flex-col gap-6 px-4 py-6">
+    <PageContainer>
+      <div className="flex flex-col gap-6">
         {/* Avatar + identity */}
         <div className="flex items-center gap-4">
           <Avatar className="size-14">
@@ -95,6 +96,6 @@ export function ProfileView() {
           Go to Settings
         </Button>
       </div>
-    </div>
+    </PageContainer>
   );
 }

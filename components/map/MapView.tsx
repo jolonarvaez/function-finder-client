@@ -8,12 +8,13 @@ import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
 import { Button } from "@/components/ui/button";
-import { Locate, LocateOff, X } from "lucide-react";
+import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { getEvents } from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
+import { PageHeader } from "../reusables/PageContainer";
 
 export type MapVenue = Readonly<{
   lng: number;
@@ -81,11 +82,14 @@ export function MapView({ defaultDate }: MapViewProps) {
     if (profile?.genre_tags?.length && selectedGenres.length === 0) {
       setSelectedGenres(profile.genre_tags);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   useEffect(() => {
-    getEvents({ date: selectedDate, genres: selectedGenres.length > 0 ? selectedGenres : undefined })
+    getEvents({
+      date: selectedDate,
+      genres: selectedGenres.length > 0 ? selectedGenres : undefined,
+    })
       .then(setVenues)
       .catch(() => setVenues([]));
   }, [selectedDate, selectedGenres]);
@@ -93,13 +97,11 @@ export function MapView({ defaultDate }: MapViewProps) {
   const isDenied = status === "denied";
   const showDeniedBanner = isDenied && !deniedDismissed;
 
-  console.log(venues)
-
   return (
     <div className="relative h-full w-full overflow-hidden">
       {/* Search panel */}
       <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-3 border-b border-border">
-        <h2 className="mb-3 text-lg font-semibold">Map View</h2>
+        <PageHeader title="Map View" icon={MapIcon} />
         <SearchBar showFilter defaultDate={defaultDate} />
       </div>
 

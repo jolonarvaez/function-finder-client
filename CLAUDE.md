@@ -57,16 +57,12 @@ stories/                # Storybook stories
 
 ## Environment Variables
 
-| Variable | Purpose |
-|---|---|
-| `NEXT_PUBLIC_STADIA_API_KEY` | Stadia Maps API key (falls back to MapLibre demo tiles) |
+- `NEXT_PUBLIC_STADIA_API_KEY` — Stadia Maps API key (falls back to MapLibre demo tiles)
 
 ## State Management
 
-- **Zustand** for shared/cross-component state (e.g., onboarding flow). Place stores alongside the feature components they serve (e.g., `components/onboarding/use-onboarding-store.ts`).
-- `useState` for local component state
-- Props + callbacks for parent-child communication
-- `next-themes` context for theme state
+- **Zustand** for shared state — store alongside the feature (e.g., `components/onboarding/use-onboarding-store.ts`)
+- `next-themes` for theme state
 
 ## Key Patterns
 
@@ -93,28 +89,6 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - If a reference image is provided: match layout, spacing, typography, and color exactly. Swap in placeholder content (images via `https://placehold.co/`, generic copy). Do not improve or add to the design.
 - If no reference image: design from scratch with high craft (see guardrails below).
 - Screenshot your output, compare against reference, fix mismatches, re-screenshot. Do at least 2 comparison rounds. Stop only when no visible differences remain or user says so.
-
-## Local Server
-- **Always serve on localhost** — never screenshot a `file:///` URL.
-- Start the dev server: `node serve.mjs` (serves the project root at `http://localhost:3000`)
-- `serve.mjs` lives in the project root. Start it in the background before taking any screenshots.
-- If the server is already running, do not start a second instance.
-
-## Screenshot Workflow
-- Puppeteer is installed at `C:/Users/nateh/AppData/Local/Temp/puppeteer-test/`. Chrome cache is at `C:/Users/nateh/.cache/puppeteer/`.
-- **Always screenshot from localhost:** `node screenshot.mjs http://localhost:3000`
-- Screenshots are saved automatically to `./temporary screenshots/screenshot-N.png` (auto-incremented, never overwritten).
-- Optional label suffix: `node screenshot.mjs http://localhost:3000 label` → saves as `screenshot-N-label.png`
-- `screenshot.mjs` lives in the project root. Use it as-is.
-- After screenshotting, read the PNG from `temporary screenshots/` with the Read tool — Claude can see and analyze the image directly.
-- When comparing, be specific: "heading is 32px but reference shows ~24px", "card gap is 16px but should be 24px"
-- Check: spacing/padding, font size/weight/line-height, colors (exact hex), alignment, border-radius, shadows, image sizing
-
-## Output Defaults
-- Single `index.html` file, all styles inline, unless user says otherwise
-- Tailwind CSS via CDN: `<script src="https://cdn.tailwindcss.com"></script>`
-- Placeholder images: `https://placehold.co/WIDTHxHEIGHT`
-- Mobile-first responsive
 
 ## Brand Assets
 - Always check the `brand_assets/` folder before designing. It may contain logos, color guides, style guides, or images.
@@ -147,17 +121,8 @@ className={cn("base-classes", condition && "conditional-class", className)}
 - All stories under `stories/Pages/` must use `layout: "fullscreen"` and wrap the story in `<div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">` to simulate a large mobile viewport (430px — iPhone Pro Max width). Do not force `dark` — let light/dark mode be fluid.
 
 ## Accessibility (WCAG AA)
-- **Color contrast**: All text must meet WCAG AA minimum contrast ratios — 4.5:1 for normal text, 3:1 for large text (18px+ or 14px+ bold). Non-text UI elements (icons, borders, form controls) must meet 3:1 against their background.
-- **Semantic HTML**: Use correct elements (`<button>`, `<a>`, `<nav>`, `<main>`, `<header>`, `<section>`, `<h1>`–`<h6>` in order). Never use `<div>` or `<span>` for interactive elements.
-- **Keyboard navigation**: Every interactive element must be reachable and operable via keyboard. Logical tab order, visible focus indicators (minimum 2px outline, 3:1 contrast). Never remove focus outlines without providing an alternative.
-- **ARIA usage**: Use ARIA only when native HTML semantics are insufficient. Always provide `aria-label` or `aria-labelledby` for icon-only buttons, inputs without visible labels, and landmark regions. Never use `aria-hidden="true"` on focusable elements.
-- **Images and icons**: All `<img>` elements must have meaningful `alt` text or `alt=""` if purely decorative. Icon-only buttons must have `aria-label` or visually hidden text.
-- **Form inputs**: Every input must have an associated `<label>` (use `htmlFor`/`id` pairing or wrap the input). Required fields must be indicated programmatically (`aria-required="true"` or `required`). Error messages must be linked via `aria-describedby`.
-- **Touch targets**: Interactive elements must have a minimum tap target of 44×44px (or sufficient spacing to meet the equivalent).
-- **Motion and animation**: Respect `prefers-reduced-motion` — wrap animations in `@media (prefers-reduced-motion: no-preference)` or use Tailwind's `motion-safe:` variant. Never use motion as the sole way to convey information.
-- **Page structure**: Every page must have exactly one `<main>`, a descriptive `<title>`, and a skip-to-content link as the first focusable element.
-- **Dynamic content**: Live regions (`aria-live="polite"` or `"assertive"`) must announce status changes, loading states, and errors to screen readers. Route changes in Next.js must announce the new page title.
-- **Color independence**: Never convey information through color alone — always pair with text, icons, or patterns.
+
+Follow WCAG AA. Key rules: semantic HTML, keyboard nav with visible focus indicators, `aria-label` on icon-only buttons, 44×44px touch targets, respect `prefers-reduced-motion`, `aria-live` for dynamic content, never convey info by color alone.
 
 ## Hard Rules
 - Do not add sections, features, or content not in the reference

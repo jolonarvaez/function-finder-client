@@ -4,12 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   MapIcon,
-  Building2Icon,
   SettingsIcon,
   UserIcon,
   CalendarDaysIcon,
   CalendarPlus2Icon,
-
 } from "lucide-react";
 import type { OnboardingRole } from "@/lib/constants";
 import {
@@ -30,20 +28,25 @@ import { ProfileFooter, type ProfileFooterProps } from "./ProfileFooter";
 
 const NAV_ITEMS = [
   { label: "Map", href: "/", icon: MapIcon },
-  { label: "Venues", href: "/venues", icon: Building2Icon },
-  { label: "Settings", href: "/settings", icon: SettingsIcon },
+  //   { label: "Venues", href: "/venues", icon: Building2Icon },
   { label: "Profile", href: "/profile", icon: UserIcon },
+  { label: "Settings", href: "/settings", icon: SettingsIcon },
 ] as const;
 
 const DJ_ITEMS = [
-  { label: "Events Manager", href: "/dj/event-manager", icon: CalendarDaysIcon },
+  {
+    label: "Events Manager",
+    href: "/dj/event-manager",
+    icon: CalendarDaysIcon,
+  },
   { label: "Create Event", href: "/dj/create-event", icon: CalendarPlus2Icon },
 ] as const;
 
-export type AppSidebarProps = ProfileFooterProps & Readonly<{
-  role?: OnboardingRole;
-  loading?: boolean;
-}>;
+export type AppSidebarProps = ProfileFooterProps &
+  Readonly<{
+    role?: OnboardingRole;
+    loading?: boolean;
+  }>;
 
 export function AppSidebar({
   role,
@@ -98,32 +101,34 @@ export function AppSidebar({
               </SidebarGroupContent>
             </SidebarGroup>
           </>
-        ) : role === "dj" && (
-          <>
-            <SidebarSeparator />
-            <SidebarGroup>
-              <SidebarGroupLabel>DJ Tools</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="space-y-1">
-                  {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
-                    <SidebarMenuItem key={label}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={pathname === href}
-                        size="default"
-                        tooltip={label}
-                      >
-                        <Link href={href}>
-                          <Icon />
-                          <span>{label}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </>
+        ) : (
+          role === "dj" && (
+            <>
+              <SidebarSeparator />
+              <SidebarGroup>
+                <SidebarGroupLabel>DJ Tools</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu className="space-y-1">
+                    {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
+                      <SidebarMenuItem key={label}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === href}
+                          size="default"
+                          tooltip={label}
+                        >
+                          <Link href={href}>
+                            <Icon />
+                            <span>{label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </>
+          )
         )}
       </SidebarContent>
 

@@ -9,6 +9,7 @@ import {
   MapPinIcon,
   ChevronDownIcon,
   PhilippinePesoIcon,
+  CalendarPlus2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ import { createEvent, toIsoDate } from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
 import type { MockVenue } from "./mock-venues";
+import { PageContainer, PageHeader } from "../reusables/PageContainer";
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -52,7 +54,9 @@ export function CreateEventView() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [entryPrice, setEntryPrice] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(
+    profile?.genre_tags ?? [],
+  );
   const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -138,7 +142,7 @@ export function CreateEventView() {
     address.trim();
 
   return (
-    <main className="flex flex-col">
+    <PageContainer>
       <a
         href="#create-event-form"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
@@ -147,21 +151,14 @@ export function CreateEventView() {
       </a>
 
       {/* Header */}
-      <div className="p-4">
-        <h1 className="text-xl font-bold tracking-tight text-foreground">
-          Create Event
-        </h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Set up a new event at your venue
-        </p>
-      </div>
+      <PageHeader title="Create Event" icon={CalendarPlus2Icon} />
 
       {/* Form */}
       <div className="flex-1">
         <form
           id="create-event-form"
           onSubmit={handleSubmit}
-          className="space-y-4 px-4 pt-3 pb-6"
+          className="space-y-4  pb-6"
         >
           {/* ── Details ─────────────────────────────────── */}
           <SectionHeader>Details</SectionHeader>
@@ -334,7 +331,7 @@ export function CreateEventView() {
       </div>
 
       {/* Sticky submit */}
-      <div className="sticky bottom-0 border-t border-border bg-background px-4 py-3">
+      <div className="sticky bottom-0 border-t border-border bg-background py-3">
         <Button
           type="submit"
           form="create-event-form"
@@ -344,6 +341,6 @@ export function CreateEventView() {
           {submitting ? "Creating..." : "Create Event"}
         </Button>
       </div>
-    </main>
+    </PageContainer>
   );
 }
