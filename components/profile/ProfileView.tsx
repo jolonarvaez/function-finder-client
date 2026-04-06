@@ -1,67 +1,66 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserIcon } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GenreSelector } from "@/components/GenreSelector";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
-import { updateUser } from "@/lib/services/users";
-import { toast } from "sonner";
 import { PageContainer } from "../reusables/PageContainer";
-
-function getInitials(name?: string): string {
-  if (!name) return "";
-  return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-}
+import { getInitials } from "./utils";
+import { SocialLinks } from "./SocialLinks";
+import { COUNTRY_ISO } from "@/lib/constants";
+import ReactCountryFlag from "react-country-flag";
 
 export function ProfileView() {
   const router = useRouter();
   const { user } = useAuth();
-  const { profile, setProfile } = useUserStore();
+  const { profile } = useUserStore();
 
   const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
 
-  const [genres, setGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
-  const [saving, setSaving] = useState(false);
-
-  async function handleSaveGenres() {
-    if (!profile) return;
-    setSaving(true);
-    try {
-      await updateUser(profile.id, { profile_type: profile.profile_type!, genre_tags: genres });
-      setProfile({ ...profile, genre_tags: genres });
-      toast.success("Genre preferences saved.");
-    } catch {
-      toast.error("Failed to save preferences.");
-    } finally {
-      setSaving(false);
-    }
-  }
+  const genres = profile?.genre_tags ?? [];
+  const bio = profile?.bio;
+  const country = profile?.country;
 
   return (
     <PageContainer>
       <div className="flex flex-col gap-6">
         {/* Avatar + identity */}
-        <div className="flex items-center gap-4">
-          <Avatar className="size-14">
-            {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "Avatar"} />}
-            <AvatarFallback>
-              {getInitials(name) || <UserIcon className="size-5" />}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            {name && (
-              <p className="truncate text-base font-semibold text-foreground">{name}</p>
-            )}
-            {email && (
-              <p className="truncate text-sm text-muted-foreground">{email}</p>
-            )}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-4">
+            <Avatar className="size-14">
+              {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "Avatar"} />}
+              <AvatarFallback>
+                {getInitials(name) || <UserIcon className="size-5" />}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              {name && (
+                <p className="truncate text-base font-semibold text-foreground">{name}</p>
+              )}
+              {email && (
+                <p className="truncate text-sm text-muted-foreground">{email}</p>
+              )}
+              {country && (
+                <p className="flex items-center gap-1.5 truncate text-sm text-muted-foreground">
+                  {COUNTRY_ISO[country] && (
+                    <ReactCountryFlag countryCode={COUNTRY_ISO[country]} svg style={{ width: "1.2em", height: "1.2em" }} />
+                  )}
+                  {country}
+                </p>
+              )}
+            </div>
           </div>
+          {bio && (
+            <p className="text-sm text-foreground leading-relaxed">{bio}</p>
+          )}
+          {profile?.socmed_links && (
+            <SocialLinks links={profile.socmed_links} />
+          )}
         </div>
 
         <div className="h-px bg-border" />
@@ -76,14 +75,18 @@ export function ProfileView() {
               Used to personalise your map feed.
             </p>
           </div>
-          <GenreSelector selected={genres} onChange={setGenres} variant="wrap" />
-          <Button
-            onClick={handleSaveGenres}
-            disabled={saving}
-            className="h-10 w-full rounded-lg text-sm font-medium"
-          >
-            {saving ? "Saving..." : "Save Genres"}
-          </Button>
+          {genres.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {genres.map((genre) => (
+                <Badge key={genre}>{genre}</Badge>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No genres selected.</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            To change your genres, go to Settings.
+          </p>
         </section>
 
         <div className="h-px bg-border" />

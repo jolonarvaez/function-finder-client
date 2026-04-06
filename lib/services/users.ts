@@ -25,6 +25,10 @@ type ApiUserResponse = {
 type UpdateUserBody = {
   profile_type: OnboardingRole;
   genre_tags: Genre[];
+  bio?: string | null;
+  country?: string | null;
+  display_name?: string;
+  socmed_links?: Record<string, string> | null;
 };
 
 type ApiEvent = {
