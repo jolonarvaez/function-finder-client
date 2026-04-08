@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { reverseGeocode } from "@/lib/geocode";
 import { format } from "date-fns";
 import {
@@ -42,6 +43,7 @@ function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
 }
 
 export function CreateEventView() {
+  const router = useRouter();
   const { profile } = useUserStore();
   const [eventName, setEventName] = useState("");
   const [category, setCategory] = useState("");
@@ -75,20 +77,6 @@ export function CreateEventView() {
     if (!category) setCategory(venue.category);
   };
 
-  function resetForm() {
-    setEventName("");
-    setCategory("");
-    setDate(undefined);
-    setStartTime("");
-    setEndTime("");
-    setEntryPrice("");
-    setSelectedGenres([]);
-    setAddress("");
-    setLocationMode("map");
-    setCoordinates({ lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] });
-    setSelectedVenueId("");
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!date || !profile) return;
@@ -113,8 +101,8 @@ export function CreateEventView() {
               }
             : null,
       });
+      router.push("/dj/event-manager");
       toast.success("Event created successfully.");
-      resetForm();
     } catch {
       toast.error("Failed to create event. Please try again.");
     } finally {
