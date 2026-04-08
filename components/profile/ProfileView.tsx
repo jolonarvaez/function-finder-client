@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
-import { PageContainer } from "../reusables/PageContainer";
+import { PageContainer, PageHeader } from "../reusables/PageContainer";
 import { getInitials } from "./utils";
 import { SocialLinks } from "./SocialLinks";
 import { COUNTRY_ISO } from "@/lib/constants";
@@ -28,6 +28,7 @@ export function ProfileView() {
 
   return (
     <PageContainer>
+      <PageHeader title="Profile" icon={UserIcon} showBack />
       <div className="flex flex-col gap-6">
         {/* Avatar + identity */}
         <div className="flex flex-col gap-3">

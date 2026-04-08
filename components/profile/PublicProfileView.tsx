@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PageContainer } from "@/components/reusables/PageContainer";
+import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getUser, getUserEvents, type UserProfile } from "@/lib/services/users";
 import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
 import { PublicProfileHeader } from "./PublicProfileHeader";
@@ -82,6 +82,7 @@ export function PublicProfileView({ userId }: PublicProfileViewProps) {
 
   return (
     <PageContainer>
+      <PageHeader title="Profile" showBack />
       <div className="flex flex-col gap-6">
         <PublicProfileHeader profile={profile} />
         <div className="h-px bg-border" />

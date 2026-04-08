@@ -130,7 +130,7 @@ export function CreateEventView() {
       </a>
 
       {/* Header */}
-      <PageHeader title="Create Event" icon={CalendarPlus2Icon} />
+      <PageHeader title="Create Event" icon={CalendarPlus2Icon} showBack />
 
       {/* Form */}
       <div className="flex-1">

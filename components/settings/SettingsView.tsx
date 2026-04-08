@@ -16,6 +16,7 @@ import {
   InfoIcon,
   PlusIcon,
   XIcon,
+  SettingsIcon,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,7 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Genre } from "@/lib/constants";
-import { PageContainer } from "../reusables/PageContainer";
+import { PageContainer, PageHeader } from "../reusables/PageContainer";
 import { SOCIAL_PLATFORMS, SocialPlatform, SocialEntry } from "@/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────
@@ -225,6 +226,7 @@ export function SettingsView() {
 
   return (
     <PageContainer>
+      <PageHeader title="Settings" icon={SettingsIcon} showBack />
       <div className="flex flex-col gap-10">
         {/* ── Account ─────────────────────────────────────── */}
         <section aria-labelledby="account-heading" className="flex flex-col gap-4">

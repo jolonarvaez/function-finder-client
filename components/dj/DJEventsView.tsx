@@ -51,7 +51,7 @@ export function DJEventsView() {
   return (
     <PageContainer>
       {/* Header */}
-      <PageHeader title="My Events" icon={CalendarDaysIcon} />
+      <PageHeader title="My Events" icon={CalendarDaysIcon} showBack />
 
       {loading && (
         <div className="space-y-3">
