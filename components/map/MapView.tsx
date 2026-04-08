@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Map, MapControls, type MapRef } from "@/components/ui/map";
-import { SearchBar } from "@/components/SearchBar";
+import { MapFilters } from "@/components/map/MapFilters";
 import { VenueMarker } from "@/components/map/VenueMarker";
 import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
@@ -100,10 +100,10 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {/* Search panel */}
+      {/* Filter panel */}
       <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-3 border-b border-border">
         <PageHeader title="Map View" icon={MapIcon} />
-        <SearchBar showFilter defaultDate={defaultDate} />
+        <MapFilters defaultOpen defaultDate={defaultDate} />
       </div>
 
       {/* Full-screen map */}
