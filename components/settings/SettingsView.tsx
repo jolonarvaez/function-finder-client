@@ -40,19 +40,11 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Genre } from "@/lib/constants";
 import { PageContainer } from "../reusables/PageContainer";
+import { SOCIAL_PLATFORMS, SocialPlatform, SocialEntry } from "@/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────
 
 type Theme = "light" | "dark" | "system";
-
-type SocialPlatform = "twitter" | "instagram";
-
-type SocialEntry = { platform: SocialPlatform | ""; value: string };
-
-const SOCIAL_PLATFORMS: { value: SocialPlatform; label: string }[] = [
-  { value: "twitter", label: "X (Twitter)" },
-  { value: "instagram", label: "Instagram" },
-];
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -134,9 +126,7 @@ export function SettingsView() {
 
   useEffect(() => {
     const links = profile?.socmed_links ?? {};
-    const entries = (Object.entries(links) as [SocialPlatform, string][]).filter(
-      ([p]) => p === "twitter" || p === "instagram"
-    );
+    const entries = Object.entries(links) as [SocialPlatform, string][];
     setSocials(entries.length > 0 ? entries.map(([platform, value]) => ({ platform, value })) : []);
   }, [profile?.socmed_links]);
   // Preferences state
@@ -380,7 +370,7 @@ export function SettingsView() {
                           setSocials(updated);
                         }}
                       >
-                        <SelectTrigger className="w-28 shrink-0 rounded-lg text-sm">
+                        <SelectTrigger className="w-32 shrink-0 rounded-lg text-sm">
                           <SelectValue placeholder="Platform" />
                         </SelectTrigger>
                         <SelectContent>

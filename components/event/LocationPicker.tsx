@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { BuildingIcon, Locate, LocateOff, MapPinIcon } from "lucide-react";
+import { Locate, LocateOff, MapPinIcon } from "lucide-react";
 import { Map, MapMarker, MarkerContent, MapControls, type MapRef } from "@/components/ui/map";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {

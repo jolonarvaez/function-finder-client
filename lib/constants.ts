@@ -152,3 +152,28 @@ export const VENUE_FILTER_LABELS: Record<VenueFilter, string> = {
   nearest: "Nearest",
   "best-match": "Best Match",
 };
+
+// ── Social Media Links  ───────────────────────────────────────────
+
+export type SocialPlatform =
+  | "twitter"
+  | "instagram"
+  | "facebook"
+  | "soundcloud"
+  | "youtube"
+  | "tiktok"
+  | "spotify"
+  | "website";
+
+export type SocialEntry = { platform: SocialPlatform | ""; value: string };
+
+export const SOCIAL_PLATFORMS: { value: SocialPlatform; label: string }[] = [
+  { value: "twitter", label: "X (Twitter)" },
+  { value: "instagram", label: "Instagram" },
+  { value: "facebook", label: "Facebook" },
+  { value: "soundcloud", label: "SoundCloud" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "youtube", label: "YouTube" },
+  { value: "spotify", label: "Spotify" },
+  { value: "website", label: "Website" },
+];
