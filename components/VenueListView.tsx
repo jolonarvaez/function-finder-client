@@ -28,21 +28,26 @@ function venueMatchesQuery(venue: MapVenue, query: string): boolean {
   );
 }
 
-function venueMatchesDate(venue: MapVenue, date: Date): boolean {
+function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function venueMatchesDateRange(venue: MapVenue, startDate: Date, endDate: Date): boolean {
   if (!venue.event.date) return true;
-  const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-  return venue.event.date === iso;
+  return venue.event.date >= toIsoDate(startDate) && venue.event.date <= toIsoDate(endDate);
 }
 
 export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
   const query = useMapFilterStore((s) => s.query);
   const activeFilter = useMapFilterStore((s) => s.activeFilter);
-  const selectedDate = useMapFilterStore((s) => s.selectedDate);
+  const startDate = useMapFilterStore((s) => s.startDate);
+  const endDate = useMapFilterStore((s) => s.endDate);
 
   const deferredGenres = useDeferredValue(selectedGenres);
   const deferredQuery = useDeferredValue(query);
-  const deferredDate = useDeferredValue(selectedDate);
+  const deferredStartDate = useDeferredValue(startDate);
+  const deferredEndDate = useDeferredValue(endDate);
 
   const filteredVenues = useMemo(() => {
     let result = venues;
@@ -55,8 +60,8 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
       result = result.filter((v) => venueMatchesGenres(v, deferredGenres));
     }
 
-    if (deferredDate) {
-      result = result.filter((v) => venueMatchesDate(v, deferredDate));
+    if (deferredStartDate && deferredEndDate) {
+      result = result.filter((v) => venueMatchesDateRange(v, deferredStartDate, deferredEndDate));
     }
 
     switch (activeFilter) {
@@ -70,7 +75,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
     }
 
     return result;
-  }, [venues, deferredQuery, deferredGenres, deferredDate, activeFilter]);
+  }, [venues, deferredQuery, deferredGenres, deferredStartDate, deferredEndDate, activeFilter]);
 
   return (
     <div className="flex h-dvh flex-col bg-background">

@@ -25,16 +25,16 @@ export const DefaultOpen: Story = {
   },
 };
 
-export const WithDatePreselected: Story = {
+export const WithDateToday: Story = {
   args: {
-    defaultDate: new Date("2026-04-05"),
+    defaultDate: new Date(),
     defaultOpen: true,
   },
 };
 
-export const WithDateToday: Story = {
+export const WithDatePreselected: Story = {
   args: {
-    defaultDate: new Date(),
+    defaultDate: new Date("2026-04-05"),
     defaultOpen: true,
   },
 };

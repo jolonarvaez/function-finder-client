@@ -31,7 +31,8 @@ export type MapViewProps = Readonly<{
 
 export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const selectedGenres = useMapFilterStore((s) => s.selectedGenres);
-  const selectedDate = useMapFilterStore((s) => s.selectedDate);
+  const startDate = useMapFilterStore((s) => s.startDate);
+  const endDate = useMapFilterStore((s) => s.endDate);
   const setSelectedGenres = useMapFilterStore((s) => s.setSelectedGenres);
   const profile = useUserStore((s) => s.profile);
 
@@ -86,14 +87,15 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   }, [profile]);
 
   useEffect(() => {
-    if (!selectedDate) return;
+    if (!startDate) return;
     getEvents({
-      date: selectedDate,
+      startDate,
+      endDate,
       genres: selectedGenres.length > 0 ? selectedGenres : undefined,
     })
       .then(setVenues)
       .catch(() => setVenues([]));
-  }, [selectedDate, selectedGenres]);
+  }, [startDate, endDate, selectedGenres]);
 
   const isDenied = status === "denied";
   const showDeniedBanner = isDenied && !deniedDismissed;

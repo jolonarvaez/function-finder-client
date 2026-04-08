@@ -83,7 +83,8 @@ function toMapVenue(event: ApiEvent): MapVenue | null {
 // ── Service ───────────────────────────────────────────────────
 
 type GetEventsParams = {
-  date?: Date;
+  startDate?: Date;
+  endDate?: Date;
   genres?: Genre[];
 };
 
@@ -104,11 +105,17 @@ function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-async function getEvents({ date, genres }: GetEventsParams = {}): Promise<MapVenue[]> {
+async function getEvents({ startDate, endDate, genres }: GetEventsParams = {}): Promise<
+  MapVenue[]
+> {
   const params: Record<string, string> = {};
 
-  if (date) {
-    params.date = toIsoDate(date);
+  if (startDate) {
+    params.startDate = toIsoDate(startDate);
+  }
+
+  if (endDate) {
+    params.endDate = toIsoDate(endDate);
   }
 
   if (genres && genres.length > 0) {
