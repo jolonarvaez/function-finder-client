@@ -110,7 +110,7 @@ export function MapFilters({
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
         <div className="space-y-3 pt-3">
           {/* Genre */}
-          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} variant={"wrap"} />
+          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
 
           {/* Date range */}
           <div className="space-y-1.5">
