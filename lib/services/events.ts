@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import type { Genre } from "@/lib/constants";
-import type { MapVenue } from "@/components/map/MapView";
+import type { MapEvents } from "@/components/map/MapView";
 
 // ── API response types ────────────────────────────────────────
 
@@ -52,7 +52,7 @@ function formatTime(raw: string): string {
   return raw.slice(0, 5);
 }
 
-function toMapVenue(event: ApiEvent): MapVenue | null {
+function toMapVenue(event: ApiEvent): MapEvents | null {
   // Events without coordinates can't be placed on the map
   if (!event.custom_location) return null;
 
@@ -106,7 +106,7 @@ function toIsoDate(date: Date): string {
 }
 
 async function getEvents({ startDate, endDate, genres }: GetEventsParams = {}): Promise<
-  MapVenue[]
+  MapEvents[]
 > {
   const params: Record<string, string> = {};
 

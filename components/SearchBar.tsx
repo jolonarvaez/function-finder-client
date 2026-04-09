@@ -32,16 +32,19 @@ export function SearchBar({
     selectedGenres,
     query,
     activeFilter,
-    selectedDate,
+    dateRangeType,
+    referenceDate: selectedDate,
     setSelectedGenres,
     setQuery,
     setActiveFilter,
-    setSelectedDate,
+    setDateRange,
   } = useMapFilterStore();
+
+  const setSelectedDate = (date: Date | undefined) => setDateRange(dateRangeType, date);
 
   // Seed the store with defaultDate (or today) on first mount
   React.useEffect(() => {
-    setSelectedDate(defaultDate ?? new Date());
+    setDateRange(dateRangeType, defaultDate ?? new Date());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
