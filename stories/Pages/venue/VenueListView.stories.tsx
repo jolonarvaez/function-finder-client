@@ -53,7 +53,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.022,
     lat: 14.5545,
-    live: true,
     distance: "0.3 km",
     event: {
       name: "The Cypher",
@@ -144,7 +143,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.0244,
     lat: 14.5567,
-    live: true,
     distance: "0.8 km",
     event: {
       name: "Pulse",
@@ -168,7 +166,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.027,
     lat: 14.5555,
-    live: true,
     distance: "1.0 km",
     event: {
       name: "Bass District",
@@ -194,7 +191,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.029,
     lat: 14.551,
-    live: true,
     distance: "1.5 km",
     event: {
       name: "Fuego",
@@ -238,7 +234,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.03,
     lat: 14.554,
-    live: true,
     distance: "1.4 km",
     event: {
       name: "Yard",
@@ -263,7 +258,6 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.0205,
     lat: 14.55,
-    live: true,
     distance: "1.7 km",
     event: {
       name: "Studio 54 MNL",

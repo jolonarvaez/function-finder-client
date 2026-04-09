@@ -16,17 +16,16 @@ import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 import { PageHeader } from "../reusables/PageContainer";
 
-export type MapVenue = Readonly<{
+export type MapEvents = Readonly<{
   lng: number;
   lat: number;
-  live?: boolean;
   distance?: string;
   event: VenueEvent;
 }>;
 
 export type MapViewProps = Readonly<{
   defaultDate?: Date;
-  venues?: MapVenue[];
+  venues?: MapEvents[];
 }>;
 
 export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
@@ -36,7 +35,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const setSelectedGenres = useMapFilterStore((s) => s.setSelectedGenres);
   const profile = useUserStore((s) => s.profile);
 
-  const [venues, setVenues] = useState<MapVenue[]>(initialVenues ?? []);
+  const [venues, setVenues] = useState<MapEvents[]>(initialVenues ?? []);
 
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);
@@ -145,7 +144,6 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
             key={venue.event.name}
             longitude={venue.lng}
             latitude={venue.lat}
-            live={venue.live}
             event={venue.event}
           />
         ))}

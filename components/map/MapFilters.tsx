@@ -39,7 +39,12 @@ function formatDateRangeLabel(type: DateRangeType, referenceDate: Date): string 
   return format(referenceDate, "MMMM yyyy");
 }
 
-export function MapFilters({ defaultOpen = false, defaultDate, defaultDateRangeType = "week", className }: MapFiltersProps) {
+export function MapFilters({
+  defaultOpen = false,
+  defaultDate,
+  defaultDateRangeType = "week",
+  className,
+}: MapFiltersProps) {
   const [open, setOpen] = React.useState(defaultOpen);
   const [calendarOpen, setCalendarOpen] = React.useState(false);
 

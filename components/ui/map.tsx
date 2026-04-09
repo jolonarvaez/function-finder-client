@@ -358,6 +358,8 @@ type MapMarkerProps = {
   latitude: number;
   /** Marker subcomponents (MarkerContent, MarkerPopup, MarkerTooltip, MarkerLabel) */
   children: ReactNode;
+  /** CSS z-index applied to the marker element */
+  zIndex?: number;
   /** Callback when marker is clicked */
   onClick?: (e: MouseEvent) => void;
   /** Callback when mouse enters marker */
@@ -376,6 +378,7 @@ function MapMarker({
   longitude,
   latitude,
   children,
+  zIndex,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -440,6 +443,12 @@ function MapMarker({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (zIndex !== undefined) {
+      marker.getElement().style.zIndex = String(zIndex);
+    }
+  }, [marker, zIndex]);
 
   useEffect(() => {
     if (!map) return;

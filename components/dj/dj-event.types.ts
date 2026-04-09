@@ -51,7 +51,9 @@ function nextDayISO(isoDate: string): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function sameDayStatus(event: DJEvent, today: string, nowTime: string): EventStatus {
+type StatusFields = { date: string; startTime: string; endTime: string };
+
+function sameDayStatus(event: StatusFields, today: string, nowTime: string): EventStatus {
   if (event.date < today) return "past";
   if (event.date > today) return "upcoming";
   if (nowTime < event.startTime) return "upcoming";
@@ -59,7 +61,7 @@ function sameDayStatus(event: DJEvent, today: string, nowTime: string): EventSta
   return "live";
 }
 
-function overnightStatus(event: DJEvent, today: string, nowTime: string): EventStatus {
+function overnightStatus(event: StatusFields, today: string, nowTime: string): EventStatus {
   const nextDay = nextDayISO(event.date);
   if (today < event.date) return "upcoming";
   if (today === event.date) return nowTime >= event.startTime ? "live" : "upcoming";
@@ -67,7 +69,7 @@ function overnightStatus(event: DJEvent, today: string, nowTime: string): EventS
   return "past";
 }
 
-export function getStatus(event: DJEvent): EventStatus {
+export function getStatus(event: StatusFields): EventStatus {
   const today = todayISO();
   const now = new Date();
   const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;

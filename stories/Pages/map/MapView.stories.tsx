@@ -1,8 +1,25 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { MapView, type MapVenue } from "@/components/map/MapView";
+import { MapView, type MapEvents } from "@/components/map/MapView";
 
-const MOCK_VENUES: MapVenue[] = [
-  // ── Monday Mar 30 ──────────────────────────────────────────
+// ── Relative date helpers ─────────────────────────────────────
+
+function offsetDate(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+const TODAY = offsetDate(0);
+const YESTERDAY = offsetDate(-1);
+const TWO_DAYS_AGO = offsetDate(-2);
+const TOMORROW = offsetDate(1);
+const TWO_DAYS_OUT = offsetDate(2);
+const THREE_DAYS_OUT = offsetDate(3);
+
+// ── Mock venues ───────────────────────────────────────────────
+
+const MOCK_VENUES: MapEvents[] = [
+  // ── Past (2 days ago) ──────────────────────────────────────
   {
     lng: 121.021,
     lat: 14.559,
@@ -10,9 +27,9 @@ const MOCK_VENUES: MapVenue[] = [
       name: "The Vinyl Room",
       address: "3F Legaspi Towers, Makati",
       category: "Lounge",
-      date: "2026-03-30",
-      startTime: "8PM",
-      endTime: "2AM",
+      date: TWO_DAYS_AGO,
+      startTime: "20:00",
+      endTime: "02:00",
       featured: false,
       attending: 54,
       dj: {
@@ -31,9 +48,9 @@ const MOCK_VENUES: MapVenue[] = [
       image: "https://placehold.co/600x300/7f1d1d/fca5a5?text=Sabor",
       address: "42 Rada St, Makati",
       category: "Latin Club",
-      date: "2026-03-30",
-      startTime: "9PM",
-      endTime: "3AM",
+      date: TWO_DAYS_AGO,
+      startTime: "21:00",
+      endTime: "03:00",
       entryPrice: 10,
       featured: false,
       attending: 145,
@@ -46,7 +63,7 @@ const MOCK_VENUES: MapVenue[] = [
     },
   },
 
-  // ── Tuesday Mar 31 ─────────────────────────────────────────
+  // ── Past (yesterday) ───────────────────────────────────────
   {
     lng: 121.022,
     lat: 14.5545,
@@ -55,9 +72,9 @@ const MOCK_VENUES: MapVenue[] = [
       image: "https://placehold.co/600x300/1c1917/f97316?text=The+Cypher",
       address: "55 Burgos Circle, Makati",
       category: "Hip-Hop Bar",
-      date: "2026-03-31",
-      startTime: "9PM",
-      endTime: "3AM",
+      date: YESTERDAY,
+      startTime: "21:00",
+      endTime: "03:00",
       featured: false,
       attending: 132,
       dj: {
@@ -76,9 +93,9 @@ const MOCK_VENUES: MapVenue[] = [
       image: "https://placehold.co/600x300/422006/facc15?text=Tribe",
       address: "7 Nicanor Garcia St, Makati",
       category: "Club",
-      date: "2026-03-31",
-      startTime: "10PM",
-      endTime: "4AM",
+      date: YESTERDAY,
+      startTime: "22:00",
+      endTime: "04:00",
       entryPrice: 12,
       featured: false,
       attending: 165,
@@ -91,64 +108,18 @@ const MOCK_VENUES: MapVenue[] = [
     },
   },
 
-  // ── Wednesday Apr 1 ────────────────────────────────────────
-  {
-    lng: 121.0195,
-    lat: 14.553,
-    event: {
-      name: "Noir Lounge",
-      image: "https://placehold.co/600x300/0d0d0d/ffffff?text=Noir",
-      address: "12 Jupiter St, Makati",
-      category: "Bar",
-      date: "2026-04-01",
-      startTime: "9PM",
-      endTime: "3AM",
-      featured: false,
-      attending: 89,
-      dj: {
-        name: "Mara Santos",
-        avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
-        genre: "Techno",
-      },
-      created_by: "user_123",
-    },
-  },
-  {
-    lng: 121.0235,
-    lat: 14.5515,
-    event: {
-      name: "Neon",
-      image: "https://placehold.co/600x300/1e1b4b/a78bfa?text=Neon",
-      address: "101 Paseo de Roxas, Makati",
-      category: "Nightclub",
-      date: "2026-04-01",
-      startTime: "10PM",
-      endTime: "5AM",
-      entryPrice: 18,
-      featured: true,
-      attending: 280,
-      dj: {
-        name: "MIKA",
-        avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK",
-        genre: "Pop",
-      },
-      created_by: "user_123",
-    },
-  },
-
-  // ── Thursday Apr 2 (today) ─────────────────────────────────
+  // ── Live (today, all-day window) ───────────────────────────
   {
     lng: 121.0244,
     lat: 14.5567,
-    live: true,
     event: {
       name: "Pulse",
       image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse",
       address: "456 Downtown Ave, Makati",
       category: "Nightclub",
-      date: "2026-04-02",
-      startTime: "10PM",
-      endTime: "4AM",
+      date: TODAY,
+      startTime: "00:00",
+      endTime: "23:59",
       entryPrice: 15,
       featured: true,
       attending: 247,
@@ -163,15 +134,14 @@ const MOCK_VENUES: MapVenue[] = [
   {
     lng: 121.027,
     lat: 14.5555,
-    live: true,
     event: {
       name: "Bass District",
       image: "https://placehold.co/600x300/1e3a5f/38bdf8?text=Bass+District",
       address: "27 Kalayaan Ave, Makati",
       category: "Underground",
-      date: "2026-04-02",
-      startTime: "11PM",
-      endTime: "6AM",
+      date: TODAY,
+      startTime: "00:00",
+      endTime: "23:59",
       entryPrice: 10,
       featured: true,
       attending: 178,
@@ -184,19 +154,18 @@ const MOCK_VENUES: MapVenue[] = [
     },
   },
 
-  // ── Friday Apr 3 ───────────────────────────────────────────
+  // ── Upcoming (tomorrow) ────────────────────────────────────
   {
     lng: 121.029,
     lat: 14.551,
-    live: true,
     event: {
       name: "Fuego",
       image: "https://placehold.co/600x300/7c2d12/fbbf24?text=Fuego",
       address: "88 Rockwell Dr, Makati",
       category: "Club",
-      date: "2026-04-03",
-      startTime: "11PM",
-      endTime: "5AM",
+      date: TOMORROW,
+      startTime: "23:00",
+      endTime: "05:00",
       entryPrice: 20,
       featured: true,
       attending: 312,
@@ -216,9 +185,9 @@ const MOCK_VENUES: MapVenue[] = [
       image: "https://placehold.co/600x300/4a1942/f472b6?text=Velvet",
       address: "18 Salcedo St, Makati",
       category: "Lounge",
-      date: "2026-04-03",
-      startTime: "8PM",
-      endTime: "2AM",
+      date: TOMORROW,
+      startTime: "20:00",
+      endTime: "02:00",
       featured: true,
       attending: 98,
       dj: {
@@ -230,19 +199,18 @@ const MOCK_VENUES: MapVenue[] = [
     },
   },
 
-  // ── Saturday Apr 4 ─────────────────────────────────────────
+  // ── Upcoming (2 days out) ──────────────────────────────────
   {
     lng: 121.03,
     lat: 14.554,
-    live: true,
     event: {
       name: "Yard",
       image: "https://placehold.co/600x300/14532d/4ade80?text=Yard",
       address: "33 Amorsolo St, Makati",
       category: "Outdoor Bar",
-      date: "2026-04-04",
-      startTime: "7PM",
-      endTime: "1AM",
+      date: TWO_DAYS_OUT,
+      startTime: "19:00",
+      endTime: "01:00",
       featured: false,
       attending: 74,
       dj: {
@@ -254,19 +222,18 @@ const MOCK_VENUES: MapVenue[] = [
     },
   },
 
-  // ── Sunday Apr 5 ───────────────────────────────────────────
+  // ── Upcoming (3 days out) ──────────────────────────────────
   {
     lng: 121.0205,
     lat: 14.55,
-    live: true,
     event: {
       name: "Studio 54 MNL",
       image: "https://placehold.co/600x300/451a03/fbbf24?text=Studio+54",
       address: "8 Leviste St, Makati",
       category: "Retro Club",
-      date: "2026-04-05",
-      startTime: "10PM",
-      endTime: "4AM",
+      date: THREE_DAYS_OUT,
+      startTime: "22:00",
+      endTime: "04:00",
       entryPrice: 15,
       featured: true,
       attending: 203,
@@ -303,36 +270,8 @@ type Story = StoryObj<typeof MapView>;
 export const Default: Story = {
   args: {
     venues: MOCK_VENUES,
-    defaultDate: new Date("2026-04-02"),
+    defaultDate: new Date(),
   },
-};
-
-export const Monday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-03-30") },
-};
-
-export const Tuesday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-03-31") },
-};
-
-export const Wednesday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-04-01") },
-};
-
-export const Thursday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-04-02") },
-};
-
-export const Friday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-04-03") },
-};
-
-export const Saturday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-04-04") },
-};
-
-export const Sunday: Story = {
-  args: { venues: MOCK_VENUES, defaultDate: new Date("2026-04-05") },
 };
 
 export const Empty: Story = {

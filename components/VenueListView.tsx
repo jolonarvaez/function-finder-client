@@ -5,21 +5,22 @@ import { LocationItem } from "@/components/LocationItem";
 import { SearchBar } from "@/components/SearchBar";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { MapVenue } from "@/components/map/MapView";
+import { getStatus } from "@/components/dj/dj-event.types";
+import type { MapEvents } from "@/components/map/MapView";
 
 export type VenueListViewProps = Readonly<{
-  venues?: MapVenue[];
+  venues?: MapEvents[];
   defaultDate?: Date;
 }>;
 
-function venueMatchesGenres(venue: MapVenue, genres: string[]): boolean {
+function venueMatchesGenres(venue: MapEvents, genres: string[]): boolean {
   const djGenres = Array.isArray(venue.event.dj.genre)
     ? venue.event.dj.genre
     : [venue.event.dj.genre];
   return djGenres.some((g) => genres.includes(g));
 }
 
-function venueMatchesQuery(venue: MapVenue, query: string): boolean {
+function venueMatchesQuery(venue: MapEvents, query: string): boolean {
   const q = query.toLowerCase();
   return (
     venue.event.name.toLowerCase().includes(q) ||
@@ -32,7 +33,7 @@ function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-function venueMatchesDateRange(venue: MapVenue, startDate: Date, endDate: Date): boolean {
+function venueMatchesDateRange(venue: MapEvents, startDate: Date, endDate: Date): boolean {
   if (!venue.event.date) return true;
   return venue.event.date >= toIsoDate(startDate) && venue.event.date <= toIsoDate(endDate);
 }
@@ -66,7 +67,10 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
 
     switch (activeFilter) {
       case "live-now":
-        result = result.filter((v) => v.live);
+        result = result.filter((v) => {
+          const { date, startTime, endTime } = v.event;
+          return date && getStatus({ date, startTime, endTime }) === "live";
+        });
         break;
       case "nearest":
         break;
@@ -98,7 +102,14 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
                 genre={venue.event.dj.genre}
                 imageSrc={venue.event.image}
                 dj={venue.event.dj.name}
-                isLive={venue.live}
+                isLive={
+                  !!venue.event.date &&
+                  getStatus({
+                    date: venue.event.date,
+                    startTime: venue.event.startTime,
+                    endTime: venue.event.endTime,
+                  }) === "live"
+                }
                 onGoNow={() => {}}
                 className="m-1.5"
               />

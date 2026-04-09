@@ -5,13 +5,17 @@ import type { VenueEvent } from "@/components/map/VenueInfo";
 
 const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
 
-const MOCK_EVENT: VenueEvent = {
+const today = new Date();
+const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+const MOCK_EVENT_UPCOMING: VenueEvent = {
   name: "Pulse",
   image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
   address: "456 Downtown Ave, City Center",
   category: "Nightclub",
-  startTime: "10PM",
-  endTime: "4AM",
+  date: todayISO,
+  startTime: "23:00",
+  endTime: "04:00",
   entryPrice: 15,
   featured: true,
   attending: 247,
@@ -21,6 +25,12 @@ const MOCK_EVENT: VenueEvent = {
     genre: ["House", "Techno"],
   },
   created_by: "user_123",
+};
+
+const MOCK_EVENT_LIVE: VenueEvent = {
+  ...MOCK_EVENT_UPCOMING,
+  startTime: "00:00",
+  endTime: "23:59",
 };
 
 const meta: Meta<typeof VenueMarker> = {
@@ -49,7 +59,11 @@ export const Live: Story = {
   render: () => (
     <div style={{ width: "100%", height: "100vh" }}>
       <Map center={MAKATI_CENTER} zoom={14} className="h-full w-full">
-        <VenueMarker longitude={MAKATI_CENTER[0]} latitude={MAKATI_CENTER[1]} live />
+        <VenueMarker
+          longitude={MAKATI_CENTER[0]}
+          latitude={MAKATI_CENTER[1]}
+          event={MOCK_EVENT_LIVE}
+        />
       </Map>
     </div>
   ),
@@ -62,8 +76,7 @@ export const WithEvent: Story = {
         <VenueMarker
           longitude={MAKATI_CENTER[0]}
           latitude={MAKATI_CENTER[1]}
-          live
-          event={MOCK_EVENT}
+          event={MOCK_EVENT_UPCOMING}
         />
       </Map>
     </div>
