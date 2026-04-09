@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 export type MapFiltersProps = Readonly<{
   defaultOpen?: boolean;
   defaultDate?: Date;
+  defaultDateRangeType?: DateRangeType;
   className?: string;
 }>;
 
@@ -38,7 +39,7 @@ function formatDateRangeLabel(type: DateRangeType, referenceDate: Date): string 
   return format(referenceDate, "MMMM yyyy");
 }
 
-export function MapFilters({ defaultOpen = false, defaultDate, className }: MapFiltersProps) {
+export function MapFilters({ defaultOpen = false, defaultDate, defaultDateRangeType = "week", className }: MapFiltersProps) {
   const [open, setOpen] = React.useState(defaultOpen);
   const [calendarOpen, setCalendarOpen] = React.useState(false);
 
@@ -55,7 +56,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
   const activeCount = selectedGenres.length + (startDate ? 1 : 0);
 
   React.useEffect(() => {
-    setDateRange("week", defaultDate ?? new Date());
+    setDateRange(defaultDateRangeType, defaultDate ?? new Date());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,7 +115,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
             <Tabs value={dateRangeType} onValueChange={(v) => handleTypeChange(v as DateRangeType)}>
               <TabsList className="w-full">
                 {DATE_RANGE_OPTIONS.map(({ label, value }) => (
-                  <TabsTrigger key={value} value={value} className="flex-1 text-xs">
+                  <TabsTrigger key={value} value={value} className="flex-1 text-sm">
                     {label}
                   </TabsTrigger>
                 ))}
@@ -122,7 +123,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
             </Tabs>
 
             {/* Date picker */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 mt-2">
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
