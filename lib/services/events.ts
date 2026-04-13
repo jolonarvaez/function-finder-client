@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { Genre } from "@/lib/constants";
+import { type EventStatus, type Genre } from "@/lib/constants";
 import type { MapEvents } from "@/components/map/MapView";
 
 // ── API response types ────────────────────────────────────────
@@ -52,6 +52,25 @@ function formatTime(raw: string): string {
   return raw.slice(0, 5);
 }
 
+/**
+ * Combines an ISO date ("2026-04-02") with a pg time-with-tz ("10:00:00+08")
+ * into a full ISO-8601 string and returns a Date.
+ */
+function toEventDate(date: string, time: string): Date {
+  // "+08" → "+08:00", "-5" → "-05:00", already "+08:00" untouched
+  const normalized = time.replace(/([+-])(\d{2})$/, "$1$2:00");
+  return new Date(`${date}T${normalized}`);
+}
+
+function getEventStatus(event: ApiEvent): EventStatus {
+  const now = new Date();
+  const start = toEventDate(event.date, event.start_time);
+  const end = toEventDate(event.date, event.end_time);
+  if (now >= start && now <= end) return "live";
+  if (now < start) return "upcoming";
+  return "done";
+}
+
 function toMapVenue(event: ApiEvent): MapEvents | null {
   // Events without coordinates can't be placed on the map
   if (!event.custom_location) return null;
@@ -86,6 +105,7 @@ type GetEventsParams = {
   startDate?: Date;
   endDate?: Date;
   genres?: Genre[];
+  status?: EventStatus;
 };
 
 export type CreateEventBody = {
@@ -105,7 +125,7 @@ function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-async function getEvents({ startDate, endDate, genres }: GetEventsParams = {}): Promise<
+async function getEvents({ startDate, endDate, genres, status }: GetEventsParams = {}): Promise<
   MapEvents[]
 > {
   const params: Record<string, string> = {};
@@ -123,7 +143,11 @@ async function getEvents({ startDate, endDate, genres }: GetEventsParams = {}): 
   }
 
   const { data } = await api.get<ApiResponse>("/events", { params });
-  return data.data.flatMap((e) => {
+
+  const events =
+    status && status !== "all" ? data.data.filter((e) => getEventStatus(e) === status) : data.data;
+
+  return events.flatMap((e) => {
     const venue = toMapVenue(e);
     return venue ? [venue] : [];
   });

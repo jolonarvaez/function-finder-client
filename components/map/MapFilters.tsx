@@ -8,8 +8,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { GenreSelector } from "@/components/GenreSelector";
 import { useMapFilterStore, type DateRangeType } from "@/components/map/use-map-filter-store";
+import { EVENT_STATUSES, EVENT_STATUS_LABELS, type EventStatus } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export type MapFiltersProps = Readonly<{
@@ -50,15 +52,17 @@ export function MapFilters({
 
   const {
     selectedGenres,
+    eventStatus,
     dateRangeType,
     referenceDate,
     startDate,
     endDate,
     setSelectedGenres,
+    setEventStatus,
     setDateRange,
   } = useMapFilterStore();
 
-  const activeCount = selectedGenres.length + (startDate ? 1 : 0);
+  const activeCount = selectedGenres.length + (startDate ? 1 : 0) + (eventStatus !== "all" ? 1 : 0);
 
   React.useEffect(() => {
     setDateRange(defaultDateRangeType, defaultDate ?? new Date());
@@ -109,6 +113,34 @@ export function MapFilters({
 
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
         <div className="space-y-3 pt-3">
+          {/* Event status */}
+          <div className="space-y-1.5">
+            <p className="text-md font-medium text-foreground">Status</p>
+            <div className="flex flex-wrap gap-2">
+              {EVENT_STATUSES.map((status) => {
+                const isSelected = status === eventStatus;
+                return (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => setEventStatus(status as EventStatus)}
+                    className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                  >
+                    <Badge
+                      variant={isSelected ? "default" : "secondary"}
+                      className={cn(
+                        "h-auto cursor-pointer px-4 py-1 text-sm transition-opacity",
+                        isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                      )}
+                    >
+                      {EVENT_STATUS_LABELS[status]}
+                    </Badge>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Genre */}
           <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
 

@@ -141,6 +141,19 @@ export const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
 /** Default zoom level for venue/event maps */
 export const DEFAULT_ZOOM = 14;
 
+// ── Event Status ─────────────────────────────────────────────
+
+export const EVENT_STATUSES = ["all", "live", "upcoming", "done"] as const;
+
+export type EventStatus = (typeof EVENT_STATUSES)[number];
+
+export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
+  all: "All",
+  live: "Live",
+  upcoming: "Upcoming",
+  done: "Done",
+};
+
 // ── Venue Filters ───────────────────────────────────────────
 
 export const VENUE_FILTERS = ["live-now", "nearest", "best-match"] as const;

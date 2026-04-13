@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Genre, VenueFilter } from "@/lib/constants";
+import type { EventStatus, Genre, VenueFilter } from "@/lib/constants";
 
 export type DateRangeType = "day" | "week" | "month";
 
@@ -30,6 +30,7 @@ type MapFilterState = {
   selectedGenres: Genre[];
   query: string;
   activeFilter: VenueFilter;
+  eventStatus: EventStatus;
   dateRangeType: DateRangeType;
   referenceDate: Date | undefined;
   startDate: Date | undefined;
@@ -37,6 +38,7 @@ type MapFilterState = {
   setSelectedGenres: (genres: Genre[]) => void;
   setQuery: (query: string) => void;
   setActiveFilter: (filter: VenueFilter) => void;
+  setEventStatus: (status: EventStatus) => void;
   setDateRange: (type: DateRangeType, ref: Date | undefined) => void;
   reset: () => void;
 };
@@ -45,6 +47,7 @@ export const useMapFilterStore = create<MapFilterState>((set) => ({
   selectedGenres: [],
   query: "",
   activeFilter: "live-now",
+  eventStatus: "all",
   dateRangeType: "week",
   referenceDate: undefined,
   startDate: undefined,
@@ -52,6 +55,7 @@ export const useMapFilterStore = create<MapFilterState>((set) => ({
   setSelectedGenres: (genres) => set({ selectedGenres: genres }),
   setQuery: (query) => set({ query }),
   setActiveFilter: (filter) => set({ activeFilter: filter }),
+  setEventStatus: (status) => set({ eventStatus: status }),
   setDateRange: (type, ref) => {
     if (!ref) {
       set({
@@ -70,6 +74,7 @@ export const useMapFilterStore = create<MapFilterState>((set) => ({
       selectedGenres: [],
       query: "",
       activeFilter: "live-now",
+      eventStatus: "all",
       dateRangeType: "week",
       referenceDate: undefined,
       startDate: undefined,

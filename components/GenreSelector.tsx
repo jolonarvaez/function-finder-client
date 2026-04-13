@@ -26,7 +26,7 @@ function GenreToggle({ genre, isSelected, onToggle }: GenreToggleProps) {
       <Badge
         variant={isSelected ? "default" : "secondary"}
         className={cn(
-          "cursor-pointer px-4.5 py-1.5 text-sm transition-opacity h-auto",
+          "cursor-pointer px-4 py-1 text-sm transition-opacity h-auto",
           isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
         )}
       >

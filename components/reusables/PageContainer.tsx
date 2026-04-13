@@ -29,7 +29,7 @@ export function PageHeader({ title, icon: Icon, showBack = false }: PageHeaderPr
         </button>
       )}
       {Icon && <Icon className="size-5 text-foreground" />}
-      <h1 className="text-xl font-bold tracking-tight text-foreground">{title}</h1>
+      <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
     </div>
   );
 }
