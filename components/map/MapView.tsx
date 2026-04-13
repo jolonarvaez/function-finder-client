@@ -12,6 +12,7 @@ import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { getEvents } from "@/lib/services/events";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 import { PageHeader } from "../reusables/PageContainer";
@@ -34,6 +35,8 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const endDate = useMapFilterStore((s) => s.endDate);
   const setSelectedGenres = useMapFilterStore((s) => s.setSelectedGenres);
   const profile = useUserStore((s) => s.profile);
+  const profileLoading = useUserStore((s) => s.loading);
+  const { loading: authLoading } = useAuth();
 
   const [venues, setVenues] = useState<MapEvents[]>(initialVenues ?? []);
 
@@ -86,7 +89,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   }, [profile]);
 
   useEffect(() => {
-    if (!startDate) return;
+    if (!startDate || authLoading || profileLoading) return;
     getEvents({
       startDate,
       endDate,
@@ -94,7 +97,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
     })
       .then(setVenues)
       .catch(() => setVenues([]));
-  }, [startDate, endDate, selectedGenres]);
+  }, [startDate, endDate, selectedGenres, authLoading, profileLoading]);
 
   const isDenied = status === "denied";
   const showDeniedBanner = isDenied && !deniedDismissed;
