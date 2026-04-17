@@ -84,7 +84,7 @@ export function GenreSelector({
 
       {variant === "scroll" ? (
         <ScrollArea className="w-full">
-          <div className="flex gap-2 pb-3">
+          <div className="flex gap-2">
             {GENRES.map((genre) => (
               <GenreToggle
                 key={genre}
