@@ -27,7 +27,7 @@ export const ScrollDefault: Story = {
 
 export const ScrollWithPreselected: Story = {
   render: () => {
-    const [selected, setSelected] = React.useState<Genre[]>(["House", "Techno", "Drum & Bass"]);
+    const [selected, setSelected] = React.useState<Genre[]>(["House", "Techno", "DnB"]);
     return <GenreSelector selected={selected} onChange={setSelected} variant="scroll" />;
   },
 };
@@ -41,7 +41,7 @@ export const WrapDefault: Story = {
 
 export const WrapWithPreselected: Story = {
   render: () => {
-    const [selected, setSelected] = React.useState<Genre[]>(["House", "Techno", "Drum & Bass"]);
+    const [selected, setSelected] = React.useState<Genre[]>(["House", "Techno", "DnB"]);
     return <GenreSelector selected={selected} onChange={setSelected} variant="wrap" />;
   },
 };

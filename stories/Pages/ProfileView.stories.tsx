@@ -8,7 +8,7 @@ const mockUser = {
   user_metadata: {
     full_name: "Jolo Narvaez",
     avatar_url: undefined,
-    genres: ["House", "Techno", "R&B"],
+    genres: ["House", "Techno", "RnB"],
   },
   app_metadata: {},
   aud: "authenticated",

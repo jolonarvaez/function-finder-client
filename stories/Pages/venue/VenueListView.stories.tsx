@@ -67,7 +67,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "DJ Phonix",
         avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
-        genre: ["Hip-Hop", "R&B"],
+        genre: ["Hip-Hop", "RnB"],
       },
       created_by: "user_123",
     },
@@ -181,7 +181,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "PRISM",
         avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
-        genre: "Drum & Bass",
+        genre: "DnB",
       },
       created_by: "user_123",
     },
@@ -225,7 +225,7 @@ const MOCK_VENUES: MapEvents[] = [
       endTime: "2AM",
       featured: true,
       attending: 98,
-      dj: { name: "Soulée", avatar: "https://placehold.co/80x80/ec4899/fff?text=SL", genre: "R&B" },
+      dj: { name: "Soulée", avatar: "https://placehold.co/80x80/ec4899/fff?text=SL", genre: "RnB" },
       created_by: "user_123",
     },
   },

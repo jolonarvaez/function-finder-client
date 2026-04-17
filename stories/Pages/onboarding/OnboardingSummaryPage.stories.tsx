@@ -27,7 +27,7 @@ export const AsEventGoer: Story = {
     displayName: "Night Owl",
     bio: "Always chasing the perfect night out.",
     country: "United Kingdom",
-    genres: ["House", "Afrobeats", "R&B", "Dancehall"],
+    genres: ["House", "Afrobeats", "RnB", "Dancehall"],
   },
 };
 
@@ -35,9 +35,9 @@ export const AsDJ: Story = {
   args: {
     role: "dj",
     displayName: "DJ Nova",
-    bio: "Blending techno and drum & bass since 2018.",
+    bio: "Blending techno and DnB since 2018.",
     country: "Germany",
-    genres: ["Techno", "Drum & Bass", "House"],
+    genres: ["Techno", "DnB", "House"],
   },
 };
 

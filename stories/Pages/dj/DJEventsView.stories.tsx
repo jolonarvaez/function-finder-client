@@ -26,7 +26,7 @@ const MOCK_EVENTS: DJEvent[] = [
     date: "2026-03-31",
     startTime: "21:00",
     endTime: "03:00",
-    genres: ["Soul", "R&B"],
+    genres: ["Soul", "RnB"],
     coordinates: { lng: 121.022, lat: 14.552 },
   },
 
@@ -56,7 +56,7 @@ const MOCK_EVENTS: DJEvent[] = [
     startTime: "23:00",
     endTime: "06:00",
     entryPrice: 10,
-    genres: ["Drum & Bass", "Techno"],
+    genres: ["DnB", "Techno"],
     coordinates: { lng: 121.0215, lat: 14.5605 },
   },
   {
@@ -68,7 +68,7 @@ const MOCK_EVENTS: DJEvent[] = [
     date: "2026-04-10",
     startTime: "21:00",
     endTime: "03:00",
-    genres: ["Hip-Hop", "R&B", "Afrobeats"],
+    genres: ["Hip-Hop", "RnB", "Afrobeats"],
     coordinates: { lng: 121.026, lat: 14.5533 },
   },
   {
