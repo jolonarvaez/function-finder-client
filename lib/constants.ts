@@ -16,9 +16,9 @@ export const ROLE_LABELS: Record<OnboardingRole, string> = {
 export const GENRES = [
   "House",
   "Techno",
-  "Drum & Bass",
+  "DnB",
   "Hip-Hop",
-  "R&B",
+  "RnB",
   "Afrobeats",
   "Dancehall",
   "Reggaeton",
