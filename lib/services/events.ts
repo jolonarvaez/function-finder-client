@@ -45,6 +45,12 @@ type ApiResponse = {
   data: ApiEvent[];
 };
 
+type ApiSingleResponse = {
+  status: number;
+  message: string;
+  data: ApiEvent;
+};
+
 // ── Helpers ───────────────────────────────────────────────────
 
 /** "10:00:00+08" → "10:00" */
@@ -81,6 +87,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
     lng: event.custom_location.longitude,
     lat: event.custom_location.latitude,
     event: {
+      id: event.id,
       name: event.name,
       address,
       category: event.category,
@@ -176,4 +183,10 @@ async function updateEvent(id: string, body: UpdateEventBody): Promise<void> {
   await api.patch(`/events/${id}`, body);
 }
 
-export { getEvents, createEvent, updateEvent, toIsoDate };
+async function getEvent(id: string): Promise<ApiEvent> {
+  const { data } = await api.get<ApiSingleResponse>(`/events/${id}`);
+  return data.data;
+}
+
+export type { ApiEvent, ApiUser };
+export { getEvents, getEvent, createEvent, updateEvent, toIsoDate, getEventStatus, formatTime };

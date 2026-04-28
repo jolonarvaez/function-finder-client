@@ -9,6 +9,7 @@ const today = new Date();
 const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
 const MOCK_EVENT_UPCOMING: VenueEvent = {
+  id: "mock-event-1",
   name: "Pulse",
   image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
   address: "456 Downtown Ave, City Center",

@@ -88,6 +88,8 @@ className={cn("base-classes", condition && "conditional-class", className)}
 
 **New components**: Add a corresponding Storybook story in `stories/` for isolated development.
 
+**New pages**: Always create a Storybook story for new pages. If the page fetches data internally, export a display-only sub-component (e.g. `EventDetailContent`) that accepts data as props, and write the story against that component.
+
 ---
 
 # Frontend Website Rules

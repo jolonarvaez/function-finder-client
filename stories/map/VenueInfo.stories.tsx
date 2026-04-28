@@ -4,6 +4,7 @@ import { VenueInfo, type VenueEvent } from "@/components/map/VenueInfo";
 import { Button } from "@/components/ui/button";
 
 const MOCK_EVENT: VenueEvent = {
+  id: "mock-event-1",
   name: "Pulse",
   image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
   address: "456 Downtown Ave, City Center",

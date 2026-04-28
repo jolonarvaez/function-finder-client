@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/Persona";
-import { HeartIcon, XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
+import { XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { Genre } from "@/lib/constants";
 
@@ -17,6 +19,7 @@ export type VenueDJ = Readonly<{
 }>;
 
 export type VenueEvent = Readonly<{
+  id: string;
   name: string;
   image?: string;
   address: string;
@@ -71,12 +74,12 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
               )}
             </div>
             <div className="absolute top-3 right-3 flex gap-2">
-              <button
+              {/* <button
                 type="button"
                 className="flex size-8 items-center justify-center rounded-full bg-card/60 text-foreground backdrop-blur-sm transition-colors hover:bg-card/80"
               >
                 <HeartIcon className="size-4" />
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
@@ -97,12 +100,12 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
               )}
             </div>
             <div className="flex gap-2">
-              <button
+              {/* <button
                 type="button"
                 className="flex size-8 items-center justify-center rounded-full bg-muted text-foreground transition-colors hover:bg-muted/80"
               >
                 <HeartIcon className="size-4" />
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
@@ -173,9 +176,9 @@ export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfo
 
         {/* CTA */}
         <SheetFooter className="px-5 pt-4 pb-6">
-          {/* <Button className="h-12 w-full rounded-xl text-sm font-semibold">
-            Go Now
-          </Button> */}
+          <Button asChild className="h-12 w-full rounded-lg text-sm font-semibold">
+            <Link href={`/events/${event.id}`}>View Event Details</Link>
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

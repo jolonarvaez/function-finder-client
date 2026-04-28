@@ -93,6 +93,12 @@ export function Persona({
               </div>
             )}
           </div>
+
+          <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto self-center">
+            <Button variant="ghost" className="shrink-0 text-muted-foreground">
+              View Profile →
+            </Button>
+          </Link>
         </div>
 
         {/* <div className="flex flex-col gap-1.5">
