@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Map, MapControls, type MapRef } from "@/components/ui/map";
 import { MapFilters } from "@/components/map/MapFilters";
+import { MobileMapFilters } from "@/components/map/MobileMapFilters";
 import { VenueMarker } from "@/components/map/VenueMarker";
 import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
@@ -109,7 +110,8 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
       {/* Filter panel */}
       <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-3 border-b border-border">
         <PageHeader title="Map View" icon={MapIcon} />
-        <MapFilters defaultOpen defaultDate={defaultDate} />
+        <MobileMapFilters defaultDate={defaultDate} className="sm:hidden" />
+        <MapFilters defaultOpen defaultDate={defaultDate} className="hidden sm:block" />
       </div>
 
       {/* Full-screen map */}

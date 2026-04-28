@@ -1,54 +1,31 @@
 "use client";
 
 import * as React from "react";
-import { format, startOfWeek, endOfWeek } from "date-fns";
+import { format } from "date-fns";
 import { XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetFooter,
-} from "@/components/ui/sheet";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GenreSelector } from "@/components/GenreSelector";
-import { useMapFilterStore, type DateRangeType } from "@/components/map/use-map-filter-store";
-import { EVENT_STATUSES, EVENT_STATUS_LABELS, type EventStatus } from "@/lib/constants";
+  GENRES,
+  type Genre,
+  EVENT_STATUSES,
+  EVENT_STATUS_LABELS,
+  type EventStatus,
+} from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 // ── Types ─────────────────────────────────────────────────────
 
 export type MobileMapFiltersProps = Readonly<{
   defaultDate?: Date;
-  defaultDateRangeType?: DateRangeType;
   className?: string;
 }>;
 
 type ActiveSheet = "status" | "genre" | "date" | null;
-
-// ── Helpers ───────────────────────────────────────────────────
-
-const DATE_RANGE_OPTIONS: { label: string; value: DateRangeType }[] = [
-  { label: "Day", value: "day" },
-  { label: "Week", value: "week" },
-  { label: "Month", value: "month" },
-];
-
-function formatDatePillLabel(type: DateRangeType, referenceDate: Date): string {
-  if (type === "day") return format(referenceDate, "MMM d");
-  if (type === "week") {
-    const sunday = startOfWeek(referenceDate, { weekStartsOn: 0 });
-    const saturday = endOfWeek(referenceDate, { weekStartsOn: 0 });
-    if (sunday.getMonth() === saturday.getMonth()) {
-      return `${format(sunday, "MMM d")}–${format(saturday, "d")}`;
-    }
-    return `${format(sunday, "MMM d")}–${format(saturday, "MMM d")}`;
-  }
-  return format(referenceDate, "MMM yyyy");
-}
+type DateOption = "today" | "week" | "pick";
 
 // ── Sub-components ────────────────────────────────────────────
 
@@ -80,19 +57,21 @@ function FilterPill({
   );
 }
 
+const DATE_OPTIONS: { label: string; value: DateOption }[] = [
+  { label: "Today", value: "today" },
+  { label: "This Week", value: "week" },
+  { label: "Pick a date", value: "pick" },
+];
+
 // ── Main component ────────────────────────────────────────────
 
-export function MobileMapFilters({
-  defaultDate,
-  defaultDateRangeType = "week",
-  className,
-}: MobileMapFiltersProps) {
+export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersProps) {
   const [activeSheet, setActiveSheet] = React.useState<ActiveSheet>(null);
+  const [dateOption, setDateOption] = React.useState<DateOption | null>(null);
 
   const {
     selectedGenres,
     eventStatus,
-    dateRangeType,
     referenceDate,
     startDate,
     endDate,
@@ -102,31 +81,44 @@ export function MobileMapFilters({
   } = useMapFilterStore();
 
   React.useEffect(() => {
-    setDateRange(defaultDateRangeType, defaultDate ?? new Date());
+    setDateRange("week", defaultDate ?? new Date());
+    setDateOption("week");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Pill labels ──────────────────────────────────────────────
 
   const statusLabel = EVENT_STATUS_LABELS[eventStatus];
-  const genreLabel =
-    selectedGenres.length > 0 ? `Genre · ${selectedGenres.length}` : "Genre";
-  const dateLabel = referenceDate
-    ? formatDatePillLabel(dateRangeType, referenceDate)
-    : "Date";
+  const genreLabel = selectedGenres.length > 0 ? `Genre · ${selectedGenres.length}` : "Genre";
+  const dateLabel =
+    dateOption === "today"
+      ? "Today"
+      : dateOption === "week"
+        ? "This Week"
+        : dateOption === "pick" && referenceDate
+          ? format(referenceDate, "MMM d")
+          : "Date";
 
-  // ── Date sheet handlers ──────────────────────────────────────
+  // ── Date option handler ──────────────────────────────────────
 
-  function handleTypeChange(type: DateRangeType) {
-    setDateRange(type, referenceDate ?? new Date());
+  function handleDateOption(option: DateOption) {
+    setDateOption(option);
+    if (option === "today") {
+      setDateRange("day", new Date());
+    } else if (option === "week") {
+      setDateRange("week", new Date());
+    }
+    // "pick" stays open for calendar interaction
   }
 
-  function handleDateSelect(d: Date | undefined) {
-    setDateRange(dateRangeType, d);
+  function handlePickedDate(d: Date | undefined) {
+    setDateRange("day", d);
+    if (d) setActiveSheet(null);
   }
 
   function handleDateClear() {
-    setDateRange(dateRangeType, undefined);
+    setDateOption(null);
+    setDateRange("day", undefined);
   }
 
   // ── Status sheet handler ─────────────────────────────────────
@@ -164,7 +156,7 @@ export function MobileMapFilters({
             <SheetTitle>Status</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-1 py-2">
+          <div className="flex flex-col gap-1 p-2">
             {EVENT_STATUSES.map((status) => {
               const selected = status === eventStatus;
               return (
@@ -182,14 +174,10 @@ export function MobileMapFilters({
                   <span
                     className={cn(
                       "flex size-5 items-center justify-center rounded-full border-2 transition-colors",
-                      selected
-                        ? "border-primary bg-primary"
-                        : "border-muted-foreground/40"
+                      selected ? "border-primary bg-primary" : "border-muted-foreground/40"
                     )}
                   >
-                    {selected && (
-                      <span className="size-2 rounded-full bg-primary-foreground" />
-                    )}
+                    {selected && <span className="size-2 rounded-full bg-primary-foreground" />}
                   </span>
                 </button>
               );
@@ -205,12 +193,35 @@ export function MobileMapFilters({
             <SheetTitle>Genres</SheetTitle>
           </SheetHeader>
 
-          <div className="py-2">
-            <GenreSelector
-              variant="wrap"
-              selected={selectedGenres}
-              onChange={setSelectedGenres}
-            />
+          <div className="flex flex-wrap gap-2 p-2">
+            {GENRES.map((genre: Genre) => {
+              const active = selectedGenres.includes(genre);
+              return (
+                <button
+                  key={genre}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() =>
+                    setSelectedGenres(
+                      active
+                        ? selectedGenres.filter((g) => g !== genre)
+                        : [...selectedGenres, genre]
+                    )
+                  }
+                  className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                >
+                  <Badge
+                    variant={active ? "default" : "secondary"}
+                    className={cn(
+                      "h-auto cursor-pointer px-3 py-1 text-sm transition-colors",
+                      active ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                    )}
+                  >
+                    {genre}
+                  </Badge>
+                </button>
+              );
+            })}
           </div>
 
           <SheetFooter className="pt-4">
@@ -228,39 +239,69 @@ export function MobileMapFilters({
             <SheetTitle>Date</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-4 py-2">
-            <Tabs
-              value={dateRangeType}
-              onValueChange={(v) => handleTypeChange(v as DateRangeType)}
-            >
-              <TabsList className="w-full">
-                {DATE_RANGE_OPTIONS.map(({ label, value }) => (
-                  <TabsTrigger key={value} value={value} className="flex-1 text-sm">
-                    {label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+          <div className="flex flex-col gap-1 p-2">
+            {DATE_OPTIONS.map(({ label, value }) => {
+              const selected = dateOption === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => handleDateOption(value)}
+                  className={cn(
+                    "flex items-center justify-between rounded-lg px-4 py-3 text-sm transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                    selected ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                  )}
+                >
+                  <span className="font-medium">{label}</span>
+                  <span
+                    className={cn(
+                      "flex size-5 items-center justify-center rounded-full border-2 transition-colors",
+                      selected ? "border-primary bg-primary" : "border-muted-foreground/40"
+                    )}
+                  >
+                    {selected && <span className="size-2 rounded-full bg-primary-foreground" />}
+                  </span>
+                </button>
+              );
+            })}
 
-            <Calendar
-              mode="single"
-              selected={dateRangeType === "day" ? referenceDate : undefined}
-              onSelect={handleDateSelect}
-              modifiers={
-                dateRangeType !== "day" && startDate && endDate
-                  ? {
-                      range_start: [startDate],
-                      range_end: [endDate],
-                      range_middle: { after: startDate, before: endDate },
+            {/* Calendar revealed when "pick" is selected */}
+            {dateOption === "pick" && (
+              <div className="pt-2">
+                <Calendar
+                  mode="single"
+                  selected={referenceDate}
+                  onSelect={handlePickedDate}
+                  className="mx-auto rounded-xl border"
+                />
+              </div>
+            )}
+
+            {/* Week range highlight */}
+            {dateOption === "week" && startDate && endDate && (
+              <div className="pt-2">
+                <Calendar
+                  mode="single"
+                  selected={undefined}
+                  onSelect={(d) => {
+                    if (d) {
+                      setDateRange("week", d);
                     }
-                  : {}
-              }
-              className="mx-auto"
-            />
+                  }}
+                  modifiers={{
+                    range_start: [startDate],
+                    range_end: [endDate],
+                    range_middle: { after: startDate, before: endDate },
+                  }}
+                  className="mx-auto rounded-xl border"
+                />
+              </div>
+            )}
           </div>
 
           <SheetFooter className="flex-row gap-2 pt-2">
-            {referenceDate && (
+            {dateOption && (
               <Button
                 variant="ghost"
                 className="gap-1.5 text-muted-foreground"
