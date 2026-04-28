@@ -9,6 +9,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.559,
     distance: "0.5 km",
     event: {
+      id: "mock-1",
       name: "The Vinyl Room",
       address: "3F Legaspi Towers, Makati",
       category: "Lounge",
@@ -30,6 +31,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.5525,
     distance: "2.5 km",
     event: {
+      id: "mock-2",
       name: "Sabor",
       image: "https://placehold.co/600x300/7f1d1d/fca5a5?text=Sabor",
       address: "42 Rada St, Makati",
@@ -55,6 +57,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.5545,
     distance: "0.3 km",
     event: {
+      id: "mock-3",
       name: "The Cypher",
       image: "https://placehold.co/600x300/1c1917/f97316?text=The+Cypher",
       address: "55 Burgos Circle, Makati",
@@ -77,6 +80,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.556,
     distance: "2.1 km",
     event: {
+      id: "mock-4",
       name: "Tribe",
       image: "https://placehold.co/600x300/422006/facc15?text=Tribe",
       address: "7 Nicanor Garcia St, Makati",
@@ -102,6 +106,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.553,
     distance: "1.2 km",
     event: {
+      id: "mock-5",
       name: "Noir Lounge",
       image: "https://placehold.co/600x300/0d0d0d/ffffff?text=Noir",
       address: "12 Jupiter St, Makati",
@@ -124,6 +129,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.5515,
     distance: "0.6 km",
     event: {
+      id: "mock-6",
       name: "Neon",
       image: "https://placehold.co/600x300/1e1b4b/a78bfa?text=Neon",
       address: "101 Paseo de Roxas, Makati",
@@ -145,6 +151,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.5567,
     distance: "0.8 km",
     event: {
+      id: "mock-7",
       name: "Pulse",
       image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse",
       address: "456 Downtown Ave, Makati",
@@ -168,6 +175,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.5555,
     distance: "1.0 km",
     event: {
+      id: "mock-8",
       name: "Bass District",
       image: "https://placehold.co/600x300/1e3a5f/38bdf8?text=Bass+District",
       address: "27 Kalayaan Ave, Makati",
@@ -193,6 +201,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.551,
     distance: "1.5 km",
     event: {
+      id: "mock-9",
       name: "Fuego",
       image: "https://placehold.co/600x300/7c2d12/fbbf24?text=Fuego",
       address: "88 Rockwell Dr, Makati",
@@ -216,6 +225,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.558,
     distance: "1.8 km",
     event: {
+      id: "mock-10",
       name: "Velvet",
       image: "https://placehold.co/600x300/4a1942/f472b6?text=Velvet",
       address: "18 Salcedo St, Makati",
@@ -236,6 +246,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.554,
     distance: "1.4 km",
     event: {
+      id: "mock-11",
       name: "Yard",
       image: "https://placehold.co/600x300/14532d/4ade80?text=Yard",
       address: "33 Amorsolo St, Makati",
@@ -260,6 +271,7 @@ const MOCK_VENUES: MapEvents[] = [
     lat: 14.55,
     distance: "1.7 km",
     event: {
+      id: "mock-12",
       name: "Studio 54 MNL",
       image: "https://placehold.co/600x300/451a03/fbbf24?text=Studio+54",
       address: "8 Leviste St, Makati",
