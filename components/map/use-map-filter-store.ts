@@ -101,15 +101,9 @@ export const useMapFilterStore = create<MapFilterState>()(
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         const s = state as unknown as Record<string, unknown>;
-        state.referenceDate = s.referenceDate
-          ? new Date(s.referenceDate as string)
-          : undefined;
-        state.startDate = s.startDate
-          ? new Date(s.startDate as string)
-          : undefined;
-        state.endDate = s.endDate
-          ? new Date(s.endDate as string)
-          : undefined;
+        state.referenceDate = s.referenceDate ? new Date(s.referenceDate as string) : undefined;
+        state.startDate = s.startDate ? new Date(s.startDate as string) : undefined;
+        state.endDate = s.endDate ? new Date(s.endDate as string) : undefined;
       },
     }
   )

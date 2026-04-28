@@ -46,9 +46,10 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
   const startTime = formatTime(event.start_time.slice(0, 5));
   const endTime = formatTime(event.end_time.slice(0, 5));
   const djName = event.users.display_name;
-  const djGenres = (event.genres as Genre[]).length > 0
-    ? (event.genres as Genre[])
-    : (event.users.genre_tags as Genre[]);
+  const djGenres =
+    (event.genres as Genre[]).length > 0
+      ? (event.genres as Genre[])
+      : (event.users.genre_tags as Genre[]);
 
   return (
     <div>
@@ -134,7 +135,11 @@ function StatusBadge({ status }: { status: string }) {
   if (status === "upcoming") {
     return <Badge variant="secondary">Upcoming</Badge>;
   }
-  return <Badge variant="outline" className="text-muted-foreground">Past</Badge>;
+  return (
+    <Badge variant="outline" className="text-muted-foreground">
+      Past
+    </Badge>
+  );
 }
 
 function EventDetailSkeleton() {
