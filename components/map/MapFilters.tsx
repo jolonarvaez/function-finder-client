@@ -1,59 +1,54 @@
 "use client";
 
 import * as React from "react";
-import { format, startOfWeek, endOfWeek } from "date-fns";
-import { SlidersHorizontalIcon, CalendarIcon, XIcon, ChevronDownIcon } from "lucide-react";
+import { endOfWeek, format, startOfWeek } from "date-fns";
+import { SlidersHorizontalIcon, XIcon, ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { GenreSelector } from "@/components/GenreSelector";
-import { useMapFilterStore, type DateRangeType } from "@/components/map/use-map-filter-store";
+import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { EVENT_STATUSES, EVENT_STATUS_LABELS, type EventStatus } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+
+// ── Types ─────────────────────────────────────────────────────
 
 export type MapFiltersProps = Readonly<{
   defaultOpen?: boolean;
   defaultDate?: Date;
-  defaultDateRangeType?: DateRangeType;
   className?: string;
 }>;
 
-const DATE_RANGE_OPTIONS: { label: string; value: DateRangeType }[] = [
-  { label: "Day", value: "day" },
-  { label: "Week", value: "week" },
-  { label: "Month", value: "month" },
-];
+type DateOption = "today" | "week" | "pick-week" | "pick-date";
 
-function formatDateRangeLabel(type: DateRangeType, referenceDate: Date): string {
-  if (type === "day") return format(referenceDate, "PPP");
-  if (type === "week") {
-    const sunday = startOfWeek(referenceDate, { weekStartsOn: 0 });
-    const saturday = endOfWeek(referenceDate, { weekStartsOn: 0 });
-    if (sunday.getMonth() === saturday.getMonth()) {
-      return `${format(sunday, "MMM d")} – ${format(saturday, "d, yyyy")}`;
-    }
-    return `${format(sunday, "MMM d")} – ${format(saturday, "MMM d, yyyy")}`;
-  }
-  // month
-  return format(referenceDate, "MMMM yyyy");
+// ── Helpers ───────────────────────────────────────────────────
+
+function currentWeekLabel() {
+  const now = new Date();
+  const start = startOfWeek(now, { weekStartsOn: 0 });
+  const end = endOfWeek(now, { weekStartsOn: 0 });
+  const startStr = format(start, "MMM d");
+  const endStr = start.getMonth() === end.getMonth() ? format(end, "d") : format(end, "MMM d");
+  return `${startStr} – ${endStr}`;
 }
 
-export function MapFilters({
-  defaultOpen = false,
-  defaultDate,
-  defaultDateRangeType = "week",
-  className,
-}: MapFiltersProps) {
+function todayLabel() {
+  return format(new Date(), "EEE, MMM d");
+}
+
+// ── Component ─────────────────────────────────────────────────
+
+export function MapFilters({ defaultOpen = false, defaultDate, className }: MapFiltersProps) {
   const [open, setOpen] = React.useState(defaultOpen);
-  const [calendarOpen, setCalendarOpen] = React.useState(false);
+  const [dateOption, setDateOption] = React.useState<DateOption | null>(null);
 
   const {
     selectedGenres,
     eventStatus,
-    dateRangeType,
     referenceDate,
     startDate,
     endDate,
@@ -62,61 +57,83 @@ export function MapFilters({
     setDateRange,
   } = useMapFilterStore();
 
-  const activeCount = selectedGenres.length + (startDate ? 1 : 0) + (eventStatus !== "all" ? 1 : 0);
-
   React.useEffect(() => {
-    setDateRange(defaultDateRangeType, defaultDate ?? new Date());
+    setDateRange("week", defaultDate ?? new Date());
+    setDateOption("week");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleTypeChange(type: DateRangeType) {
-    setDateRange(type, referenceDate ?? new Date());
+  const activeCount = selectedGenres.length + (startDate ? 1 : 0) + (eventStatus !== "all" ? 1 : 0);
+
+  function handleDateOption(option: DateOption) {
+    setDateOption(option);
+    if (option === "today") {
+      setDateRange("day", new Date());
+    } else if (option === "week") {
+      setDateRange("week", new Date());
+    }
   }
 
-  function handleDateSelect(d: Date | undefined) {
-    setDateRange(dateRangeType, d);
-    if (d) setCalendarOpen(false);
+  function handlePickedWeek(d: Date | undefined) {
+    if (!d) return;
+    setDateRange("week", d);
   }
 
-  function handleClear() {
-    setDateRange(dateRangeType, undefined);
+  function handlePickedDate(d: Date | undefined) {
+    if (!d) return;
+    setDateRange("day", d);
   }
+
+  function handleDateClear() {
+    setDateOption(null);
+    setDateRange("day", undefined);
+  }
+
+  const thisWeekLabel = currentWeekLabel();
+  const currentTodayLabel = todayLabel();
+
+  const cardClass = cn(
+    "flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
+    "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+    "hover:bg-muted"
+  );
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className={className}>
+    <Collapsible open={open} onOpenChange={setOpen} className={cn("w-72", className)}>
+      {/* Trigger pill */}
       <CollapsibleTrigger asChild>
         <button
           type="button"
           className={cn(
-            "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-            "bg-muted/40 hover:bg-muted/60 active:bg-muted/80",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            "flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium shadow-md transition-colors",
+            "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           )}
         >
-          <span className="flex items-center gap-2 text-foreground">
-            <SlidersHorizontalIcon className="size-4" />
-            Filters
-            {activeCount > 0 && (
-              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
-                {activeCount}
-              </span>
-            )}
-          </span>
+          <SlidersHorizontalIcon className="size-4 shrink-0" />
+          <span>Filters</span>
+          {activeCount > 0 && (
+            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+              {activeCount}
+            </span>
+          )}
           <ChevronDownIcon
             className={cn(
-              "size-4 text-muted-foreground transition-transform duration-200",
+              "ml-auto size-4 text-muted-foreground transition-transform duration-200",
               open && "rotate-180"
             )}
           />
         </button>
       </CollapsibleTrigger>
 
+      {/* Panel */}
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
-        <div className="space-y-3 pt-3">
-          {/* Event status */}
+        <div className="mt-1 space-y-3 rounded-lg border border-border bg-card p-3 shadow-lg">
+          {/* Status */}
           <div className="space-y-1.5">
-            <p className="text-md font-medium text-foreground">Status</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Status
+            </p>
+            <div className="flex flex-wrap gap-1.5">
               {EVENT_STATUSES.map((status) => {
                 const isSelected = status === eventStatus;
                 return (
@@ -129,7 +146,7 @@ export function MapFilters({
                     <Badge
                       variant={isSelected ? "default" : "secondary"}
                       className={cn(
-                        "h-auto cursor-pointer px-4 py-1 text-sm transition-opacity",
+                        "h-auto cursor-pointer px-3 py-0.5 text-xs transition-colors",
                         isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                       )}
                     >
@@ -141,71 +158,107 @@ export function MapFilters({
             </div>
           </div>
 
+          <Separator />
+
           {/* Genre */}
-          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
-
-          {/* Date range */}
           <div className="space-y-1.5">
-            <p className="text-md font-medium text-foreground">Date</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Genre
+            </p>
+            <GenreSelector
+              selected={selectedGenres}
+              onChange={setSelectedGenres}
+              size="small"
+              variant="wrap"
+            />
+          </div>
 
-            {/* Type toggle */}
-            <Tabs value={dateRangeType} onValueChange={(v) => handleTypeChange(v as DateRangeType)}>
-              <TabsList className="w-full">
-                {DATE_RANGE_OPTIONS.map(({ label, value }) => (
-                  <TabsTrigger key={value} value={value} className="flex-1 text-sm">
-                    {label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+          <Separator />
 
-            {/* Date picker */}
-            <div className="flex items-center gap-1 mt-2">
-              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "h-9 flex-1 justify-start gap-2 rounded-lg text-sm font-normal",
-                      !referenceDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="size-3.5 shrink-0" />
-                    {referenceDate
-                      ? formatDateRangeLabel(dateRangeType, referenceDate)
-                      : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={dateRangeType === "day" ? referenceDate : undefined}
-                    onSelect={handleDateSelect}
-                    modifiers={
-                      dateRangeType !== "day" && startDate && endDate
-                        ? {
-                            range_start: [startDate],
-                            range_end: [endDate],
-                            range_middle: { after: startDate, before: endDate },
-                          }
-                        : {}
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
+          {/* Date */}
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Date
+            </p>
 
-              {referenceDate && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Clear date"
-                  onClick={handleClear}
-                  className="size-9 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
-                >
-                  <XIcon className="size-3.5" />
-                </Button>
-              )}
-            </div>
+            <RadioGroup
+              value={dateOption ?? ""}
+              onValueChange={(v) => handleDateOption(v as DateOption)}
+              className="gap-1"
+            >
+              {/* Today */}
+              <Label htmlFor="df-today" className={cardClass}>
+                <span className="flex flex-col gap-0.5">
+                  <span>Today</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {currentTodayLabel}
+                  </span>
+                </span>
+                <RadioGroupItem id="df-today" value="today" />
+              </Label>
+
+              {/* This Week */}
+              <Label htmlFor="df-week" className={cardClass}>
+                <span className="flex flex-col gap-0.5">
+                  <span>This Week</span>
+                  <span className="text-xs font-normal text-muted-foreground">{thisWeekLabel}</span>
+                </span>
+                <RadioGroupItem id="df-week" value="week" />
+              </Label>
+
+              {/* Pick a Week */}
+              <Label htmlFor="df-pick-week" className={cardClass}>
+                Pick a Week
+                <RadioGroupItem id="df-pick-week" value="pick-week" />
+              </Label>
+
+              {/* Pick a Date */}
+              <Label htmlFor="df-pick-date" className={cardClass}>
+                Pick a Date
+                <RadioGroupItem id="df-pick-date" value="pick-date" />
+              </Label>
+            </RadioGroup>
+
+            {/* Week range calendar */}
+            {dateOption === "pick-week" && (
+              <Calendar
+                mode="single"
+                selected={undefined}
+                onSelect={handlePickedWeek}
+                modifiers={
+                  startDate && endDate
+                    ? {
+                        range_start: [startDate],
+                        range_end: [endDate],
+                        range_middle: { after: startDate, before: endDate },
+                      }
+                    : undefined
+                }
+                className="mx-auto rounded-xl border"
+              />
+            )}
+
+            {/* Single date calendar */}
+            {dateOption === "pick-date" && (
+              <Calendar
+                mode="single"
+                selected={referenceDate}
+                onSelect={handlePickedDate}
+                className="mx-auto rounded-xl border"
+              />
+            )}
+
+            {dateOption && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full gap-1.5 text-muted-foreground"
+                onClick={handleDateClear}
+              >
+                <XIcon className="size-3" />
+                Clear date
+              </Button>
+            )}
           </div>
         </div>
       </CollapsibleContent>

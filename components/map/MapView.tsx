@@ -107,11 +107,15 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {/* Filter panel */}
-      <div className="absolute inset-x-0 top-0 z-10 bg-card px-4 py-3 border-b border-border">
+      {/* Mobile filter bar */}
+      <div className="absolute inset-x-0 top-0 z-10 border-b border-border bg-card px-4 py-3 sm:hidden">
         <PageHeader title="Map View" icon={MapIcon} />
-        <MobileMapFilters defaultDate={defaultDate} className="sm:hidden" />
-        <MapFilters defaultOpen defaultDate={defaultDate} className="hidden sm:block" />
+        <MobileMapFilters defaultDate={defaultDate} />
+      </div>
+
+      {/* Desktop floating filter panel */}
+      <div className="absolute left-4 top-4 z-20 hidden sm:block">
+        <MapFilters defaultOpen defaultDate={defaultDate} />
       </div>
 
       {/* Full-screen map */}

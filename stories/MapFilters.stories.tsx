@@ -19,26 +19,9 @@ type Story = StoryObj<typeof MapFilters>;
 
 export const Collapsed: Story = {};
 
-export const DaySelected: Story = {
+export const OpenDefault: Story = {
   args: {
     defaultOpen: true,
     defaultDate: new Date("2026-04-08"),
-    defaultDateRangeType: "day",
-  },
-};
-
-export const WeekSelected: Story = {
-  args: {
-    defaultOpen: true,
-    defaultDate: new Date("2026-04-08"),
-    defaultDateRangeType: "week",
-  },
-};
-
-export const MonthSelected: Story = {
-  args: {
-    defaultOpen: true,
-    defaultDate: new Date("2026-04-08"),
-    defaultDateRangeType: "month",
   },
 };
