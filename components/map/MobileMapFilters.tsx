@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { format } from "date-fns";
+import { endOfWeek, format, startOfWeek } from "date-fns";
 import { XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import {
@@ -25,7 +27,22 @@ export type MobileMapFiltersProps = Readonly<{
 }>;
 
 type ActiveSheet = "status" | "genre" | "date" | null;
-type DateOption = "today" | "week" | "pick";
+type DateOption = "today" | "week" | "pick-week" | "pick-date";
+
+// ── Helpers ───────────────────────────────────────────────────
+
+function currentWeekLabel() {
+  const now = new Date();
+  const start = startOfWeek(now, { weekStartsOn: 0 });
+  const end = endOfWeek(now, { weekStartsOn: 0 });
+  const startStr = format(start, "MMM d");
+  const endStr = start.getMonth() === end.getMonth() ? format(end, "d") : format(end, "MMM d");
+  return `${startStr} – ${endStr}`;
+}
+
+function todayLabel() {
+  return format(new Date(), "EEE, MMM d");
+}
 
 // ── Sub-components ────────────────────────────────────────────
 
@@ -56,12 +73,6 @@ function FilterPill({
     </button>
   );
 }
-
-const DATE_OPTIONS: { label: string; value: DateOption }[] = [
-  { label: "Today", value: "today" },
-  { label: "This Week", value: "week" },
-  { label: "Pick a date", value: "pick" },
-];
 
 // ── Main component ────────────────────────────────────────────
 
@@ -95,9 +106,11 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
       ? "Today"
       : dateOption === "week"
         ? "This Week"
-        : dateOption === "pick" && referenceDate
-          ? format(referenceDate, "MMM d")
-          : "Date";
+        : dateOption === "pick-week" && startDate && endDate
+          ? `${format(startDate, "MMM d")} – ${format(endDate, "d")}`
+          : dateOption === "pick-date" && referenceDate
+            ? format(referenceDate, "MMM d")
+            : "Date";
 
   // ── Date option handler ──────────────────────────────────────
 
@@ -108,12 +121,19 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
     } else if (option === "week") {
       setDateRange("week", new Date());
     }
-    // "pick" stays open for calendar interaction
+    // "pick-week" and "pick-date" stay open for calendar interaction
+  }
+
+  function handlePickedWeek(d: Date | undefined) {
+    if (!d) return;
+    setDateRange("week", d);
+    setActiveSheet(null);
   }
 
   function handlePickedDate(d: Date | undefined) {
+    if (!d) return;
     setDateRange("day", d);
-    if (d) setActiveSheet(null);
+    setActiveSheet(null);
   }
 
   function handleDateClear() {
@@ -127,6 +147,9 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
     setEventStatus(status);
     setActiveSheet(null);
   }
+
+  const thisWeekLabel = currentWeekLabel();
+  const currentTodayLabel = todayLabel();
 
   return (
     <>
@@ -142,11 +165,7 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
           active={selectedGenres.length > 0}
           onClick={() => setActiveSheet("genre")}
         />
-        <FilterPill
-          label={dateLabel}
-          active={!!referenceDate}
-          onClick={() => setActiveSheet("date")}
-        />
+        <FilterPill label={dateLabel} active={!!startDate} onClick={() => setActiveSheet("date")} />
       </div>
 
       {/* Status sheet */}
@@ -156,33 +175,26 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
             <SheetTitle>Status</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-1 p-2">
-            {EVENT_STATUSES.map((status) => {
-              const selected = status === eventStatus;
-              return (
-                <button
-                  key={status}
-                  type="button"
-                  onClick={() => handleStatusSelect(status as EventStatus)}
-                  className={cn(
-                    "flex items-center justify-between rounded-lg px-4 py-3 text-sm transition-colors",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                    selected ? "bg-primary/10 text-primary" : "hover:bg-muted"
-                  )}
-                >
-                  <span className="font-medium">{EVENT_STATUS_LABELS[status as EventStatus]}</span>
-                  <span
-                    className={cn(
-                      "flex size-5 items-center justify-center rounded-full border-2 transition-colors",
-                      selected ? "border-primary bg-primary" : "border-muted-foreground/40"
-                    )}
-                  >
-                    {selected && <span className="size-2 rounded-full bg-primary-foreground" />}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <RadioGroup
+            value={eventStatus}
+            onValueChange={(v) => handleStatusSelect(v as EventStatus)}
+            className="gap-1 p-2"
+          >
+            {EVENT_STATUSES.map((status) => (
+              <Label
+                key={status}
+                htmlFor={`status-${status}`}
+                className={cn(
+                  "flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+                  "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+                  "hover:bg-muted"
+                )}
+              >
+                {EVENT_STATUS_LABELS[status as EventStatus]}
+                <RadioGroupItem id={`status-${status}`} value={status} />
+              </Label>
+            ))}
+          </RadioGroup>
         </SheetContent>
       </Sheet>
 
@@ -240,60 +252,100 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
           </SheetHeader>
 
           <div className="flex flex-col gap-1 p-2">
-            {DATE_OPTIONS.map(({ label, value }) => {
-              const selected = dateOption === value;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => handleDateOption(value)}
-                  className={cn(
-                    "flex items-center justify-between rounded-lg px-4 py-3 text-sm transition-colors",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                    selected ? "bg-primary/10 text-primary" : "hover:bg-muted"
-                  )}
-                >
-                  <span className="font-medium">{label}</span>
-                  <span
-                    className={cn(
-                      "flex size-5 items-center justify-center rounded-full border-2 transition-colors",
-                      selected ? "border-primary bg-primary" : "border-muted-foreground/40"
-                    )}
-                  >
-                    {selected && <span className="size-2 rounded-full bg-primary-foreground" />}
+            <RadioGroup
+              value={dateOption ?? ""}
+              onValueChange={(v) => handleDateOption(v as DateOption)}
+              className="gap-1"
+            >
+              {/* Today */}
+              <Label
+                htmlFor="date-today"
+                className={cn(
+                  "flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+                  "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+                  "hover:bg-muted"
+                )}
+              >
+                <span className="flex flex-col gap-0.5">
+                  <span>Today</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {currentTodayLabel}
                   </span>
-                </button>
-              );
-            })}
+                </span>
+                <RadioGroupItem id="date-today" value="today" />
+              </Label>
 
-            {/* Calendar revealed when "pick" is selected */}
-            {dateOption === "pick" && (
+              {/* This Week — fixed to current week, shows date range sublabel */}
+              <Label
+                htmlFor="date-week"
+                className={cn(
+                  "flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+                  "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+                  "hover:bg-muted"
+                )}
+              >
+                <span className="flex flex-col gap-0.5">
+                  <span>This Week</span>
+                  <span className="text-xs font-normal text-muted-foreground">{thisWeekLabel}</span>
+                </span>
+                <RadioGroupItem id="date-week" value="week" />
+              </Label>
+
+              {/* Pick a Week */}
+              <Label
+                htmlFor="date-pick-week"
+                className={cn(
+                  "flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+                  "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+                  "hover:bg-muted"
+                )}
+              >
+                Pick a Week
+                <RadioGroupItem id="date-pick-week" value="pick-week" />
+              </Label>
+
+              {/* Pick a Date */}
+              <Label
+                htmlFor="date-pick-date"
+                className={cn(
+                  "flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+                  "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/10",
+                  "hover:bg-muted"
+                )}
+              >
+                Pick a Date
+                <RadioGroupItem id="date-pick-date" value="pick-date" />
+              </Label>
+            </RadioGroup>
+
+            {/* Week range calendar revealed when "pick-week" is selected */}
+            {dateOption === "pick-week" && (
               <div className="pt-2">
                 <Calendar
                   mode="single"
-                  selected={referenceDate}
-                  onSelect={handlePickedDate}
+                  selected={undefined}
+                  onSelect={handlePickedWeek}
+                  modifiers={
+                    startDate && endDate
+                      ? {
+                          range_start: [startDate],
+                          range_end: [endDate],
+                          range_middle: { after: startDate, before: endDate },
+                        }
+                      : undefined
+                  }
                   className="mx-auto rounded-xl border"
                 />
               </div>
             )}
 
-            {/* Week range highlight */}
-            {dateOption === "week" && startDate && endDate && (
+            {/* Single date calendar revealed when "pick-date" is selected */}
+            {dateOption === "pick-date" && (
               <div className="pt-2">
                 <Calendar
                   mode="single"
-                  selected={undefined}
-                  onSelect={(d) => {
-                    if (d) {
-                      setDateRange("week", d);
-                    }
-                  }}
-                  modifiers={{
-                    range_start: [startDate],
-                    range_end: [endDate],
-                    range_middle: { after: startDate, before: endDate },
-                  }}
+                  selected={referenceDate}
+                  onSelect={handlePickedDate}
                   className="mx-auto rounded-xl border"
                 />
               </div>
