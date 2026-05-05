@@ -9,7 +9,6 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { GenreSelector } from "@/components/GenreSelector";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
@@ -72,6 +71,8 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
       setDateRange("day", new Date());
     } else if (option === "week") {
       setDateRange("week", new Date());
+    } else if (option === "pick-week" && referenceDate) {
+      setDateRange("week", referenceDate);
     }
   }
 
@@ -128,8 +129,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
 
       {/* Panel */}
       <CollapsibleContent className="data-[state=closed]:overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
-        <div className="mt-1 flex max-h-[calc(100vh-8rem)] flex-col rounded-lg border border-border bg-card shadow-lg">
-          <ScrollArea className="min-h-0 flex-1">
+        <div className="mt-1 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
             <div className="space-y-3 p-3">
               {/* Status */}
               <div className="space-y-1.5">
@@ -239,7 +239,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
                           }
                         : undefined
                     }
-                    className="mx-auto rounded-xl border"
+                    className="w-full rounded-xl border"
                   />
                 )}
 
@@ -249,7 +249,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
                     mode="single"
                     selected={referenceDate}
                     onSelect={handlePickedDate}
-                    className="mx-auto rounded-xl border"
+                    className="w-full rounded-xl border"
                   />
                 )}
 
@@ -266,7 +266,6 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
                 )}
               </div>
             </div>
-          </ScrollArea>
         </div>
       </CollapsibleContent>
     </Collapsible>
