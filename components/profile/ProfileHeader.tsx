@@ -9,11 +9,11 @@ import ReactCountryFlag from "react-country-flag";
 import { getInitials } from "./utils";
 import { SocialLinks } from "./SocialLinks";
 
-type PublicProfileHeaderProps = Readonly<{
+type ProfileHeaderProps = Readonly<{
   profile: UserProfile;
 }>;
 
-export function PublicProfileHeader({ profile }: PublicProfileHeaderProps) {
+export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const initials = getInitials(profile.display_name);
 
   return (

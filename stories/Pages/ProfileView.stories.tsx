@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { ProfileView } from "@/components/profile/PublicProfileView";
+import { ProfileView } from "@/components/profile/ProfileView";
 
 const meta: Meta<typeof ProfileView> = {
   title: "Pages/ProfileView",

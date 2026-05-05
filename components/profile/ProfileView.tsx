@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getUser, getUserEvents, type UserProfile } from "@/lib/services/users";
 import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
-import { PublicProfileHeader } from "./PublicProfileHeader";
+import { ProfileHeader } from "./ProfileHeader";
 import { PublicUpcomingEvents } from "./PublicUpcomingEvents";
 
 type ProfileViewProps = Readonly<{
@@ -84,7 +84,7 @@ export function ProfileView({ userId }: ProfileViewProps) {
     <PageContainer>
       <PageHeader title="Profile" showBack />
       <div className="flex flex-col gap-6">
-        <PublicProfileHeader profile={profile} />
+        <ProfileHeader profile={profile} />
         <div className="h-px bg-border" />
         <PublicUpcomingEvents events={upcomingEvents} displayName={profile.display_name} />
       </div>

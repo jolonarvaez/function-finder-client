@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ProfileView } from "@/components/profile/PublicProfileView";
+import { ProfileView } from "@/components/profile/ProfileView";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export default function ProfilePage({
