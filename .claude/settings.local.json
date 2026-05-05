@@ -40,7 +40,8 @@
       "Bash(mv \"app/dj/events/page.tsx\" \"app/\\(app\\)/dj/events/page.tsx\")",
       "Bash(xargs -I {} find {} -name \"page.tsx\")",
       "Bash(node -e \"const icons = require\\('@hugeicons/core-free-icons'\\); const keys = Object.keys\\(icons\\).filter\\(k => /social|brand/i.test\\(k\\)\\); console.log\\(keys.slice\\(0,20\\)\\)\")",
-      "PowerShell(Get-ChildItem *)"
+      "PowerShell(Get-ChildItem *)",
+      "Bash(Remove-Item *)"
     ]
   }
 }

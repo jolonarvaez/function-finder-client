@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { PublicProfileView } from "@/components/profile/PublicProfileView";
+import { ProfileView } from "@/components/profile/PublicProfileView";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 
-export default function PublicProfilePage({
+export default function ProfilePage({
   params,
 }: Readonly<{
   params: Promise<{ id: string }>;
@@ -12,7 +12,7 @@ export default function PublicProfilePage({
   const { id } = React.use(params);
   return (
     <AuthGuard>
-      <PublicProfileView userId={id} />
+      <ProfileView userId={id} />
     </AuthGuard>
   );
 }

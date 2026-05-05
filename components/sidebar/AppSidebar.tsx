@@ -20,10 +20,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileFooter, type ProfileFooterProps } from "./ProfileFooter";
 
-const NAV_ITEMS = [
+const STATIC_NAV_ITEMS = [
   { label: "Map", href: "/", icon: MapIcon },
-  //   { label: "Venues", href: "/venues", icon: Building2Icon },
-  { label: "Profile", href: "/profile", icon: UserIcon },
   { label: "Settings", href: "/settings", icon: SettingsIcon },
 ] as const;
 
@@ -40,11 +38,13 @@ export type AppSidebarProps = ProfileFooterProps &
   Readonly<{
     role?: OnboardingRole;
     loading?: boolean;
+    userId?: string;
   }>;
 
 export function AppSidebar({
   role,
   loading = false,
+  userId,
   name,
   email,
   avatarUrl,
@@ -53,6 +53,12 @@ export function AppSidebar({
   onSignOut,
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const profileHref = userId ? `/profile/${userId}` : null;
+  const navItems = [
+    ...STATIC_NAV_ITEMS.slice(0, 1),
+    ...(profileHref ? [{ label: "Profile", href: profileHref, icon: UserIcon }] : []),
+    ...STATIC_NAV_ITEMS.slice(1),
+  ];
 
   return (
     <Sidebar>
@@ -66,11 +72,11 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
+              {navItems.map(({ label, href, icon: Icon }) => (
                 <SidebarMenuItem key={label}>
                   <SidebarMenuButton
                     asChild
-                    isActive={pathname === href}
+                    isActive={pathname === href || (href !== "/" && pathname.startsWith(href))}
                     size="default"
                     tooltip={label}
                   >

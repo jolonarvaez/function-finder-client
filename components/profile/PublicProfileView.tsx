@@ -10,11 +10,11 @@ import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
 import { PublicProfileHeader } from "./PublicProfileHeader";
 import { PublicUpcomingEvents } from "./PublicUpcomingEvents";
 
-type PublicProfileViewProps = Readonly<{
+type ProfileViewProps = Readonly<{
   userId: string;
 }>;
 
-export function PublicProfileView({ userId }: PublicProfileViewProps) {
+export function ProfileView({ userId }: ProfileViewProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

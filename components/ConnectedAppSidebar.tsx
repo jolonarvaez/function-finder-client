@@ -21,6 +21,8 @@ export function ConnectedAppSidebar() {
     router.replace("/login");
   }
 
+  const userId = user?.id;
+
   return (
     <AppSidebar
       role={role}
@@ -28,7 +30,8 @@ export function ConnectedAppSidebar() {
       name={name}
       email={email}
       avatarUrl={avatarUrl}
-      onProfile={() => router.push("/profile")}
+      userId={userId}
+      onProfile={() => userId && router.push(`/profile/${userId}`)}
       onSettings={() => router.push("/settings")}
       onSignOut={handleSignOut}
     />
