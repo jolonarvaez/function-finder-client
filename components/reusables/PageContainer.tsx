@@ -17,19 +17,17 @@ export function PageHeader({ title, icon: Icon, showBack = false }: PageHeaderPr
   const router = useRouter();
 
   return (
-    <div className="mb-3 flex items-center gap-2">
+    <div className="mb-3 flex flex-col gap-2">
       {showBack && (
-        <button
-          type="button"
-          onClick={() => router.back()}
-          aria-label="Go back"
-          className="-ml-1 flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 active:bg-muted/80"
-        >
-          <ArrowLeft className="size-5" />
+        <button className="w-fit flex items-center text-sm font-semibold" onClick={() => router.back()}>
+          <ArrowLeft className="size-5 mr-1.5" />
+          Back
         </button>
       )}
-      {Icon && <Icon className="size-5 text-foreground" />}
-      <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="size-5 text-foreground" />}
+        <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
+      </div>
     </div>
   );
 }
