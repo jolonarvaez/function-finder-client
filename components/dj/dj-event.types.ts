@@ -17,6 +17,7 @@ export type DJEvent = {
   entryPrice?: number;
   genres: Genre[];
   coordinates?: { lng: number; lat: number };
+  flyerUrl?: string;
 };
 
 export type EventStatus = "live" | "upcoming" | "past";
@@ -36,6 +37,9 @@ export type EditDraft = {
   coordinates: { lng: number; lat: number };
   address: string;
   selectedVenueId: string;
+  existingFlyerUrl: string | null;
+  flyerFile: File | null;
+  flyerPreview: string | null;
 };
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -100,10 +104,17 @@ export function draftFromEvent(e: DJEvent): EditDraft {
     coordinates: e.coordinates ?? { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] },
     address: e.address,
     selectedVenueId: "",
+    existingFlyerUrl: e.flyerUrl ?? null,
+    flyerFile: null,
+    flyerPreview: null,
   };
 }
 
-export function draftToPartial(draft: EditDraft, original: DJEvent): Partial<DJEvent> {
+export function draftToPartial(
+  draft: EditDraft,
+  original: DJEvent,
+  flyerUrl?: string | null
+): Partial<DJEvent> {
   return {
     name: draft.name.trim() || original.name,
     category: draft.category || original.category,
@@ -114,5 +125,6 @@ export function draftToPartial(draft: EditDraft, original: DJEvent): Partial<DJE
     genres: draft.genres,
     coordinates: draft.coordinates,
     address: draft.address,
+    flyerUrl: flyerUrl !== undefined ? (flyerUrl ?? undefined) : original.flyerUrl,
   };
 }

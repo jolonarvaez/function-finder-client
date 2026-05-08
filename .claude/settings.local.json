@@ -41,7 +41,13 @@
       "Bash(xargs -I {} find {} -name \"page.tsx\")",
       "Bash(node -e \"const icons = require\\('@hugeicons/core-free-icons'\\); const keys = Object.keys\\(icons\\).filter\\(k => /social|brand/i.test\\(k\\)\\); console.log\\(keys.slice\\(0,20\\)\\)\")",
       "PowerShell(Get-ChildItem *)",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jolon\\\\Documents\\\\GitHub\\\\function-finder-client\" -Recurse -Include \"*create*event*\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object -First 20)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jolon\\\\Documents\\\\GitHub\\\\function-finder-client\" -Recurse -Directory)",
+      "Bash(Select-Object -First 20 FullName)",
+      "Bash(Get-ChildItem *)",
+      "Bash(Select-Object Name)"
     ]
   }
 }

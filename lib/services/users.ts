@@ -41,6 +41,7 @@ type ApiEvent = {
   category: string;
   genres: string[];
   custom_location: { latitude: number; longitude: number; address: string } | null;
+  flyer_url: string | null;
 };
 
 type ApiUserEventsResponse = {
@@ -73,6 +74,7 @@ async function getUserEvents(id: string): Promise<DJEvent[]> {
       coordinates: e.custom_location
         ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
         : undefined,
+      flyerUrl: e.flyer_url ?? undefined,
     })
   );
 }

@@ -1,18 +1,18 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { format, parseISO } from "date-fns";
 import { reverseGeocode } from "@/lib/geocode";
-import { format } from "date-fns";
 import {
   SparklesIcon,
   TagIcon,
   MapPinIcon,
   ChevronDownIcon,
   PhilippinePesoIcon,
-  CalendarPlus2Icon,
   ImageIcon,
   XIcon,
+  PencilLineIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,11 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { Skeleton } from "@/components/ui/skeleton";
 import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
-import { createEvent, toIsoDate } from "@/lib/services/events";
+import { getEvent, updateEvent, toIsoDate, type ApiEvent } from "@/lib/services/events";
 import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
@@ -45,29 +46,75 @@ function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   );
 }
 
-export function CreateEventView() {
+type Props = Readonly<{ eventId: string }>;
+
+export function EditEventView({ eventId }: Props) {
+  const { profile } = useUserStore();
+  const router = useRouter();
+  const [event, setEvent] = useState<ApiEvent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    getEvent(eventId)
+      .then((e) => {
+        if (profile && e.created_by !== profile.id) {
+          toast.error("You are not authorized to edit this event.");
+          router.replace("/dj/event-manager");
+          return;
+        }
+        setEvent(e);
+      })
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [eventId, profile, router]);
+
+  if (loading) return <EditEventSkeleton />;
+
+  if (error || !event) {
+    return (
+      <PageContainer>
+        <PageHeader title="Edit Event" showBack />
+        <p className="mt-6 text-center text-muted-foreground">Event not found.</p>
+      </PageContainer>
+    );
+  }
+
+  return <EditEventContent eventId={eventId} event={event} />;
+}
+
+export function EditEventContent({
+  eventId,
+  event,
+}: {
+  eventId: string;
+  event: ApiEvent;
+}) {
   const router = useRouter();
   const { profile } = useUserStore();
-  const [eventName, setEventName] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState<Date>();
-  const [dateOpen, setDateOpen] = useState(false);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [entryPrice, setEntryPrice] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
-  const [address, setAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const [eventName, setEventName] = useState(event.name);
+  const [category, setCategory] = useState(event.category);
+  const [date, setDate] = useState<Date>(parseISO(event.date));
+  const [dateOpen, setDateOpen] = useState(false);
+  const [startTime, setStartTime] = useState(event.start_time.slice(0, 5));
+  const [endTime, setEndTime] = useState(event.end_time.slice(0, 5));
+  const [entryPrice, setEntryPrice] = useState(
+    event.entry_price != null ? String(event.entry_price) : ""
+  );
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(event.genres as Genre[]);
+  const [address, setAddress] = useState(event.custom_location?.address ?? "");
+  const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
+  const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>(
+    event.custom_location
+      ? { lng: event.custom_location.longitude, lat: event.custom_location.latitude }
+      : { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] }
+  );
+  const [selectedVenueId, setSelectedVenueId] = useState("");
+  const [existingFlyerUrl, setExistingFlyerUrl] = useState<string | null>(event.flyer_url);
   const [flyerFile, setFlyerFile] = useState<File | null>(null);
   const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
-
-  const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
-  const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>({
-    lng: MAKATI_CENTER[0],
-    lat: MAKATI_CENTER[1],
-  });
-  const [selectedVenueId, setSelectedVenueId] = useState("");
 
   const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
     setCoordinates(coords);
@@ -75,6 +122,13 @@ export function CreateEventView() {
       if (result) setAddress(result);
     });
   }, []);
+
+  const handleVenueSelect = (id: string, venue: MockVenue) => {
+    setSelectedVenueId(id);
+    setAddress(venue.address + ", " + venue.city);
+    setCoordinates({ lng: venue.lng, lat: venue.lat });
+    if (!category) setCategory(venue.category);
+  };
 
   function handleFlyerChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
@@ -85,25 +139,19 @@ export function CreateEventView() {
   function handleFlyerClear() {
     setFlyerFile(null);
     setFlyerPreview(null);
+    setExistingFlyerUrl(null);
   }
-
-  const handleVenueSelect = (id: string, venue: MockVenue) => {
-    setSelectedVenueId(id);
-    setAddress(venue.address + ", " + venue.city);
-    setCoordinates({ lng: venue.lng, lat: venue.lat });
-    if (!category) setCategory(venue.category);
-  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!date || !profile) return;
+    if (!profile) return;
     setSubmitting(true);
     try {
-      let flyerUrl: string | null = null;
+      let flyerUrl: string | null = existingFlyerUrl;
       if (flyerFile) {
         flyerUrl = await uploadEventImage(flyerFile, profile.id);
       }
-      await createEvent({
+      await updateEvent(eventId, {
         name: eventName.trim(),
         category,
         date: toIsoDate(date),
@@ -111,26 +159,23 @@ export function CreateEventView() {
         end_time: endTime,
         entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
         genres: selectedGenres,
-        created_by: profile.id,
-        location: locationMode === "venue" ? selectedVenueId : null,
-        custom_location:
-          locationMode === "map"
-            ? {
-                latitude: coordinates.lat,
-                longitude: coordinates.lng,
-                address: address.trim(),
-              }
-            : null,
+        custom_location: {
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          address: address.trim(),
+        },
         flyer_url: flyerUrl,
       });
       router.push("/dj/event-manager");
-      toast.success("Event created successfully.");
+      toast.success("Event updated successfully.");
     } catch {
-      toast.error("Failed to create event. Please try again.");
+      toast.error("Failed to update event. Please try again.");
     } finally {
       setSubmitting(false);
     }
   }
+
+  const displayFlyer = flyerPreview ?? existingFlyerUrl;
 
   const isValid =
     eventName.trim() &&
@@ -139,28 +184,24 @@ export function CreateEventView() {
     startTime &&
     endTime &&
     selectedGenres.length > 0 &&
-    (locationMode === "venue" ? selectedVenueId : true) &&
     address.trim();
 
   return (
     <PageContainer>
       <a
-        href="#create-event-form"
+        href="#edit-event-form"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
       >
         Skip to form
       </a>
 
-      {/* Header */}
-      <PageHeader title="Create Event" icon={CalendarPlus2Icon} showBack />
+      <PageHeader title="Edit Event" icon={PencilLineIcon} showBack />
 
-      {/* Form */}
       <div className="flex-1">
-        <form id="create-event-form" onSubmit={handleSubmit} className="space-y-4  pb-6">
+        <form id="edit-event-form" onSubmit={handleSubmit} className="space-y-4 pb-6">
           {/* ── Details ─────────────────────────────────── */}
           <SectionHeader>Details</SectionHeader>
 
-          {/* Event Name */}
           <Field>
             <FieldLabel htmlFor="event-name">Event Name</FieldLabel>
             <div className="relative">
@@ -176,7 +217,6 @@ export function CreateEventView() {
             </div>
           </Field>
 
-          {/* Category */}
           <Field>
             <FieldLabel htmlFor="category">Category</FieldLabel>
             <Select value={category} onValueChange={setCategory} required>
@@ -201,7 +241,6 @@ export function CreateEventView() {
             <SectionHeader>Date & Time</SectionHeader>
           </div>
 
-          {/* Date */}
           <Field>
             <FieldLabel htmlFor="date-picker">Date</FieldLabel>
             <Popover open={dateOpen} onOpenChange={setDateOpen}>
@@ -210,11 +249,10 @@ export function CreateEventView() {
                   id="date-picker"
                   variant="outline"
                   className={cn(
-                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
-                    !date && "text-muted-foreground"
+                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card"
                   )}
                 >
-                  {date ? format(date, "PPP") : "Select date"}
+                  {format(date, "PPP")}
                   <ChevronDownIcon className="size-4 text-muted-foreground" />
                 </Button>
               </PopoverTrigger>
@@ -225,16 +263,16 @@ export function CreateEventView() {
                   captionLayout="dropdown"
                   defaultMonth={date}
                   onSelect={(d) => {
-                    setDate(d);
-                    setDateOpen(false);
+                    if (d) {
+                      setDate(d);
+                      setDateOpen(false);
+                    }
                   }}
-                  disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0))}
                 />
               </PopoverContent>
             </Popover>
           </Field>
 
-          {/* Start / End Time */}
           <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
             <Field>
               <FieldLabel htmlFor="start-time">Start Time</FieldLabel>
@@ -263,7 +301,6 @@ export function CreateEventView() {
             </Field>
           </div>
 
-          {/* Entry Price (Optional) */}
           <Field>
             <FieldLabel htmlFor="entry-price">
               Entry Price <span className="text-muted-foreground">(Optional)</span>
@@ -283,7 +320,6 @@ export function CreateEventView() {
             </div>
           </Field>
 
-          {/* Genre Selection */}
           <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
 
           {/* ── Location ────────────────────────────────── */}
@@ -300,7 +336,6 @@ export function CreateEventView() {
             onVenueSelect={handleVenueSelect}
           />
 
-          {/* Address */}
           <Field>
             <FieldLabel htmlFor="address">Address</FieldLabel>
             <div className="relative">
@@ -315,21 +350,20 @@ export function CreateEventView() {
               />
             </div>
           </Field>
+
           {/* ── Flyer ───────────────────────────────────── */}
           <div className="border-t border-border pt-4">
             <SectionHeader>Flyer / Cover Image</SectionHeader>
           </div>
 
           <Field>
-            <FieldLabel>Image <span className="text-muted-foreground">(Optional)</span></FieldLabel>
-            {flyerPreview ? (
+            <FieldLabel>
+              Image <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            {displayFlyer ? (
               <div className="relative overflow-hidden rounded-lg border border-border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={flyerPreview}
-                  alt="Flyer preview"
-                  className="w-full object-contain"
-                />
+                <img src={displayFlyer} alt="Flyer preview" className="w-full object-contain" />
                 <button
                   type="button"
                   onClick={handleFlyerClear}
@@ -359,12 +393,33 @@ export function CreateEventView() {
       <div className="sticky bottom-0 border-t border-border bg-background py-3">
         <Button
           type="submit"
-          form="create-event-form"
+          form="edit-event-form"
           disabled={!isValid || submitting}
           className="h-12 w-full rounded-lg text-sm font-semibold"
         >
-          {submitting ? "Creating..." : "Create Event"}
+          {submitting ? "Saving..." : "Save Changes"}
         </Button>
+      </div>
+    </PageContainer>
+  );
+}
+
+function EditEventSkeleton() {
+  return (
+    <PageContainer>
+      <div className="flex flex-col gap-5 pt-2">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-11 w-full rounded-lg" />
+        <Skeleton className="h-11 w-full rounded-lg" />
+        <Skeleton className="h-4 w-24 mt-2" />
+        <Skeleton className="h-11 w-full rounded-lg" />
+        <div className="grid grid-cols-2 gap-3">
+          <Skeleton className="h-11 rounded-lg" />
+          <Skeleton className="h-11 rounded-lg" />
+        </div>
+        <Skeleton className="h-11 w-full rounded-lg" />
+        <Skeleton className="h-4 w-20 mt-2" />
+        <Skeleton className="h-40 w-full rounded-lg" />
       </div>
     </PageContainer>
   );

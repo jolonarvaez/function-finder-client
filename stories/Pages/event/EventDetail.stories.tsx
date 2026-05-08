@@ -32,6 +32,7 @@ const BASE_EVENT: ApiEvent = {
     longitude: 121.0244,
     address: "123 Ayala Ave, Makati City",
   },
+  flyer_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
   users: MOCK_DJ,
 };
 

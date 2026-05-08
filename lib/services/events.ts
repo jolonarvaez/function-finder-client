@@ -36,6 +36,7 @@ type ApiEvent = {
   created_at: string;
   genres: string[];
   custom_location: ApiCustomLocation | null;
+  flyer_url: string | null;
   users: ApiUser;
 };
 
@@ -89,6 +90,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
     event: {
       id: event.id,
       name: event.name,
+      image: event.flyer_url ?? undefined,
       address,
       category: event.category,
       date: event.date,
@@ -126,6 +128,7 @@ export type CreateEventBody = {
   created_by: string;
   location: string | null;
   custom_location: ApiCustomLocation | null;
+  flyer_url?: string | null;
 };
 
 function toIsoDate(date: Date): string {
@@ -169,6 +172,7 @@ export type UpdateEventBody = {
   entry_price: number | null;
   genres: Genre[];
   custom_location: ApiCustomLocation | null;
+  flyer_url?: string | null;
 };
 
 async function createEvent(body: CreateEventBody): Promise<ApiEvent> {

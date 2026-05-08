@@ -106,6 +106,16 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
               userId={event.created_by}
             />
           </div>
+
+          {/* Flyer */}
+          {event.flyer_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.flyer_url}
+              alt={`${event.name} flyer`}
+              className="w-full rounded-lg object-contain"
+            />
+          )}
         </div>
       </PageContainer>
     </div>

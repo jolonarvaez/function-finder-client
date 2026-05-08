@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronDownIcon, CalendarDaysIcon } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "./EventCard";
-import { EditEventDrawer } from "./EditEventDrawer";
 import { getStatus, type DJEvent } from "./dj-event.types";
 import { getUserEvents } from "@/lib/services/users";
 import { useUserStore } from "@/components/auth/use-user-store";
@@ -21,6 +21,7 @@ function SectionLabel({ children }: Readonly<{ children: React.ReactNode }>) {
 
 export function DJEventsView() {
   const { profile } = useUserStore();
+  const router = useRouter();
   const [events, setEvents] = useState<DJEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,13 +31,6 @@ export function DJEventsView() {
       .then(setEvents)
       .finally(() => setLoading(false));
   }, [profile]);
-  const [editingEvent, setEditingEvent] = useState<DJEvent | null>(null);
-
-  const handleSave = (updated: Partial<DJEvent>) => {
-    if (!editingEvent) return;
-    setEvents((prev) => prev.map((e) => (e.id === editingEvent.id ? { ...e, ...updated } : e)));
-    setEditingEvent(null);
-  };
 
   const liveEvents = events.filter((e) => getStatus(e) === "live");
   const upcomingEvents = events
@@ -90,7 +84,7 @@ export function DJEventsView() {
                     key={e.id}
                     event={e}
                     status="upcoming"
-                    onEdit={() => setEditingEvent(e)}
+                    onEdit={() => router.push(`/dj/edit-event/${e.id}`)}
                   />
                 ))
               )}
@@ -115,11 +109,6 @@ export function DJEventsView() {
           </Collapsible>
         </section>
       </div>
-      <EditEventDrawer
-        event={editingEvent}
-        onSave={handleSave}
-        onClose={() => setEditingEvent(null)}
-      />
     </PageContainer>
   );
 }
