@@ -7,7 +7,6 @@ import { reverseGeocode } from "@/lib/geocode";
 import {
   SparklesIcon,
   TagIcon,
-  MapPinIcon,
   ChevronDownIcon,
   PhilippinePesoIcon,
   ImageIcon,
@@ -29,13 +28,14 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
+import { AddressAutocomplete } from "./AddressAutocomplete";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
 import { getEvent, updateEvent, toIsoDate, type ApiEvent } from "@/lib/services/events";
 import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
-import type { MockVenue } from "./mock-venues";
+import { type AddressSuggestion } from "@/lib/geocode";
 import { PageContainer, PageHeader } from "../reusables/PageContainer";
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -83,13 +83,7 @@ export function EditEventView({ eventId }: Props) {
   return <EditEventContent eventId={eventId} event={event} />;
 }
 
-export function EditEventContent({
-  eventId,
-  event,
-}: {
-  eventId: string;
-  event: ApiEvent;
-}) {
+export function EditEventContent({ eventId, event }: { eventId: string; event: ApiEvent }) {
   const router = useRouter();
   const { profile } = useUserStore();
   const [submitting, setSubmitting] = useState(false);
@@ -105,13 +99,11 @@ export function EditEventContent({
   );
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>(event.genres as Genre[]);
   const [address, setAddress] = useState(event.custom_location?.address ?? "");
-  const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
   const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>(
     event.custom_location
       ? { lng: event.custom_location.longitude, lat: event.custom_location.latitude }
       : { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] }
   );
-  const [selectedVenueId, setSelectedVenueId] = useState("");
   const [existingFlyerUrl, setExistingFlyerUrl] = useState<string | null>(event.flyer_url);
   const [flyerFile, setFlyerFile] = useState<File | null>(null);
   const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
@@ -123,12 +115,10 @@ export function EditEventContent({
     });
   }, []);
 
-  const handleVenueSelect = (id: string, venue: MockVenue) => {
-    setSelectedVenueId(id);
-    setAddress(venue.address + ", " + venue.city);
-    setCoordinates({ lng: venue.lng, lat: venue.lat });
-    if (!category) setCategory(venue.category);
-  };
+  function handleAddressSelect(suggestion: AddressSuggestion) {
+    setAddress(suggestion.display_name);
+    setCoordinates({ lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) });
+  }
 
   function handleFlyerChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
@@ -248,9 +238,7 @@ export function EditEventContent({
                 <Button
                   id="date-picker"
                   variant="outline"
-                  className={cn(
-                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card"
-                  )}
+                  className={cn("h-11 w-full justify-between rounded-lg font-normal dark:bg-card")}
                 >
                   {format(date, "PPP")}
                   <ChevronDownIcon className="size-4 text-muted-foreground" />
@@ -327,29 +315,16 @@ export function EditEventContent({
             <SectionHeader>Location</SectionHeader>
           </div>
 
-          <LocationPicker
-            mode={locationMode}
-            onModeChange={setLocationMode}
-            coordinates={coordinates}
-            onCoordinatesChange={handleCoordinatesChange}
-            selectedVenueId={selectedVenueId}
-            onVenueSelect={handleVenueSelect}
-          />
-
           <Field>
             <FieldLabel htmlFor="address">Address</FieldLabel>
-            <div className="relative">
-              <MapPinIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="address"
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Vibe Central"
-                className="h-11 rounded-lg pl-10 dark:bg-card"
-              />
-            </div>
+            <AddressAutocomplete
+              value={address}
+              onChange={setAddress}
+              onSelect={handleAddressSelect}
+            />
           </Field>
+
+          <LocationPicker coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
 
           {/* ── Flyer ───────────────────────────────────── */}
           <div className="border-t border-border pt-4">
@@ -390,7 +365,7 @@ export function EditEventContent({
       </div>
 
       {/* Sticky submit */}
-      <div className="sticky bottom-0 border-t border-border bg-background py-3">
+      <div className="sticky bottom-0 z-20 border-t border-border bg-background py-3">
         <Button
           type="submit"
           form="edit-event-form"

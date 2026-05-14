@@ -7,7 +7,6 @@ import { format } from "date-fns";
 import {
   SparklesIcon,
   TagIcon,
-  MapPinIcon,
   ChevronDownIcon,
   PhilippinePesoIcon,
   CalendarPlus2Icon,
@@ -28,14 +27,15 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
+import { AddressAutocomplete } from "./AddressAutocomplete";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
 import { createEvent, toIsoDate } from "@/lib/services/events";
 import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
-import type { MockVenue } from "./mock-venues";
 import { PageContainer, PageHeader } from "../reusables/PageContainer";
+import type { AddressSuggestion } from "@/lib/geocode";
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -62,12 +62,10 @@ export function CreateEventView() {
   const [flyerFile, setFlyerFile] = useState<File | null>(null);
   const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
 
-  const [locationMode, setLocationMode] = useState<"map" | "venue">("map");
   const [coordinates, setCoordinates] = useState<{ lng: number; lat: number }>({
     lng: MAKATI_CENTER[0],
     lat: MAKATI_CENTER[1],
   });
-  const [selectedVenueId, setSelectedVenueId] = useState("");
 
   const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
     setCoordinates(coords);
@@ -75,6 +73,12 @@ export function CreateEventView() {
       if (result) setAddress(result);
     });
   }, []);
+
+  function handleAddressSelect(suggestion: AddressSuggestion) {
+    setAddress(suggestion.display_name);
+    const coords = { lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) };
+    setCoordinates(coords);
+  }
 
   function handleFlyerChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
@@ -86,13 +90,6 @@ export function CreateEventView() {
     setFlyerFile(null);
     setFlyerPreview(null);
   }
-
-  const handleVenueSelect = (id: string, venue: MockVenue) => {
-    setSelectedVenueId(id);
-    setAddress(venue.address + ", " + venue.city);
-    setCoordinates({ lng: venue.lng, lat: venue.lat });
-    if (!category) setCategory(venue.category);
-  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -112,15 +109,12 @@ export function CreateEventView() {
         entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
         genres: selectedGenres,
         created_by: profile.id,
-        location: locationMode === "venue" ? selectedVenueId : null,
-        custom_location:
-          locationMode === "map"
-            ? {
-                latitude: coordinates.lat,
-                longitude: coordinates.lng,
-                address: address.trim(),
-              }
-            : null,
+        location: null,
+        custom_location: {
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          address: address.trim(),
+        },
         flyer_url: flyerUrl,
       });
       router.push("/dj/event-manager");
@@ -139,7 +133,6 @@ export function CreateEventView() {
     startTime &&
     endTime &&
     selectedGenres.length > 0 &&
-    (locationMode === "venue" ? selectedVenueId : true) &&
     address.trim();
 
   return (
@@ -291,45 +284,31 @@ export function CreateEventView() {
             <SectionHeader>Location</SectionHeader>
           </div>
 
-          <LocationPicker
-            mode={locationMode}
-            onModeChange={setLocationMode}
-            coordinates={coordinates}
-            onCoordinatesChange={handleCoordinatesChange}
-            selectedVenueId={selectedVenueId}
-            onVenueSelect={handleVenueSelect}
-          />
-
-          {/* Address */}
+          {/* Address with autocomplete */}
           <Field>
             <FieldLabel htmlFor="address">Address</FieldLabel>
-            <div className="relative">
-              <MapPinIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="address"
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Vibe Central"
-                className="h-11 rounded-lg pl-10 dark:bg-card"
-              />
-            </div>
+            <AddressAutocomplete
+              value={address}
+              onChange={setAddress}
+              onSelect={handleAddressSelect}
+            />
           </Field>
+
+          <LocationPicker coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
+
           {/* ── Flyer ───────────────────────────────────── */}
           <div className="border-t border-border pt-4">
             <SectionHeader>Flyer / Cover Image</SectionHeader>
           </div>
 
           <Field>
-            <FieldLabel>Image <span className="text-muted-foreground">(Optional)</span></FieldLabel>
+            <FieldLabel>
+              Image <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
             {flyerPreview ? (
               <div className="relative overflow-hidden rounded-lg border border-border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={flyerPreview}
-                  alt="Flyer preview"
-                  className="w-full object-contain"
-                />
+                <img src={flyerPreview} alt="Flyer preview" className="w-full object-contain" />
                 <button
                   type="button"
                   onClick={handleFlyerClear}
@@ -356,7 +335,7 @@ export function CreateEventView() {
       </div>
 
       {/* Sticky submit */}
-      <div className="sticky bottom-0 border-t border-border bg-background py-3">
+      <div className="sticky bottom-0 z-20 border-t border-border bg-background py-3">
         <Button
           type="submit"
           form="create-event-form"

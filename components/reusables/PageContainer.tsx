@@ -19,7 +19,10 @@ export function PageHeader({ title, icon: Icon, showBack = false }: PageHeaderPr
   return (
     <div className="mb-3 flex flex-col gap-2">
       {showBack && (
-        <button className="w-fit flex items-center text-sm font-semibold" onClick={() => router.back()}>
+        <button
+          className="w-fit flex items-center text-sm font-semibold"
+          onClick={() => router.back()}
+        >
           <ArrowLeft className="size-5 mr-1.5" />
           Back
         </button>

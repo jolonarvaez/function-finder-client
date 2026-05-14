@@ -10,7 +10,7 @@ export function TopNav({ children }: Readonly<{ children: React.ReactNode }>) {
     <TooltipProvider>
       <SidebarProvider>
         <ConnectedAppSidebar />
-        <SidebarInset className="grid h-svh grid-rows-[3.5rem_1fr]">
+        <SidebarInset className="grid h-svh grid-rows-[3.5rem_1fr] overflow-hidden">
           <AppTopNav />
           <div className="overflow-auto">{children}</div>
         </SidebarInset>

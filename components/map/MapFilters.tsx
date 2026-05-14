@@ -130,142 +130,142 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
       {/* Panel */}
       <CollapsibleContent className="data-[state=closed]:overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
         <div className="mt-1 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-            <div className="space-y-3 p-3">
-              {/* Status */}
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Status
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {EVENT_STATUSES.map((status) => {
-                    const isSelected = status === eventStatus;
-                    return (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() => setEventStatus(status as EventStatus)}
-                        className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+          <div className="space-y-3 p-3">
+            {/* Status */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Status
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {EVENT_STATUSES.map((status) => {
+                  const isSelected = status === eventStatus;
+                  return (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setEventStatus(status as EventStatus)}
+                      className="shrink-0 rounded-4xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                    >
+                      <Badge
+                        variant={isSelected ? "default" : "secondary"}
+                        className={cn(
+                          "h-auto cursor-pointer px-3 py-0.5 text-xs transition-colors",
+                          isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                        )}
                       >
-                        <Badge
-                          variant={isSelected ? "default" : "secondary"}
-                          className={cn(
-                            "h-auto cursor-pointer px-3 py-0.5 text-xs transition-colors",
-                            isSelected ? "bg-primary text-primary-foreground" : "hover:bg-muted"
-                          )}
-                        >
-                          {EVENT_STATUS_LABELS[status]}
-                        </Badge>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Genre */}
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Genre
-                </p>
-                <GenreSelector
-                  selected={selectedGenres}
-                  onChange={setSelectedGenres}
-                  size="small"
-                  variant="wrap"
-                />
-              </div>
-
-              <Separator />
-
-              {/* Date */}
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Date
-                </p>
-
-                <RadioGroup
-                  value={dateOption ?? ""}
-                  onValueChange={(v) => handleDateOption(v as DateOption)}
-                  className="gap-1"
-                >
-                  {/* Today */}
-                  <Label htmlFor="df-today" className={cardClass}>
-                    <span className="flex flex-col gap-0.5">
-                      <span>Today</span>
-                      <span className="text-xs font-normal text-muted-foreground">
-                        {currentTodayLabel}
-                      </span>
-                    </span>
-                    <RadioGroupItem id="df-today" value="today" />
-                  </Label>
-
-                  {/* This Week */}
-                  <Label htmlFor="df-week" className={cardClass}>
-                    <span className="flex flex-col gap-0.5">
-                      <span>This Week</span>
-                      <span className="text-xs font-normal text-muted-foreground">
-                        {thisWeekLabel}
-                      </span>
-                    </span>
-                    <RadioGroupItem id="df-week" value="week" />
-                  </Label>
-
-                  {/* Pick a Week */}
-                  <Label htmlFor="df-pick-week" className={cardClass}>
-                    Pick a Week
-                    <RadioGroupItem id="df-pick-week" value="pick-week" />
-                  </Label>
-
-                  {/* Pick a Date */}
-                  <Label htmlFor="df-pick-date" className={cardClass}>
-                    Pick a Date
-                    <RadioGroupItem id="df-pick-date" value="pick-date" />
-                  </Label>
-                </RadioGroup>
-
-                {/* Week range calendar */}
-                {dateOption === "pick-week" && (
-                  <Calendar
-                    mode="single"
-                    selected={undefined}
-                    onSelect={handlePickedWeek}
-                    modifiers={
-                      startDate && endDate
-                        ? {
-                            range_start: [startDate],
-                            range_end: [endDate],
-                            range_middle: { after: startDate, before: endDate },
-                          }
-                        : undefined
-                    }
-                    className="w-full rounded-xl border"
-                  />
-                )}
-
-                {/* Single date calendar */}
-                {dateOption === "pick-date" && (
-                  <Calendar
-                    mode="single"
-                    selected={referenceDate}
-                    onSelect={handlePickedDate}
-                    className="w-full rounded-xl border"
-                  />
-                )}
-
-                {dateOption && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full gap-1.5 text-muted-foreground"
-                    onClick={handleDateClear}
-                  >
-                    <XIcon className="size-3" />
-                    Clear date
-                  </Button>
-                )}
+                        {EVENT_STATUS_LABELS[status]}
+                      </Badge>
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
+            <Separator />
+
+            {/* Genre */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Genre
+              </p>
+              <GenreSelector
+                selected={selectedGenres}
+                onChange={setSelectedGenres}
+                size="small"
+                variant="wrap"
+              />
+            </div>
+
+            <Separator />
+
+            {/* Date */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Date
+              </p>
+
+              <RadioGroup
+                value={dateOption ?? ""}
+                onValueChange={(v) => handleDateOption(v as DateOption)}
+                className="gap-1"
+              >
+                {/* Today */}
+                <Label htmlFor="df-today" className={cardClass}>
+                  <span className="flex flex-col gap-0.5">
+                    <span>Today</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {currentTodayLabel}
+                    </span>
+                  </span>
+                  <RadioGroupItem id="df-today" value="today" />
+                </Label>
+
+                {/* This Week */}
+                <Label htmlFor="df-week" className={cardClass}>
+                  <span className="flex flex-col gap-0.5">
+                    <span>This Week</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {thisWeekLabel}
+                    </span>
+                  </span>
+                  <RadioGroupItem id="df-week" value="week" />
+                </Label>
+
+                {/* Pick a Week */}
+                <Label htmlFor="df-pick-week" className={cardClass}>
+                  Pick a Week
+                  <RadioGroupItem id="df-pick-week" value="pick-week" />
+                </Label>
+
+                {/* Pick a Date */}
+                <Label htmlFor="df-pick-date" className={cardClass}>
+                  Pick a Date
+                  <RadioGroupItem id="df-pick-date" value="pick-date" />
+                </Label>
+              </RadioGroup>
+
+              {/* Week range calendar */}
+              {dateOption === "pick-week" && (
+                <Calendar
+                  mode="single"
+                  selected={undefined}
+                  onSelect={handlePickedWeek}
+                  modifiers={
+                    startDate && endDate
+                      ? {
+                          range_start: [startDate],
+                          range_end: [endDate],
+                          range_middle: { after: startDate, before: endDate },
+                        }
+                      : undefined
+                  }
+                  className="w-full rounded-xl border"
+                />
+              )}
+
+              {/* Single date calendar */}
+              {dateOption === "pick-date" && (
+                <Calendar
+                  mode="single"
+                  selected={referenceDate}
+                  onSelect={handlePickedDate}
+                  className="w-full rounded-xl border"
+                />
+              )}
+
+              {dateOption && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full gap-1.5 text-muted-foreground"
+                  onClick={handleDateClear}
+                >
+                  <XIcon className="size-3" />
+                  Clear date
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </CollapsibleContent>
     </Collapsible>
