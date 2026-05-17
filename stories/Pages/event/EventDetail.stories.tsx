@@ -12,6 +12,7 @@ const MOCK_DJ: ApiUser = {
   country: "Philippines",
   socmed_links: { instagram: "djmarco" },
   profile_type: "dj",
+  avatar_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
 };
 
 const BASE_EVENT: ApiEvent = {

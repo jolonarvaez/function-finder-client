@@ -31,6 +31,7 @@ const BASE_EVENT: ApiEvent = {
     country: "PH",
     socmed_links: null,
     profile_type: "dj",
+    avatar_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
   },
 };
 
