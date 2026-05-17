@@ -41,6 +41,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const { loading: authLoading } = useAuth();
 
   const [venues, setVenues] = useState<MapEvents[]>(initialVenues ?? []);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);
@@ -119,7 +120,13 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
       </div>
 
       {/* Full-screen map */}
-      <Map ref={mapRef} className="h-full w-full" center={MAKATI_CENTER} zoom={DEFAULT_ZOOM}>
+      <Map
+        ref={mapRef}
+        className="h-full w-full"
+        center={MAKATI_CENTER}
+        zoom={DEFAULT_ZOOM}
+        onViewportChange={(vp) => setZoom(vp.zoom)}
+      >
         <MapControls position="bottom-right" showZoom showCompass />
 
         {/* Location toggle */}
@@ -156,6 +163,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
             longitude={venue.lng}
             latitude={venue.lat}
             event={venue.event}
+            zoom={zoom}
           />
         ))}
       </Map>
