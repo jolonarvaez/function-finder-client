@@ -14,6 +14,7 @@ type ApiUser = {
   country: string | null;
   socmed_links: Record<string, string> | null;
   profile_type: string;
+  avatar_url: string | null;
 };
 
 type ApiCustomLocation = {
@@ -102,6 +103,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
       created_by: event.created_by,
       dj: {
         name: event.users.display_name,
+        avatar: event.users.avatar_url ?? undefined,
         genre: event.genres as Genre[],
       },
     },

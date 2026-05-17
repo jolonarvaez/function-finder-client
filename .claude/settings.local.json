@@ -47,7 +47,9 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jolon\\\\Documents\\\\GitHub\\\\function-finder-client\" -Recurse -Directory)",
       "Bash(Select-Object -First 20 FullName)",
       "Bash(Get-ChildItem *)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(npx shadcn@latest add slider)",
+      "Skill(frontend-design)"
     ]
   }
 }

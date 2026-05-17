@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { UserIcon, Link2Icon, CheckIcon } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { UserProfile } from "@/lib/services/users";
@@ -31,6 +31,9 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-4">
           <Avatar className="size-14">
+            {profile.avatar_url && (
+              <AvatarImage src={profile.avatar_url} alt={profile.display_name} />
+            )}
             <AvatarFallback>{initials || <UserIcon className="size-5" />}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">

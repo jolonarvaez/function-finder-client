@@ -17,6 +17,8 @@ import {
   PlusIcon,
   XIcon,
   SettingsIcon,
+  CameraIcon,
+  LoaderCircleIcon,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,8 @@ import { CountrySelect } from "@/components/reusables/CountrySelect";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { updateUser } from "@/lib/services/users";
+import { uploadAvatarImage } from "@/lib/services/storage";
+import { AvatarCropSheet } from "@/components/settings/AvatarCropSheet";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -105,7 +109,11 @@ export function SettingsView() {
 
   const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
+  const avatarUrl = profile?.avatar_url ?? undefined;
+
+  // Avatar upload state
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   // Display name state
   const [editingName, setEditingName] = useState(false);
@@ -210,6 +218,35 @@ export function SettingsView() {
     }
   }
 
+  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCropSrc(URL.createObjectURL(file));
+    e.target.value = "";
+  }
+
+  async function handleCropConfirm(blob: Blob) {
+    if (!profile) return;
+    setCropSrc(null);
+    setAvatarUploading(true);
+    try {
+      const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+      const url = await uploadAvatarImage(file, profile.id);
+      await updateUser(profile.id, { avatar_url: url });
+      setProfile({ ...profile, avatar_url: url });
+      toast.success("Avatar updated.");
+    } catch {
+      toast.error("Failed to upload avatar.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
+
+  function handleCropCancel() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+  }
+
   async function handleSignOut() {
     await signOut();
   }
@@ -237,12 +274,41 @@ export function SettingsView() {
 
           {/* Identity card */}
           <div className="flex items-center gap-3">
-            <Avatar className="size-12 shrink-0">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "Avatar"} />}
-              <AvatarFallback>
-                {getInitials(name) || <UserIcon className="size-5" />}
-              </AvatarFallback>
-            </Avatar>
+            <label
+              htmlFor="avatar-upload"
+              className={cn(
+                "relative size-12 shrink-0 cursor-pointer rounded-full",
+                avatarUploading && "pointer-events-none"
+              )}
+              aria-label="Change avatar"
+            >
+              <Avatar className="size-12">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "Avatar"} />}
+                <AvatarFallback>
+                  {getInitials(name) || <UserIcon className="size-5" />}
+                </AvatarFallback>
+              </Avatar>
+              <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity hover:opacity-100">
+                {avatarUploading ? (
+                  <LoaderCircleIcon className="size-4 animate-spin text-white" />
+                ) : (
+                  <CameraIcon className="size-4 text-white" />
+                )}
+              </span>
+              {avatarUploading && (
+                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
+                  <LoaderCircleIcon className="size-4 animate-spin text-white" />
+                </span>
+              )}
+            </label>
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={handleAvatarChange}
+              disabled={avatarUploading}
+            />
             <div className="min-w-0">
               {name && <p className="truncate text-sm font-semibold text-foreground">{name}</p>}
               {email && <p className="truncate text-sm text-muted-foreground">{email}</p>}
@@ -595,6 +661,12 @@ export function SettingsView() {
           </div>
         </section>
       </div>
+
+      <AvatarCropSheet
+        imageSrc={cropSrc}
+        onConfirm={handleCropConfirm}
+        onCancel={handleCropCancel}
+      />
     </PageContainer>
   );
 }

@@ -14,6 +14,7 @@ export type UserProfile = {
   country: string | null;
   socmed_links: Record<string, string> | null;
   profile_type: OnboardingRole | null;
+  avatar_url: string | null;
 };
 
 type ApiUserResponse = {
@@ -23,12 +24,13 @@ type ApiUserResponse = {
 };
 
 type UpdateUserBody = {
-  profile_type: OnboardingRole;
-  genre_tags: Genre[];
+  profile_type?: OnboardingRole;
+  genre_tags?: Genre[];
   bio?: string | null;
   country?: string | null;
   display_name?: string;
   socmed_links?: Record<string, string> | null;
+  avatar_url?: string | null;
 };
 
 type ApiEvent = {

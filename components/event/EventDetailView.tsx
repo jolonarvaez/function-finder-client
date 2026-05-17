@@ -102,6 +102,7 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
               variant="full"
               name={djName}
               genre={djGenres.length > 0 ? djGenres : ["—"]}
+              avatarSrc={event.users.avatar_url ?? undefined}
               avatarFallback={djName[0]}
               userId={event.created_by}
             />

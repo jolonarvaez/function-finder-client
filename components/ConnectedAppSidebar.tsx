@@ -13,7 +13,7 @@ export function ConnectedAppSidebar() {
 
   const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
+  const avatarUrl = profile?.avatar_url ?? undefined;
   const role = profile?.profile_type ?? (user?.user_metadata?.role as OnboardingRole | undefined);
 
   async function handleSignOut() {
