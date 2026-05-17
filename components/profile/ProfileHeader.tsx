@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { UserIcon, Link2Icon, CheckIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import type { UserProfile } from "@/lib/services/users";
 import { COUNTRY_ISO } from "@/lib/constants";
 import ReactCountryFlag from "react-country-flag";
@@ -17,14 +16,6 @@ type ProfileHeaderProps = Readonly<{
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const initials = getInitials(profile.display_name);
-  const [copied, setCopied] = useState(false);
-
-  function handleCopyLink() {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -57,16 +48,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           </div>
         </div>
         {profile.bio && <p className="text-sm text-foreground leading-relaxed">{profile.bio}</p>}
-        <Button
-          variant="outline"
-          size="sm"
-          aria-label="Copy profile link"
-          onClick={handleCopyLink}
-          className="w-fit gap-1.5 px-2"
-        >
-          {copied ? <CheckIcon className="size-4" /> : <Link2Icon className="size-4" />}
-          {copied ? "Copied!" : "Copy Link to Profile"}
-        </Button>
+        <CopyLinkButton text="Copy Link to Profile" />
         {profile.socmed_links && <SocialLinks links={profile.socmed_links} />}
       </div>
 

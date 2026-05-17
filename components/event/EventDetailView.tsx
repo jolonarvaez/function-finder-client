@@ -5,6 +5,7 @@ import { MapPinIcon, CalendarIcon, ClockIcon, TicketIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, getEventStatus, formatTime, type ApiEvent } from "@/lib/services/events";
@@ -50,7 +51,6 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
     (event.genres as Genre[]).length > 0
       ? (event.genres as Genre[])
       : (event.users.genre_tags as Genre[]);
-
   return (
     <div>
       <PageContainer>
@@ -65,13 +65,27 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
             <StatusBadge status={status} />
           </div>
 
+          {/* Genres */}
+          {event.genres.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {event.genres.map((g) => (
+                <Badge key={g} variant="outline">
+                  {g}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Copy link */}
+          <CopyLinkButton text="Copy Link to Event" />
+
           {/* When */}
           <Section icon={CalendarIcon} label="Date">
             {format(parseISO(event.date), "EEEE, MMMM d, yyyy")}
           </Section>
 
           <Section icon={ClockIcon} label="Time">
-            {startTime} – {endTime}
+            {startTime} - {endTime}
           </Section>
 
           {/* Where */}
@@ -83,17 +97,6 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
           <Section icon={TicketIcon} label="Entry">
             {event.entry_price != null ? `₱${event.entry_price.toLocaleString()}` : "Free entry"}
           </Section>
-
-          {/* Genres */}
-          {event.genres.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {event.genres.map((g) => (
-                <Badge key={g} variant="outline">
-                  {g}
-                </Badge>
-              ))}
-            </div>
-          )}
 
           {/* DJ */}
           <div className="flex flex-col gap-2">
