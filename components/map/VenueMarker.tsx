@@ -49,7 +49,7 @@ export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: V
                 className={cn(
                   "absolute bottom-full left-1/2 z-50 mb-2 w-32 -translate-x-1/2 overflow-hidden",
                   "rounded-lg border border-border bg-popover shadow-md ring-1 ring-foreground/10",
-                  "animate-in fade-in-0 zoom-in-95 duration-100"
+                  "animate-in fade-in-0 zoom-in-95 duration-100 font-sans"
                 )}
               >
                 {event.image ? (

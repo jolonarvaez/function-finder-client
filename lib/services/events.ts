@@ -39,6 +39,7 @@ type ApiEvent = {
   custom_location: ApiCustomLocation | null;
   flyer_url: string | null;
   users: ApiUser;
+  status: EventStatus;
 };
 
 type ApiResponse = {
@@ -58,25 +59,6 @@ type ApiSingleResponse = {
 /** "10:00:00+08" → "10:00" */
 function formatTime(raw: string): string {
   return raw.slice(0, 5);
-}
-
-/**
- * Combines an ISO date ("2026-04-02") with a pg time-with-tz ("10:00:00+08")
- * into a full ISO-8601 string and returns a Date.
- */
-function toEventDate(date: string, time: string): Date {
-  // "+08" → "+08:00", "-5" → "-05:00", already "+08:00" untouched
-  const normalized = time.replace(/([+-])(\d{2})$/, "$1$2:00");
-  return new Date(`${date}T${normalized}`);
-}
-
-function getEventStatus(event: ApiEvent): EventStatus {
-  const now = new Date();
-  const start = toEventDate(event.date, event.start_time);
-  const end = toEventDate(event.date, event.end_time);
-  if (now >= start && now <= end) return "live";
-  if (now < start) return "upcoming";
-  return "done";
 }
 
 function toMapVenue(event: ApiEvent): MapEvents | null {
@@ -154,12 +136,13 @@ async function getEvents({ startDate, endDate, genres, status }: GetEventsParams
     params.genres = genres.map((g) => g.toLowerCase()).join(",");
   }
 
+  if (status && status !== "all") {
+    params.status = status;
+  }
+
   const { data } = await api.get<ApiResponse>("/events", { params });
 
-  const events =
-    status && status !== "all" ? data.data.filter((e) => getEventStatus(e) === status) : data.data;
-
-  return events.flatMap((e) => {
+  return data.data.flatMap((e) => {
     const venue = toMapVenue(e);
     return venue ? [venue] : [];
   });
@@ -195,4 +178,4 @@ async function getEvent(id: string): Promise<ApiEvent> {
 }
 
 export type { ApiEvent, ApiUser };
-export { getEvents, getEvent, createEvent, updateEvent, toIsoDate, getEventStatus, formatTime };
+export { getEvents, getEvent, createEvent, updateEvent, toIsoDate, formatTime };

@@ -12,6 +12,7 @@ import {
   CalendarPlus2Icon,
   ImageIcon,
   XIcon,
+  GlobeIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +37,15 @@ import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
 import { PageContainer, PageHeader } from "../reusables/PageContainer";
 import type { AddressSuggestion } from "@/lib/geocode";
+
+function getTimezoneOffset(): string {
+  const offsetMinutes = -new Date().getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const abs = Math.abs(offsetMinutes);
+  const hours = String(Math.floor(abs / 60)).padStart(2, "0");
+  const mins = String(abs % 60).padStart(2, "0");
+  return `${sign}${hours}:${mins}`;
+}
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -104,8 +114,8 @@ export function CreateEventView() {
         name: eventName.trim(),
         category,
         date: toIsoDate(date),
-        start_time: startTime,
-        end_time: endTime,
+        start_time: `${startTime}:00${getTimezoneOffset()}`,
+        end_time: `${endTime}:00${getTimezoneOffset()}`,
         entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
         genres: selectedGenres,
         created_by: profile.id,
@@ -254,6 +264,14 @@ export function CreateEventView() {
                 className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             </Field>
+          </div>
+
+          {/* Timezone indicator */}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <GlobeIcon className="size-3 shrink-0" />
+            <span>
+              {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC{getTimezoneOffset()})
+            </span>
           </div>
 
           {/* Entry Price (Optional) */}

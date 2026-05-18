@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { getEvent, getEventStatus, formatTime, type ApiEvent } from "@/lib/services/events";
+import { getEvent, formatTime, type ApiEvent } from "@/lib/services/events";
 import type { Genre } from "@/lib/constants";
 
 type Props = Readonly<{ eventId: string }>;
@@ -42,7 +42,6 @@ export function EventDetailView({ eventId }: Props) {
 }
 
 export function EventDetailContent({ event }: { event: ApiEvent }) {
-  const status = getEventStatus(event);
   const address = event.custom_location?.address ?? event.location ?? "Location TBA";
   const startTime = formatTime(event.start_time.slice(0, 5));
   const endTime = formatTime(event.end_time.slice(0, 5));
@@ -62,7 +61,7 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
             <Badge variant="secondary" className="w-fit capitalize">
               {event.category}
             </Badge>
-            <StatusBadge status={status} />
+            <StatusBadge status={event.status} />
           </div>
 
           {/* Genres */}
