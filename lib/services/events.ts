@@ -39,7 +39,7 @@ type ApiEvent = {
   custom_location: ApiCustomLocation | null;
   flyer_url: string | null;
   users: ApiUser;
-  status: EventStatus;
+  status: Exclude<EventStatus, "all">;
 };
 
 type ApiResponse = {
@@ -82,6 +82,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
       entryPrice: event.entry_price ?? undefined,
       featured: event.featured ?? false,
       attending: 0,
+      status: event.status,
       created_by: event.created_by,
       dj: {
         name: event.users.display_name,

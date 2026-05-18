@@ -31,20 +31,21 @@ export type VenueEvent = Readonly<{
   entryPrice?: number;
   featured: boolean;
   attending: number;
+  status: "live" | "upcoming" | "done";
   dj: VenueDJ;
   created_by: string;
 }>;
 
 export type VenueInfoProps = Readonly<{
   event: VenueEvent;
-  live?: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }>;
 
 // ── Component ────────────────────────────────────────────────
 
-export function VenueInfo({ event, live = false, open, onOpenChange }: VenueInfoProps) {
+export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
+  const live = event.status === "live";
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent

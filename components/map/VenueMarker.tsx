@@ -4,10 +4,9 @@ import { useState } from "react";
 import { MapMarker, MarkerContent } from "@/components/ui/map";
 import { MapPinIcon } from "lucide-react";
 import { VenueInfo, type VenueEvent } from "@/components/map/VenueInfo";
-import { getStatus, type EventStatus } from "@/components/dj/dj-event.types";
 import { cn } from "@/lib/utils";
 
-const Z_INDEX: Record<EventStatus, number> = { past: 0, upcoming: 1, live: 2 };
+const Z_INDEX: Record<"done" | "upcoming" | "live", number> = { done: 0, upcoming: 1, live: 2 };
 const ALWAYS_OPEN_ZOOM = 16;
 
 export type VenueMarkerProps = Readonly<{
@@ -21,7 +20,7 @@ export type VenueMarkerProps = Readonly<{
 export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: VenueMarkerProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const status = event?.date ? getStatus({ ...event, date: event.date }) : undefined;
+  const status = event?.status;
 
   const handleClick = (e: MouseEvent) => {
     onClick?.(e);
@@ -77,7 +76,7 @@ export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: V
               <div
                 className={cn(
                   "flex size-10 items-center justify-center rounded-full backdrop-blur-xs",
-                  status === "past" ? "bg-muted-foreground/80 dark:bg-muted/80" : "bg-primary/90"
+                  status === "done" ? "bg-muted-foreground/80 dark:bg-muted/80" : "bg-primary/90"
                 )}
               >
                 <MapPinIcon className="size-5 text-primary-foreground" />

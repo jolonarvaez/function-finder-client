@@ -20,7 +20,7 @@ export type DJEvent = {
   flyerUrl?: string;
 };
 
-export type EventStatus = "live" | "upcoming" | "past";
+export type EventStatus = "live" | "upcoming" | "past" | "all";
 
 // ── Edit draft ───────────────────────────────────────────────
 

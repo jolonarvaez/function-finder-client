@@ -20,6 +20,7 @@ const MOCK_EVENT_UPCOMING: VenueEvent = {
   entryPrice: 15,
   featured: true,
   attending: 247,
+  status: "upcoming",
   dj: {
     name: "DJ Nexus",
     avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",

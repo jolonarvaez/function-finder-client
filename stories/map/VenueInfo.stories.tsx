@@ -14,6 +14,7 @@ const MOCK_EVENT: VenueEvent = {
   entryPrice: 15,
   featured: true,
   attending: 247,
+  status: "done",
   dj: {
     name: "DJ Nexus",
     avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
@@ -22,13 +23,13 @@ const MOCK_EVENT: VenueEvent = {
   created_by: "user_123",
 };
 
-function VenueInfoDemo({ event, live }: Readonly<{ event: VenueEvent; live?: boolean }>) {
+function VenueInfoDemo({ event }: Readonly<{ event: VenueEvent }>) {
   const [open, setOpen] = React.useState(true);
 
   return (
     <div>
       <Button onClick={() => setOpen(true)}>Open Venue Info</Button>
-      <VenueInfo event={event} live={live} open={open} onOpenChange={setOpen} />
+      <VenueInfo event={event} open={open} onOpenChange={setOpen} />
     </div>
   );
 }
@@ -57,7 +58,7 @@ export const Default: Story = {
 };
 
 export const Live: Story = {
-  render: () => <VenueInfoDemo event={MOCK_EVENT} live />,
+  render: () => <VenueInfoDemo event={MOCK_EVENT} />,
 };
 
 const MOCK_EVENT_NO_IMAGE: VenueEvent = {
@@ -70,5 +71,5 @@ export const NoImage: Story = {
 };
 
 export const NoImageLive: Story = {
-  render: () => <VenueInfoDemo event={MOCK_EVENT_NO_IMAGE} live />,
+  render: () => <VenueInfoDemo event={MOCK_EVENT_NO_IMAGE} />,
 };
