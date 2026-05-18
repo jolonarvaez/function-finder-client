@@ -8,7 +8,6 @@ import { VenueMarker } from "@/components/map/VenueMarker";
 import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
-import { Button } from "@/components/ui/button";
 import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -76,11 +75,6 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
       stop();
       setLocationVisible(false);
     }
-  };
-
-  const handleRetry = () => {
-    start();
-    setDeniedDismissed(false);
   };
 
   // Seed genres from profile on first load if user hasn't manually filtered yet
@@ -176,10 +170,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
           className="absolute bottom-16 left-1/2 z-20 flex w-max -translate-x-1/2 items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-lg"
         >
           <LocateOff className="size-4 shrink-0 text-muted-foreground" />
-          <p className="text-sm text-foreground">Location access denied.</p>
-          <Button size="sm" onClick={handleRetry}>
-            Enable permissions
-          </Button>
+          <p className="text-sm text-foreground">Location access denied please check your browser settings.</p>
           <button
             type="button"
             aria-label="Dismiss"
