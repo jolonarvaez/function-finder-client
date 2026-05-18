@@ -34,6 +34,7 @@ const BASE_EVENT: ApiEvent = {
     address: "123 Ayala Ave, Makati City",
   },
   flyer_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+  status: "upcoming",
   users: MOCK_DJ,
 };
 
@@ -52,6 +53,7 @@ const LIVE_EVENT: ApiEvent = {
     longitude: 121.022,
     address: "92 Polaris St, Makati City",
   },
+  status: "live",
   users: { ...MOCK_DJ, display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
 };
 
@@ -68,6 +70,7 @@ const PAST_EVENT: ApiEvent = {
   featured: false,
   custom_location: null,
   location: "The Bunker, BGC",
+  status: "done",
   users: { ...MOCK_DJ, display_name: "DJ Kade", genre_tags: ["DnB", "Techno"] },
 };
 

@@ -21,6 +21,7 @@ const BASE_EVENT: ApiEvent = {
     address: "123 Ayala Ave, Makati City",
   },
   flyer_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+  status: "upcoming",
   users: {
     id: "user-001",
     first_name: "Alex",
