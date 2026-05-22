@@ -56,9 +56,7 @@ export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: V
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={event.image} alt={event.name} className="w-full object-cover" />
                     <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent px-2 py-2">
-                      <p className="text-xs font-semibold leading-tight text-white">
-                        {event.name}
-                      </p>
+                      <p className="text-xs font-semibold leading-tight text-white">{event.name}</p>
                     </div>
                   </div>
                 ) : (

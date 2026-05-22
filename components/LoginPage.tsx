@@ -148,15 +148,6 @@ export function LoginPage() {
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="text-xs text-primary hover:underline focus-visible:outline-none focus-visible:underline"
-            >
-              Forgot password?
-            </button>
-          </div>
-
           <Button
             type="submit"
             disabled={loading}
@@ -205,17 +196,6 @@ export function LoginPage() {
             Sign Up
           </Link>
         </div>
-
-        <p className="text-center text-xs text-muted-foreground">
-          By continuing, you agree to Nyte&apos;s{" "}
-          <button type="button" className="text-primary hover:underline focus-visible:outline-none">
-            Terms of Service
-          </button>{" "}
-          and{" "}
-          <button type="button" className="text-primary hover:underline focus-visible:outline-none">
-            Privacy Policy
-          </button>
-        </p>
       </div>
     </PageContainer>
   );

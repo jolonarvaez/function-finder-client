@@ -170,7 +170,9 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
           className="absolute bottom-16 left-1/2 z-20 flex w-max -translate-x-1/2 items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-lg"
         >
           <LocateOff className="size-4 shrink-0 text-muted-foreground" />
-          <p className="text-sm text-foreground">Location access denied please check your browser settings.</p>
+          <p className="text-sm text-foreground">
+            Location access denied please check your browser settings.
+          </p>
           <button
             type="button"
             aria-label="Dismiss"

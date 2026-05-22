@@ -307,17 +307,6 @@ export function SignUpPage() {
             Sign In
           </Link>
         </div>
-
-        <p className="text-center text-xs text-muted-foreground">
-          By continuing, you agree to Nyte&apos;s{" "}
-          <button type="button" className="text-primary hover:underline focus-visible:outline-none">
-            Terms of Service
-          </button>{" "}
-          and{" "}
-          <button type="button" className="text-primary hover:underline focus-visible:outline-none">
-            Privacy Policy
-          </button>
-        </p>
       </div>
     </PageContainer>
   );
