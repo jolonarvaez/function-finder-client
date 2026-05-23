@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { SunIcon, MoonIcon, MonitorIcon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,6 +14,11 @@ const THEMES = [
 
 export function AppTopNav() {
   const { theme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-3">
@@ -30,7 +36,7 @@ export function AppTopNav() {
             aria-label={label}
             className={cn(
               "flex size-7 items-center justify-center rounded-md transition-colors",
-              theme === value
+              mounted && theme === value
                 ? "bg-foreground text-background"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground"
             )}

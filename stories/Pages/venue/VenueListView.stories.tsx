@@ -22,7 +22,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "Smooth Mike",
         avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
-        genre: "Soul",
+        genre: ["Soul"],
       },
       created_by: "user_123",
     },
@@ -47,7 +47,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "DJ Fuego",
         avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
-        genre: "Latin",
+        genre: ["Latin"],
       },
       created_by: "user_123",
     },
@@ -98,7 +98,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "Kwame",
         avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
-        genre: "Afrobeats",
+        genre: ["Afrobeats"],
       },
       created_by: "user_123",
     },
@@ -124,7 +124,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "Mara Santos",
         avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
-        genre: "Techno",
+        genre: ["Techno"],
       },
       created_by: "user_123",
     },
@@ -146,7 +146,7 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 280,
       status: "done",
-      dj: { name: "MIKA", avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK", genre: "Pop" },
+      dj: { name: "MIKA", avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK", genre: ["Pop"] },
       created_by: "user_123",
     },
   },
@@ -197,7 +197,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "PRISM",
         avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
-        genre: "DnB",
+        genre: ["DnB"],
       },
       created_by: "user_123",
     },
@@ -245,7 +245,11 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 98,
       status: "upcoming",
-      dj: { name: "Soulée", avatar: "https://placehold.co/80x80/ec4899/fff?text=SL", genre: "RnB" },
+      dj: {
+        name: "Soulée",
+        avatar: "https://placehold.co/80x80/ec4899/fff?text=SL",
+        genre: ["RnB"],
+      },
       created_by: "user_123",
     },
   },
@@ -270,7 +274,7 @@ const MOCK_VENUES: MapEvents[] = [
       dj: {
         name: "Selecta Jay",
         avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
-        genre: "Dancehall",
+        genre: ["Dancehall"],
       },
       created_by: "user_123",
     },

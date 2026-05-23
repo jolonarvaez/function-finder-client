@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export type PersonaProps = Readonly<{
   name: string;
-  genre: string | string[];
+  genre?: string[];
   avatarSrc?: string;
   avatarFallback?: string;
   isActive?: boolean;
@@ -43,13 +43,15 @@ export function Persona({
 
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="truncate text-md font-semibold">{name}</span>
-          <div className="flex flex-wrap gap-1">
-            {(Array.isArray(genre) ? genre : [genre]).map((g) => (
-              <Badge key={g} variant="outline" className="w-fit">
-                {g}
-              </Badge>
-            ))}
-          </div>
+          {genre && genre.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {genre.map((g) => (
+                <Badge key={g} variant="outline" className="w-fit">
+                  {g}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
         <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto">
@@ -73,13 +75,15 @@ export function Persona({
 
           <div className="flex flex-col gap-2">
             <span className="text-lg font-semibold leading-tight">{name}</span>
-            <div className="flex flex-wrap gap-1">
-              {(Array.isArray(genre) ? genre : [genre]).map((g) => (
-                <Badge key={g} variant="outline" className="w-fit">
-                  {g}
-                </Badge>
-              ))}
-            </div>
+            {genre && genre.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {genre.map((g) => (
+                  <Badge key={g} variant="outline" className="w-fit">
+                    {g}
+                  </Badge>
+                ))}
+              </div>
+            )}
             {venue && (
               <Badge variant="default" className="w-fit">
                 <MapPinIcon />

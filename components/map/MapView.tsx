@@ -9,9 +9,9 @@ import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
 import { Locate, LocateOff, X, MapIcon } from "lucide-react";
-import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
+import { MAKATI_CENTER, DEFAULT_ZOOM, type Genre } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { getEvents } from "@/lib/services/events";
+import { getEventsList, formatTime, type ApiEvent } from "@/lib/services/events";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
@@ -23,6 +23,34 @@ export type MapEvents = Readonly<{
   distance?: string;
   event: VenueEvent;
 }>;
+
+function toMapVenue(event: ApiEvent): MapEvents | null {
+  if (!event.custom_location) return null;
+  return {
+    lng: event.custom_location.longitude,
+    lat: event.custom_location.latitude,
+    event: {
+      id: event.id,
+      name: event.name,
+      image: event.flyer_url ?? undefined,
+      address: event.custom_location.address,
+      category: event.category,
+      date: event.date,
+      startTime: formatTime(event.start_time),
+      endTime: formatTime(event.end_time),
+      entryPrice: event.entry_price ?? undefined,
+      featured: event.featured ?? false,
+      attending: 0,
+      status: event.status,
+      created_by: event.created_by,
+      dj: {
+        name: event.users.display_name,
+        avatar: event.users.avatar_url ?? undefined,
+        genre: event.genres as Genre[],
+      },
+    },
+  };
+}
 
 export type MapViewProps = Readonly<{
   defaultDate?: Date;
@@ -87,13 +115,19 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
 
   useEffect(() => {
     if (!startDate || authLoading || profileLoading) return;
-    getEvents({
+    getEventsList({
       startDate,
       endDate,
       genres: selectedGenres.length > 0 ? selectedGenres : undefined,
       status: eventStatus,
     })
-      .then(setVenues)
+      .then((events) => {
+        const venues = events.flatMap((e) => {
+          const v = toMapVenue(e);
+          return v ? [v] : [];
+        });
+        setVenues(venues);
+      })
       .catch(() => setVenues([]));
   }, [startDate, endDate, selectedGenres, eventStatus, authLoading, profileLoading]);
 

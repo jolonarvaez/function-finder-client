@@ -17,7 +17,7 @@ export function PageHeader({ title, icon: Icon, showBack = false }: PageHeaderPr
   const router = useRouter();
 
   return (
-    <div className="mb-3 flex flex-col gap-2">
+    <div className="mb-3 flex flex-col gap-4">
       {showBack && (
         <button
           className="w-fit flex items-center text-sm font-semibold"

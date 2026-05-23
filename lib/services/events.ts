@@ -1,7 +1,5 @@
 import api from "@/lib/axios";
 import { type EventStatus, type Genre } from "@/lib/constants";
-import type { MapEvents } from "@/components/map/MapView";
-
 // ── API response types ────────────────────────────────────────
 
 type ApiUser = {
@@ -61,38 +59,6 @@ function formatTime(raw: string): string {
   return raw.slice(0, 5);
 }
 
-function toMapVenue(event: ApiEvent): MapEvents | null {
-  // Events without coordinates can't be placed on the map
-  if (!event.custom_location) return null;
-
-  const { address } = event.custom_location;
-
-  return {
-    lng: event.custom_location.longitude,
-    lat: event.custom_location.latitude,
-    event: {
-      id: event.id,
-      name: event.name,
-      image: event.flyer_url ?? undefined,
-      address,
-      category: event.category,
-      date: event.date,
-      startTime: formatTime(event.start_time),
-      endTime: formatTime(event.end_time),
-      entryPrice: event.entry_price ?? undefined,
-      featured: event.featured ?? false,
-      attending: 0,
-      status: event.status,
-      created_by: event.created_by,
-      dj: {
-        name: event.users.display_name,
-        avatar: event.users.avatar_url ?? undefined,
-        genre: event.genres as Genre[],
-      },
-    },
-  };
-}
-
 // ── Service ───────────────────────────────────────────────────
 
 type GetEventsParams = {
@@ -118,35 +84,6 @@ export type CreateEventBody = {
 
 function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-}
-
-async function getEvents({ startDate, endDate, genres, status }: GetEventsParams = {}): Promise<
-  MapEvents[]
-> {
-  const params: Record<string, string> = {};
-
-  if (startDate) {
-    params.startDate = toIsoDate(startDate);
-  }
-
-  if (endDate) {
-    params.endDate = toIsoDate(endDate);
-  }
-
-  if (genres && genres.length > 0) {
-    params.genres = genres.map((g) => g.toLowerCase()).join(",");
-  }
-
-  if (status && status !== "all") {
-    params.status = status;
-  }
-
-  const { data } = await api.get<ApiResponse>("/events", { params });
-
-  return data.data.flatMap((e) => {
-    const venue = toMapVenue(e);
-    return venue ? [venue] : [];
-  });
 }
 
 export type UpdateEventBody = {
@@ -178,5 +115,17 @@ async function getEvent(id: string): Promise<ApiEvent> {
   return data.data;
 }
 
+async function getEventsList({ startDate, endDate, genres, status }: GetEventsParams = {}): Promise<
+  ApiEvent[]
+> {
+  const params: Record<string, string> = {};
+  if (startDate) params.startDate = toIsoDate(startDate);
+  if (endDate) params.endDate = toIsoDate(endDate);
+  if (genres && genres.length > 0) params.genres = genres.map((g) => g.toLowerCase()).join(",");
+  if (status && status !== "all") params.status = status;
+  const { data } = await api.get<ApiResponse>("/events", { params });
+  return data.data;
+}
+
 export type { ApiEvent, ApiUser };
-export { getEvents, getEvent, createEvent, updateEvent, toIsoDate, formatTime };
+export { getEventsList, getEvent, createEvent, updateEvent, toIsoDate, formatTime };

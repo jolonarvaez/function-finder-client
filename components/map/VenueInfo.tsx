@@ -15,7 +15,7 @@ import type { Genre } from "@/lib/constants";
 export type VenueDJ = Readonly<{
   name: string;
   avatar?: string;
-  genre: Genre | Genre[];
+  genre: Genre[];
 }>;
 
 export type VenueEvent = Readonly<{

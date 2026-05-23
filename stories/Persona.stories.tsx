@@ -21,7 +21,7 @@ type Story = StoryObj<typeof Persona>;
 
 const defaultArgs = {
   name: "DJ Nexus",
-  genre: "House",
+  genre: ["House"],
   avatarSrc: "https://i.pravatar.cc/150?img=11",
   avatarFallback: "DN",
 };

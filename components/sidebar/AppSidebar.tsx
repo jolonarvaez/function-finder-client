@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapIcon, SettingsIcon, UserIcon, CalendarDaysIcon, CalendarPlus2Icon } from "lucide-react";
+import {
+  MapIcon,
+  SettingsIcon,
+  UserIcon,
+  CalendarDaysIcon,
+  CalendarPlus2Icon,
+  PartyPopper,
+} from "lucide-react";
 import type { OnboardingRole } from "@/lib/constants";
 import {
   Sidebar,
@@ -19,11 +26,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileFooter, type ProfileFooterProps } from "./ProfileFooter";
-
-const STATIC_NAV_ITEMS = [
-  { label: "Map", href: "/", icon: MapIcon },
-  { label: "Settings", href: "/settings", icon: SettingsIcon },
-] as const;
 
 const DJ_ITEMS = [
   {
@@ -54,11 +56,9 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname();
   const profileHref = userId ? `/profile/${userId}` : null;
-  const navItems = [
-    ...STATIC_NAV_ITEMS.slice(0, 1),
-    ...(profileHref ? [{ label: "Profile", href: profileHref, icon: UserIcon }] : []),
-    ...STATIC_NAV_ITEMS.slice(1),
-  ];
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === href : pathname.startsWith(href);
 
   return (
     <Sidebar>
@@ -69,17 +69,16 @@ export function AppSidebar({
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Discover */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {navItems.map(({ label, href, icon: Icon }) => (
+              {[
+                { label: "Map", href: "/", icon: MapIcon },
+                { label: "Events", href: "/events", icon: PartyPopper },
+              ].map(({ label, href, icon: Icon }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === href || (href !== "/" && pathname.startsWith(href))}
-                    size="default"
-                    tooltip={label}
-                  >
+                  <SidebarMenuButton asChild isActive={isActive(href)} size="default" tooltip={label}>
                     <Link href={href}>
                       <Icon />
                       <span>{label}</span>
@@ -91,44 +90,63 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {loading ? (
+        <SidebarSeparator />
+
+        {/* Account */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {loading ? (
+                <Skeleton className="h-8 w-full rounded-lg" />
+              ) : (
+                <>
+                  {profileHref && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={isActive(profileHref)} size="default" tooltip="Profile">
+                        <Link href={profileHref}>
+                          <UserIcon />
+                          <span>Profile</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/settings")} size="default" tooltip="Settings">
+                      <Link href="/settings">
+                        <SettingsIcon />
+                        <span>Settings</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* DJ Tools */}
+        {!loading && role === "dj" && (
           <>
             <SidebarSeparator />
             <SidebarGroup>
-              <Skeleton className="mb-2 h-3 w-16" />
+              <SidebarGroupLabel>DJ Tools</SidebarGroupLabel>
               <SidebarGroupContent>
-                <Skeleton className="h-8 w-full rounded-lg" />
+                <SidebarMenu className="space-y-1">
+                  {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
+                    <SidebarMenuItem key={label}>
+                      <SidebarMenuButton asChild isActive={pathname === href} size="default" tooltip={label}>
+                        <Link href={href}>
+                          <Icon />
+                          <span>{label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           </>
-        ) : (
-          role === "dj" && (
-            <>
-              <SidebarSeparator />
-              <SidebarGroup>
-                <SidebarGroupLabel>DJ Tools</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu className="space-y-1">
-                    {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
-                      <SidebarMenuItem key={label}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === href}
-                          size="default"
-                          tooltip={label}
-                        >
-                          <Link href={href}>
-                            <Icon />
-                            <span>{label}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </>
-          )
         )}
       </SidebarContent>
 

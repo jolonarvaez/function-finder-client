@@ -103,7 +103,7 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
             <Persona
               variant="full"
               name={djName}
-              genre={djGenres.length > 0 ? djGenres : ["—"]}
+              genre={djGenres}
               avatarSrc={event.users.avatar_url ?? undefined}
               avatarFallback={djName[0]}
               userId={event.created_by}
