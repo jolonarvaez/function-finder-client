@@ -135,11 +135,11 @@ export const COUNTRIES = Object.keys(COUNTRY_ISO);
 
 // ── Map Defaults ─────────────────────────────────────────────
 
-/** Default map center — Makati, Philippines [lng, lat] */
-export const MAKATI_CENTER: [number, number] = [121.0244, 14.5547];
+/** Default map center — Metro Manila, Philippines [lng, lat] */
+export const MAKATI_CENTER: [number, number] = [121.0244, 14.5995];
 
-/** Default zoom level for venue/event maps */
-export const DEFAULT_ZOOM = 14;
+/** Default zoom level — fits all of Metro Manila */
+export const DEFAULT_ZOOM = 11;
 
 // ── Event Status ─────────────────────────────────────────────
 
