@@ -60,6 +60,16 @@ function formatTime(raw: string): string {
   return raw.slice(0, 5);
 }
 
+/** Returns the browser's UTC offset as "+HH:MM" or "-HH:MM" */
+function getTimezoneOffset(): string {
+  const offsetMinutes = -new Date().getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const abs = Math.abs(offsetMinutes);
+  const hours = String(Math.floor(abs / 60)).padStart(2, "0");
+  const mins = String(abs % 60).padStart(2, "0");
+  return `${sign}${hours}:${mins}`;
+}
+
 // ── Service ───────────────────────────────────────────────────
 
 type GetEventsParams = {
@@ -131,4 +141,12 @@ async function getEventsList({ startDate, endDate, genres, status }: GetEventsPa
 }
 
 export type { ApiEvent, ApiUser };
-export { getEventsList, getEvent, createEvent, updateEvent, toIsoDate, formatTime };
+export {
+  getEventsList,
+  getEvent,
+  createEvent,
+  updateEvent,
+  toIsoDate,
+  formatTime,
+  getTimezoneOffset,
+};

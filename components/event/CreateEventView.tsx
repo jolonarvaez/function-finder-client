@@ -33,21 +33,12 @@ import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
-import { createEvent, toIsoDate } from "@/lib/services/events";
+import { createEvent, toIsoDate, getTimezoneOffset } from "@/lib/services/events";
 import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
 import { PageContainer, PageHeader } from "../reusables/PageContainer";
 import type { AddressSuggestion } from "@/lib/geocode";
-
-function getTimezoneOffset(): string {
-  const offsetMinutes = -new Date().getTimezoneOffset();
-  const sign = offsetMinutes >= 0 ? "+" : "-";
-  const abs = Math.abs(offsetMinutes);
-  const hours = String(Math.floor(abs / 60)).padStart(2, "0");
-  const mins = String(abs % 60).padStart(2, "0");
-  return `${sign}${hours}:${mins}`;
-}
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

@@ -33,7 +33,13 @@ import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
-import { getEvent, updateEvent, toIsoDate, type ApiEvent } from "@/lib/services/events";
+import {
+  getEvent,
+  updateEvent,
+  toIsoDate,
+  getTimezoneOffset,
+  type ApiEvent,
+} from "@/lib/services/events";
 import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { toast } from "sonner";
@@ -149,8 +155,8 @@ export function EditEventContent({ eventId, event }: { eventId: string; event: A
         description: description.trim() || null,
         category,
         date: toIsoDate(date),
-        start_time: startTime,
-        end_time: endTime,
+        start_time: `${startTime}:00${getTimezoneOffset()}`,
+        end_time: `${endTime}:00${getTimezoneOffset()}`,
         entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
         genres: selectedGenres,
         custom_location: {
