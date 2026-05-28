@@ -18,6 +18,7 @@ const MOCK_DJ: ApiUser = {
 const BASE: ApiEvent = {
   id: "evt-001",
   name: "Neon Dreams",
+  description: null,
   location: null,
   date: "2026-06-14",
   start_time: "22:00:00+08",

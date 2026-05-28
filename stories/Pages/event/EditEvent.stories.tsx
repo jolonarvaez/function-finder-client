@@ -5,6 +5,7 @@ import type { ApiEvent } from "@/lib/services/events";
 const BASE_EVENT: ApiEvent = {
   id: "evt-001",
   name: "Neon Dreams",
+  description: null,
   location: null,
   date: "2026-06-15",
   start_time: "22:00:00+08",
