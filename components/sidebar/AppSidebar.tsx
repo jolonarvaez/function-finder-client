@@ -57,8 +57,7 @@ export function AppSidebar({
   const pathname = usePathname();
   const profileHref = userId ? `/profile/${userId}` : null;
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === href : pathname.startsWith(href);
+  const isActive = (href: string) => (href === "/" ? pathname === href : pathname.startsWith(href));
 
   return (
     <Sidebar>
@@ -78,7 +77,12 @@ export function AppSidebar({
                 { label: "Events", href: "/events", icon: PartyPopper },
               ].map(({ label, href, icon: Icon }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton asChild isActive={isActive(href)} size="default" tooltip={label}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive(href)}
+                    size="default"
+                    tooltip={label}
+                  >
                     <Link href={href}>
                       <Icon />
                       <span>{label}</span>
@@ -103,7 +107,12 @@ export function AppSidebar({
                 <>
                   {profileHref && (
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive(profileHref)} size="default" tooltip="Profile">
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive(profileHref)}
+                        size="default"
+                        tooltip="Profile"
+                      >
                         <Link href={profileHref}>
                           <UserIcon />
                           <span>Profile</span>
@@ -112,7 +121,12 @@ export function AppSidebar({
                     </SidebarMenuItem>
                   )}
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/settings")} size="default" tooltip="Settings">
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive("/settings")}
+                      size="default"
+                      tooltip="Settings"
+                    >
                       <Link href="/settings">
                         <SettingsIcon />
                         <span>Settings</span>
@@ -135,7 +149,12 @@ export function AppSidebar({
                 <SidebarMenu className="space-y-1">
                   {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
                     <SidebarMenuItem key={label}>
-                      <SidebarMenuButton asChild isActive={pathname === href} size="default" tooltip={label}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === href}
+                        size="default"
+                        tooltip={label}
+                      >
                         <Link href={href}>
                           <Icon />
                           <span>{label}</span>

@@ -79,15 +79,15 @@ export function EventsView() {
       status: eventStatus,
     })
       .then((data) => {
-          const now = Date.now();
-          setEvents(
-            data.sort(
-              (a, b) =>
-                Math.abs(new Date(a.date).getTime() - now) -
-                Math.abs(new Date(b.date).getTime() - now)
-            )
-          );
-        })
+        const now = Date.now();
+        setEvents(
+          data.sort(
+            (a, b) =>
+              Math.abs(new Date(a.date).getTime() - now) -
+              Math.abs(new Date(b.date).getTime() - now)
+          )
+        );
+      })
       .catch(() => setEvents([]))
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedGenres, eventStatus, authLoading, profileLoading]);

@@ -40,6 +40,9 @@ export function EventItem({ event }: Props) {
               {isDone && <Badge variant="outline">Done</Badge>}
             </div>
             <p className="mt-0.5 text-sm capitalize text-foreground">{event.category}</p>
+            {event.description && (
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{event.description}</p>
+            )}
           </div>
 
           <div className="space-y-1.5 text-sm text-foreground">

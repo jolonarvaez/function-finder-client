@@ -7,6 +7,7 @@ import type { Genre } from "@/lib/constants";
 export type DJEvent = {
   id: string;
   name: string;
+  description?: string;
   venue: string;
   address: string;
   category: string;
@@ -26,6 +27,7 @@ export type EventStatus = "live" | "upcoming" | "past" | "all";
 
 export type EditDraft = {
   name: string;
+  description: string;
   category: string;
   date: Date;
   dateOpen: boolean;
@@ -93,6 +95,7 @@ export function formatTime(t: string) {
 export function draftFromEvent(e: DJEvent): EditDraft {
   return {
     name: e.name,
+    description: e.description ?? "",
     category: e.category,
     date: parseISO(e.date),
     dateOpen: false,
@@ -117,6 +120,7 @@ export function draftToPartial(
 ): Partial<DJEvent> {
   return {
     name: draft.name.trim() || original.name,
+    description: draft.description.trim() || undefined,
     category: draft.category || original.category,
     date: `${draft.date.getFullYear()}-${String(draft.date.getMonth() + 1).padStart(2, "0")}-${String(draft.date.getDate()).padStart(2, "0")}`,
     startTime: draft.startTime,

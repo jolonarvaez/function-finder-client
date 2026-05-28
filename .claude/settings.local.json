@@ -49,7 +49,8 @@
       "Bash(Get-ChildItem *)",
       "Bash(Select-Object Name)",
       "Bash(npx shadcn@latest add slider)",
-      "Skill(frontend-design)"
+      "Skill(frontend-design)",
+      "Bash(Select-Object -ExpandProperty Name)"
     ]
   }
 }

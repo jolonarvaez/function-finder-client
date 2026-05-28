@@ -13,9 +13,11 @@ import {
   ImageIcon,
   XIcon,
   GlobeIcon,
+  AlignLeftIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -59,6 +61,7 @@ export function CreateEventView() {
   const router = useRouter();
   const { profile } = useUserStore();
   const [eventName, setEventName] = useState("");
+  const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState<Date>();
   const [dateOpen, setDateOpen] = useState(false);
@@ -112,6 +115,7 @@ export function CreateEventView() {
       }
       await createEvent({
         name: eventName.trim(),
+        description: description.trim() || null,
         category,
         date: toIsoDate(date),
         start_time: `${startTime}:00${getTimezoneOffset()}`,
@@ -175,6 +179,23 @@ export function CreateEventView() {
                 onChange={(e) => setEventName(e.target.value)}
                 placeholder="Friday Night Fever"
                 className="h-11 rounded-lg pl-10 dark:bg-card"
+              />
+            </div>
+          </Field>
+
+          {/* Description */}
+          <Field>
+            <FieldLabel htmlFor="description">
+              Description <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            <div className="relative">
+              <AlignLeftIcon className="absolute left-3 top-3 size-4 shrink-0 text-muted-foreground" />
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Tell people what to expect at your event..."
+                className="min-h-24 rounded-lg pl-10 dark:bg-card"
               />
             </div>
           </Field>

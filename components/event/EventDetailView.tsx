@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPinIcon, CalendarIcon, ClockIcon, TicketIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon, ClockIcon, TicketIcon, AlignLeftIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,6 +77,13 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
 
           {/* Copy link */}
           <CopyLinkButton text="Copy Link to Event" />
+
+          {/* Description */}
+          {event.description && (
+            <Section icon={AlignLeftIcon} label="Description">
+              <span className="whitespace-pre-wrap">{event.description}</span>
+            </Section>
+          )}
 
           {/* When */}
           <Section icon={CalendarIcon} label="Date">

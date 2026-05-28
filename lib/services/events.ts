@@ -24,6 +24,7 @@ type ApiCustomLocation = {
 type ApiEvent = {
   id: string;
   name: string;
+  description: string | null;
   location: string | null;
   date: string;
   start_time: string;
@@ -70,6 +71,7 @@ type GetEventsParams = {
 
 export type CreateEventBody = {
   name: string;
+  description?: string | null;
   category: string;
   date: string;
   start_time: string;
@@ -88,6 +90,7 @@ function toIsoDate(date: Date): string {
 
 export type UpdateEventBody = {
   name: string;
+  description?: string | null;
   category: string;
   date: string;
   start_time: string;
