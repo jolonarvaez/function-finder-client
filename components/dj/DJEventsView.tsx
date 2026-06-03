@@ -62,7 +62,12 @@ export function DJEventsView() {
             <SectionLabel>Live Now</SectionLabel>
             <div className="mt-2 space-y-3">
               {liveEvents.map((e) => (
-                <EventCard key={e.id} event={e} status="live" />
+                <EventCard
+                  key={e.id}
+                  event={e}
+                  status="live"
+                  onView={() => router.push(`/events/${e.id}`)}
+                />
               ))}
             </div>
           </section>
@@ -84,6 +89,7 @@ export function DJEventsView() {
                     key={e.id}
                     event={e}
                     status="upcoming"
+                    onView={() => router.push(`/events/${e.id}`)}
                     onEdit={() => router.push(`/dj/edit-event/${e.id}`)}
                   />
                 ))
@@ -103,7 +109,14 @@ export function DJEventsView() {
               {pastEvents.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No past events.</p>
               ) : (
-                pastEvents.map((e) => <EventCard key={e.id} event={e} status="past" />)
+                pastEvents.map((e) => (
+                  <EventCard
+                    key={e.id}
+                    event={e}
+                    status="past"
+                    onView={() => router.push(`/events/${e.id}`)}
+                  />
+                ))
               )}
             </CollapsibleContent>
           </Collapsible>

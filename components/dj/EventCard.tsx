@@ -1,11 +1,11 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
-import { MapPinIcon, PencilIcon } from "lucide-react";
+import { MapPinIcon, PencilIcon, ExternalLinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { formatTime, type DJEvent, type EventStatus } from "./dj-event.types";
+import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 
 function GenreChips({ genres }: { genres: DJEvent["genres"] }) {
   return (
@@ -23,25 +23,20 @@ export type EventCardProps = {
   event: DJEvent;
   status: EventStatus;
   onEdit?: () => void;
+  onView?: () => void;
 };
 
-export function EventCard({ event, status, onEdit }: EventCardProps) {
+export function EventCard({ event, status, onEdit, onView }: EventCardProps) {
   const isPast = status === "past";
   const isLive = status === "live";
 
   return (
-    <div
-      className={cn(
-        "rounded-lg border border-border bg-card p-4 space-y-2",
-        isPast && "opacity-60"
-      )}
-    >
+    <div className="rounded-lg border border-border bg-card p-4 space-y-2">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-0.5">
           <div className="flex items-center gap-2">
             {isLive && (
               <span className="flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-0.5 text-sm font-semibold uppercase tracking-wide text-primary">
-                <span className="size-1.5 rounded-full bg-primary" />
                 Live
               </span>
             )}
@@ -79,6 +74,18 @@ export function EventCard({ event, status, onEdit }: EventCardProps) {
       <GenreChips genres={event.genres} />
 
       {event.address && <p className="text-sm text-foreground">{event.address}</p>}
+
+      <div className="flex items-center gap-2">
+        <CopyLinkButton
+          url={`${typeof window !== "undefined" ? window.location.origin : ""}/events/${event.id}`}
+        />
+        {onView && (
+          <Button variant="outline" size="sm" className="h-7 gap-1 px-2" onClick={onView}>
+            <ExternalLinkIcon className="size-3.5" />
+            View Event
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
