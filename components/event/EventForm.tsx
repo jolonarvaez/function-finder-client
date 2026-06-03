@@ -1,0 +1,480 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import { format, parseISO } from "date-fns";
+import {
+  SparklesIcon,
+  TagIcon,
+  ChevronDownIcon,
+  PhilippinePesoIcon,
+  CalendarPlus2Icon,
+  PencilLineIcon,
+  ImageIcon,
+  XIcon,
+  GlobeIcon,
+  AlignLeftIcon,
+} from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { GenreSelector } from "@/components/GenreSelector";
+import { LocationPicker } from "./LocationPicker";
+import { AddressAutocomplete } from "./AddressAutocomplete";
+import { cn } from "@/lib/utils";
+import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
+import { toIsoDate, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
+import { uploadEventImage } from "@/lib/services/storage";
+import { useUserStore } from "@/components/auth/use-user-store";
+import { reverseGeocode, type AddressSuggestion } from "@/lib/geocode";
+import { PageContainer, PageHeader } from "../reusables/PageContainer";
+
+export type EventFormValues = {
+  name: string;
+  description: string | null;
+  category: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  entry_price: number | null;
+  genres: Genre[];
+  custom_location: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  };
+  flyer_url: string | null;
+};
+
+export type EventFormMode = "create" | "edit";
+
+type EventFormProps = Readonly<{
+  mode: EventFormMode;
+  initialEvent?: ApiEvent;
+  onSubmit: (values: EventFormValues) => Promise<void>;
+}>;
+
+function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      {children}
+    </h2>
+  );
+}
+
+type ModeConfig = {
+  formId: string;
+  headerTitle: string;
+  headerIcon: typeof CalendarPlus2Icon;
+  errorMessage: string;
+  idleLabel: string;
+  busyLabel: string;
+};
+
+const MODE_CONFIG: Record<EventFormMode, ModeConfig> = {
+  create: {
+    formId: "create-event-form",
+    headerTitle: "Create Event",
+    headerIcon: CalendarPlus2Icon,
+    errorMessage: "Failed to create event. Please try again.",
+    idleLabel: "Create Event",
+    busyLabel: "Creating...",
+  },
+  edit: {
+    formId: "edit-event-form",
+    headerTitle: "Edit Event",
+    headerIcon: PencilLineIcon,
+    errorMessage: "Failed to update event. Please try again.",
+    idleLabel: "Save Changes",
+    busyLabel: "Saving...",
+  },
+};
+
+const DEFAULT_COORDINATES = { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] };
+
+type InitialState = {
+  name: string;
+  description: string;
+  category: string;
+  date: Date | undefined;
+  startTime: string;
+  endTime: string;
+  entryPrice: string;
+  genres: Genre[];
+  address: string;
+  coordinates: { lng: number; lat: number };
+  flyerUrl: string | null;
+};
+
+function buildInitialState(
+  initialEvent: ApiEvent | undefined,
+  fallbackGenres: Genre[]
+): InitialState {
+  if (!initialEvent) {
+    return {
+      name: "",
+      description: "",
+      category: "",
+      date: undefined,
+      startTime: "",
+      endTime: "",
+      entryPrice: "",
+      genres: fallbackGenres,
+      address: "",
+      coordinates: DEFAULT_COORDINATES,
+      flyerUrl: null,
+    };
+  }
+  const loc = initialEvent.custom_location;
+  return {
+    name: initialEvent.name,
+    description: initialEvent.description ?? "",
+    category: initialEvent.category,
+    date: parseISO(initialEvent.date),
+    startTime: initialEvent.start_time.slice(0, 5),
+    endTime: initialEvent.end_time.slice(0, 5),
+    entryPrice: initialEvent.entry_price != null ? String(initialEvent.entry_price) : "",
+    genres: initialEvent.genres as Genre[],
+    address: loc?.address ?? "",
+    coordinates: loc ? { lng: loc.longitude, lat: loc.latitude } : DEFAULT_COORDINATES,
+    flyerUrl: initialEvent.flyer_url,
+  };
+}
+
+export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
+  const { profile } = useUserStore();
+  const isEdit = mode === "edit";
+  const config = MODE_CONFIG[mode];
+  const initial = buildInitialState(initialEvent, profile?.genre_tags ?? []);
+
+  const [eventName, setEventName] = useState(initial.name);
+  const [description, setDescription] = useState(initial.description);
+  const [category, setCategory] = useState(initial.category);
+  const [date, setDate] = useState<Date | undefined>(initial.date);
+  const [dateOpen, setDateOpen] = useState(false);
+  const [startTime, setStartTime] = useState(initial.startTime);
+  const [endTime, setEndTime] = useState(initial.endTime);
+  const [entryPrice, setEntryPrice] = useState(initial.entryPrice);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(initial.genres);
+  const [address, setAddress] = useState(initial.address);
+  const [coordinates, setCoordinates] = useState(initial.coordinates);
+  const [existingFlyerUrl, setExistingFlyerUrl] = useState<string | null>(initial.flyerUrl);
+  const [flyerFile, setFlyerFile] = useState<File | null>(null);
+  const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
+
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
+    setCoordinates(coords);
+    reverseGeocode(coords.lat, coords.lng).then((result) => {
+      if (result) setAddress(result);
+    });
+  }, []);
+
+  function handleAddressSelect(suggestion: AddressSuggestion) {
+    setAddress(suggestion.display_name);
+    setCoordinates({ lat: Number.parseFloat(suggestion.lat), lng: Number.parseFloat(suggestion.lon) });
+  }
+
+  function handleFlyerChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setFlyerFile(file);
+    setFlyerPreview(file ? URL.createObjectURL(file) : null);
+  }
+
+  function handleFlyerClear() {
+    setFlyerFile(null);
+    setFlyerPreview(null);
+    setExistingFlyerUrl(null);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!date || !profile) return;
+
+    setSubmitting(true);
+    try {
+      let flyerUrl: string | null = existingFlyerUrl;
+      if (flyerFile) {
+        flyerUrl = await uploadEventImage(flyerFile, profile.id);
+      }
+
+      await onSubmit({
+        name: eventName.trim(),
+        description: description.trim() || null,
+        category,
+        date: toIsoDate(date),
+        start_time: `${startTime}:00${getTimezoneOffset()}`,
+        end_time: `${endTime}:00${getTimezoneOffset()}`,
+        entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
+        genres: selectedGenres,
+        custom_location: {
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          address: address.trim(),
+        },
+        flyer_url: flyerUrl,
+      });
+    } catch {
+      toast.error(config.errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const displayFlyer = flyerPreview ?? existingFlyerUrl;
+
+  const isValid =
+    eventName.trim() &&
+    category &&
+    date &&
+    startTime &&
+    endTime &&
+    selectedGenres.length > 0 &&
+    address.trim();
+
+  const submitLabel = submitting ? config.busyLabel : config.idleLabel;
+
+  return (
+    <PageContainer>
+      <a
+        href={`#${config.formId}`}
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to form
+      </a>
+
+      <PageHeader title={config.headerTitle} icon={config.headerIcon} showBack />
+
+      <div className="flex-1">
+        <form id={config.formId} onSubmit={handleSubmit} className="space-y-4 pb-6">
+          {/* ── Details ─────────────────────────────────── */}
+          <SectionHeader>Details</SectionHeader>
+
+          <Field>
+            <FieldLabel htmlFor="event-name">Event Name</FieldLabel>
+            <div className="relative">
+              <SparklesIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="event-name"
+                required
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                placeholder="Friday Night Fever"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
+              />
+            </div>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="description">
+              Description <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            <div className="relative">
+              <AlignLeftIcon className="absolute left-3 top-3 size-4 shrink-0 text-muted-foreground" />
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Tell people what to expect at your event..."
+                className="min-h-24 rounded-lg pl-10 dark:bg-card"
+              />
+            </div>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="category">Category</FieldLabel>
+            <Select value={category} onValueChange={setCategory} required>
+              <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
+                <div className="flex items-center gap-2">
+                  <TagIcon className="size-4 text-muted-foreground" />
+                  <SelectValue placeholder="Select a category" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {EVENT_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+
+          {/* ── Date & Time ─────────────────────────────── */}
+          <div className="border-t border-border pt-4">
+            <SectionHeader>Date & Time</SectionHeader>
+          </div>
+
+          <Field>
+            <FieldLabel htmlFor="date-picker">Date</FieldLabel>
+            <Popover open={dateOpen} onOpenChange={setDateOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date-picker"
+                  variant="outline"
+                  className={cn(
+                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  {date ? format(date, "PPP") : "Select date"}
+                  <ChevronDownIcon className="size-4 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  captionLayout="dropdown"
+                  defaultMonth={date}
+                  onSelect={(d) => {
+                    if (d) {
+                      setDate(d);
+                      setDateOpen(false);
+                    }
+                  }}
+                  disabled={
+                    isEdit ? undefined : (d) => d < new Date(new Date().setHours(0, 0, 0, 0))
+                  }
+                />
+              </PopoverContent>
+            </Popover>
+          </Field>
+
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
+            <Field>
+              <FieldLabel htmlFor="start-time">Start Time</FieldLabel>
+              <Input
+                id="start-time"
+                type="time"
+                step={60}
+                required
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="end-time">End Time</FieldLabel>
+              <Input
+                id="end-time"
+                type="time"
+                step={60}
+                required
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
+            </Field>
+          </div>
+
+          {!isEdit && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <GlobeIcon className="size-3 shrink-0" />
+              <span>
+                {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC{getTimezoneOffset()})
+              </span>
+            </div>
+          )}
+
+          <Field>
+            <FieldLabel htmlFor="entry-price">
+              Entry Price <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            <div className="relative">
+              <PhilippinePesoIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="entry-price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={entryPrice}
+                onChange={(e) => setEntryPrice(e.target.value)}
+                placeholder="0.00"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
+              />
+            </div>
+          </Field>
+
+          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
+
+          {/* ── Location ────────────────────────────────── */}
+          <div className="border-t border-border pt-4">
+            <SectionHeader>Location</SectionHeader>
+          </div>
+
+          <Field>
+            <FieldLabel htmlFor="address">Address</FieldLabel>
+            <AddressAutocomplete
+              value={address}
+              onChange={setAddress}
+              onSelect={handleAddressSelect}
+            />
+          </Field>
+
+          <LocationPicker coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
+
+          {/* ── Flyer ───────────────────────────────────── */}
+          <div className="border-t border-border pt-4">
+            <SectionHeader>Flyer / Cover Image</SectionHeader>
+          </div>
+
+          <Field>
+            <FieldLabel>
+              Image <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            {displayFlyer ? (
+              <div className="relative overflow-hidden rounded-lg border border-border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={displayFlyer} alt="Flyer preview" className="w-full object-contain" />
+                <button
+                  type="button"
+                  onClick={handleFlyerClear}
+                  aria-label="Remove image"
+                  className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:bg-background"
+                >
+                  <XIcon className="size-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="relative flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border text-muted-foreground transition-colors hover:bg-muted">
+                <ImageIcon className="size-6" />
+                <span className="text-sm">Upload flyer</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                  onChange={handleFlyerChange}
+                />
+              </label>
+            )}
+          </Field>
+        </form>
+      </div>
+
+      {/* Sticky submit */}
+      <div className="sticky bottom-0 z-20 border-t border-border bg-background py-3">
+        <Button
+          type="submit"
+          form={config.formId}
+          disabled={!isValid || submitting}
+          className="h-12 w-full rounded-lg text-sm font-semibold"
+        >
+          {submitLabel}
+        </Button>
+      </div>
+    </PageContainer>
+  );
+}
