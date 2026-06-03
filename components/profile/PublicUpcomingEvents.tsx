@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { EventCard } from "@/components/dj/EventCard";
 import type { DJEvent } from "@/components/dj/dj-event.types";
 
@@ -9,6 +10,8 @@ type PublicUpcomingEventsProps = Readonly<{
 }>;
 
 export function PublicUpcomingEvents({ events, displayName }: PublicUpcomingEventsProps) {
+  const router = useRouter();
+
   return (
     <section aria-labelledby="upcoming-events-heading" className="space-y-3">
       <h2 id="upcoming-events-heading" className="text-base font-semibold text-foreground">
@@ -19,7 +22,12 @@ export function PublicUpcomingEvents({ events, displayName }: PublicUpcomingEven
       ) : (
         <div className="space-y-3">
           {events.map((event) => (
-            <EventCard key={event.id} event={event} status="upcoming" />
+            <EventCard
+              key={event.id}
+              event={event}
+              status="upcoming"
+              onView={() => router.push(`/events/${event.id}`)}
+            />
           ))}
         </div>
       )}
