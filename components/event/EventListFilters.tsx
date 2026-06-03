@@ -24,7 +24,7 @@ function weekRangeLabel(date = new Date()) {
   const end = endOfWeek(date, { weekStartsOn: 0 });
   const s = format(start, "MMM d");
   const e = start.getMonth() === end.getMonth() ? format(end, "d") : format(end, "MMM d");
-  return `${s}–${e}`;
+  return `${s} - ${e}`;
 }
 
 const DATE_OPTIONS: { value: DateOption; label: () => string }[] = [
