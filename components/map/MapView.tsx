@@ -12,6 +12,7 @@ import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM, type Genre } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { getEventsList, formatTime, type ApiEvent } from "@/lib/services/events";
+import { getEventCoverOrNull } from "@/components/dj/dj-event.types";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
@@ -32,7 +33,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
     event: {
       id: event.id,
       name: event.name,
-      image: event.flyer_url ?? undefined,
+      image: getEventCoverOrNull(event) ?? undefined,
       address: event.custom_location.address,
       category: event.category,
       date: event.date,

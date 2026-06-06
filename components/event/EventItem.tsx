@@ -7,13 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/Persona";
 import { cn } from "@/lib/utils";
-import { formatTime } from "@/components/dj/dj-event.types";
+import { formatTime, getEventCoverOrNull } from "@/components/dj/dj-event.types";
 import type { ApiEvent } from "@/lib/services/events";
 
 type Props = Readonly<{ event: ApiEvent }>;
 
 export function EventItem({ event }: Props) {
   const address = event.custom_location?.address ?? event.location ?? "Location TBA";
+  const coverUrl = getEventCoverOrNull(event);
   const startTime = formatTime(event.start_time.slice(0, 5));
   const endTime = formatTime(event.end_time.slice(0, 5));
   const isLive = event.status === "live";
@@ -81,14 +82,10 @@ export function EventItem({ event }: Props) {
           )}
         </div>
 
-        {event.flyer_url && (
+        {coverUrl && (
           <div className="w-1/2 shrink-0 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={event.flyer_url}
-              alt={`${event.name} flyer`}
-              className="size-full object-cover"
-            />
+            <img src={coverUrl} alt={`${event.name} cover`} className="size-full object-cover" />
           </div>
         )}
       </div>

@@ -34,7 +34,14 @@ const BASE: ApiEvent = {
     longitude: 121.0244,
     address: "123 Ayala Ave, Makati City",
   },
-  flyer_url: "https://placehold.co/400x533/1a1a2e/e0e0ff?text=Neon+Dreams",
+  event_images: [
+    {
+      id: "img-001",
+      event_id: "evt-001",
+      url: "https://placehold.co/400x533/1a1a2e/e0e0ff?text=Neon+Dreams",
+      sort_order: 0,
+    },
+  ],
   status: "upcoming",
   users: MOCK_DJ,
 };
@@ -51,7 +58,7 @@ const MOCK_EVENTS: ApiEvent[] = [
     entry_price: null,
     genres: ["Soul", "RnB", "Disco"],
     category: "Lounge",
-    flyer_url: null,
+    event_images: [],
     status: "live",
     custom_location: {
       latitude: 14.552,
@@ -70,7 +77,14 @@ const MOCK_EVENTS: ApiEvent[] = [
     entry_price: 300,
     genres: ["DnB", "Techno"],
     category: "Underground",
-    flyer_url: "https://placehold.co/400x533/0a0a0a/cc3333?text=Concrete+Jungle",
+    event_images: [
+      {
+        id: "img-003",
+        event_id: "evt-003",
+        url: "https://placehold.co/400x533/0a0a0a/cc3333?text=Concrete+Jungle",
+        sort_order: 0,
+      },
+    ],
     status: "upcoming",
     custom_location: {
       latitude: 14.5605,
@@ -89,7 +103,7 @@ const MOCK_EVENTS: ApiEvent[] = [
     entry_price: null,
     genres: ["Hip-Hop", "RnB", "Afrobeats"],
     category: "Bar",
-    flyer_url: null,
+    event_images: [],
     status: "upcoming",
     custom_location: null,
     location: "Noir Lounge, BGC",
@@ -103,7 +117,14 @@ const MOCK_EVENTS: ApiEvent[] = [
     entry_price: 250,
     genres: ["House", "Techno", "Disco"],
     category: "Nightclub",
-    flyer_url: "https://placehold.co/400x533/1c1c1c/888888?text=Resonance",
+    event_images: [
+      {
+        id: "img-005",
+        event_id: "evt-005",
+        url: "https://placehold.co/400x533/1c1c1c/888888?text=Resonance",
+        sort_order: 0,
+      },
+    ],
     status: "done",
     users: { ...MOCK_DJ, display_name: "DJ Nova", genre_tags: ["House", "Disco"] },
   },

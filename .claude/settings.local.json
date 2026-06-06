@@ -50,7 +50,14 @@
       "Bash(Select-Object Name)",
       "Bash(npx shadcn@latest add slider)",
       "Skill(frontend-design)",
-      "Bash(Select-Object -ExpandProperty Name)"
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(git *)",
+      "Bash(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\" -Force)",
+      "Bash(Out-Null)",
+      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\EventForm.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\EventForm.tsx\")",
+      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\EventImageManager.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\EventImageManager.tsx\")",
+      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\AddressAutocomplete.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\AddressAutocomplete.tsx\")",
+      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\LocationPicker.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\LocationPicker.tsx\")"
     ]
   }
 }

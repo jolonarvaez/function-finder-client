@@ -4,6 +4,18 @@ import type { Genre } from "@/lib/constants";
 
 // ── Core type ────────────────────────────────────────────────
 
+export type EventImage = {
+  id: string;
+  event_id: string;
+  url: string;
+  sort_order: number;
+};
+
+export const MAX_EVENT_IMAGES = 5;
+
+/** Placeholder used when an event has no images at all. */
+export const PLACEHOLDER_EVENT_IMAGE = "https://placehold.co/400x533/1a1a1a/666666?text=No+Image";
+
 export type DJEvent = {
   id: string;
   name: string;
@@ -18,10 +30,31 @@ export type DJEvent = {
   entryPrice?: number;
   genres: Genre[];
   coordinates?: { lng: number; lat: number };
-  flyerUrl?: string;
+  eventImages?: EventImage[];
 };
 
 export type EventStatus = "live" | "upcoming" | "past" | "all";
+
+/** Resolves the cover URL for an event, falling back to the placeholder. */
+export function getEventCover(event: {
+  event_images?: EventImage[] | null;
+  eventImages?: EventImage[];
+}): string {
+  const images = event.event_images ?? event.eventImages;
+  return images && images.length > 0 ? images[0]!.url : PLACEHOLDER_EVENT_IMAGE;
+}
+
+/**
+ * Like {@link getEventCover} but returns `null` when no image exists.
+ * Use when the caller wants to hide the slot entirely (e.g. compact cards).
+ */
+export function getEventCoverOrNull(event: {
+  event_images?: EventImage[] | null;
+  eventImages?: EventImage[];
+}): string | null {
+  const images = event.event_images ?? event.eventImages;
+  return (images && images.length > 0 ? images[0]?.url : null) ?? null;
+}
 
 // ── Edit draft ───────────────────────────────────────────────
 
@@ -39,9 +72,6 @@ export type EditDraft = {
   coordinates: { lng: number; lat: number };
   address: string;
   selectedVenueId: string;
-  existingFlyerUrl: string | null;
-  flyerFile: File | null;
-  flyerPreview: string | null;
 };
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -107,17 +137,10 @@ export function draftFromEvent(e: DJEvent): EditDraft {
     coordinates: e.coordinates ?? { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] },
     address: e.address,
     selectedVenueId: "",
-    existingFlyerUrl: e.flyerUrl ?? null,
-    flyerFile: null,
-    flyerPreview: null,
   };
 }
 
-export function draftToPartial(
-  draft: EditDraft,
-  original: DJEvent,
-  flyerUrl?: string | null
-): Partial<DJEvent> {
+export function draftToPartial(draft: EditDraft, original: DJEvent): Partial<DJEvent> {
   return {
     name: draft.name.trim() || original.name,
     description: draft.description.trim() || undefined,
@@ -129,6 +152,5 @@ export function draftToPartial(
     genres: draft.genres,
     coordinates: draft.coordinates,
     address: draft.address,
-    flyerUrl: flyerUrl !== undefined ? (flyerUrl ?? undefined) : original.flyerUrl,
   };
 }

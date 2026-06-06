@@ -1,5 +1,8 @@
+import { AxiosError } from "axios";
 import api from "@/lib/axios";
 import { type EventStatus, type Genre } from "@/lib/constants";
+import type { EventImage } from "@/components/dj/dj-event.types";
+
 // ── API response types ────────────────────────────────────────
 
 type ApiUser = {
@@ -36,7 +39,8 @@ type ApiEvent = {
   created_at: string;
   genres: string[];
   custom_location: ApiCustomLocation | null;
-  flyer_url: string | null;
+  /** Pre-sorted: index 0 is the cover. */
+  event_images: EventImage[];
   users: ApiUser;
   status: Exclude<EventStatus, "all">;
 };
@@ -70,6 +74,35 @@ function getTimezoneOffset(): string {
   return `${sign}${hours}:${mins}`;
 }
 
+function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * Image-API error surfaced to the UI. Use `code === "image_limit"` for the
+ * server-enforced 5-image cap (HTTP 400).
+ */
+export class EventImageError extends Error {
+  code: "image_limit" | "network" | "unknown";
+  constructor(message: string, code: EventImageError["code"]) {
+    super(message);
+    this.code = code;
+  }
+}
+
+function toImageError(err: unknown): EventImageError {
+  if (err instanceof AxiosError) {
+    if (err.response?.status === 400) {
+      const message =
+        (err.response.data as { message?: string } | undefined)?.message ??
+        "Maximum of 5 images per event.";
+      return new EventImageError(message, "image_limit");
+    }
+    return new EventImageError(err.message, "network");
+  }
+  return new EventImageError("Unexpected error.", "unknown");
+}
+
 // ── Service ───────────────────────────────────────────────────
 
 type GetEventsParams = {
@@ -91,12 +124,7 @@ export type CreateEventBody = {
   created_by: string;
   location: string | null;
   custom_location: ApiCustomLocation | null;
-  flyer_url?: string | null;
 };
-
-function toIsoDate(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-}
 
 export type UpdateEventBody = {
   name: string;
@@ -108,14 +136,10 @@ export type UpdateEventBody = {
   entry_price: number | null;
   genres: Genre[];
   custom_location: ApiCustomLocation | null;
-  flyer_url?: string | null;
 };
 
 async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
-  const { data } = await api.post<{ status: number; message: string; data: ApiEvent }>(
-    "/events",
-    body
-  );
+  const { data } = await api.post<ApiSingleResponse>("/events", body);
   return data.data;
 }
 
@@ -123,8 +147,8 @@ async function updateEvent(id: string, body: UpdateEventBody): Promise<void> {
   await api.patch(`/events/${id}`, body);
 }
 
-async function getEvent(id: string): Promise<ApiEvent> {
-  const { data } = await api.get<ApiSingleResponse>(`/events/${id}`);
+async function getEvent(id: string, signal?: AbortSignal): Promise<ApiEvent> {
+  const { data } = await api.get<ApiSingleResponse>(`/events/${id}`, { signal });
   return data.data;
 }
 
@@ -140,12 +164,44 @@ async function getEventsList({ startDate, endDate, genres, status }: GetEventsPa
   return data.data;
 }
 
+async function addEventImages(eventId: string, urls: string[]): Promise<ApiEvent> {
+  try {
+    const { data } = await api.post<ApiSingleResponse>(`/events/${eventId}/images`, { urls });
+    return data.data;
+  } catch (err) {
+    throw toImageError(err);
+  }
+}
+
+async function deleteEventImage(eventId: string, imageId: string): Promise<ApiEvent> {
+  try {
+    const { data } = await api.delete<ApiSingleResponse>(`/events/${eventId}/images/${imageId}`);
+    return data.data;
+  } catch (err) {
+    throw toImageError(err);
+  }
+}
+
+async function reorderEventImages(eventId: string, imageIds: string[]): Promise<ApiEvent> {
+  try {
+    const { data } = await api.patch<ApiSingleResponse>(`/events/${eventId}/images/order`, {
+      imageIds,
+    });
+    return data.data;
+  } catch (err) {
+    throw toImageError(err);
+  }
+}
+
 export type { ApiEvent, ApiUser };
 export {
   getEventsList,
   getEvent,
   createEvent,
   updateEvent,
+  addEventImages,
+  deleteEventImage,
+  reorderEventImages,
   toIsoDate,
   formatTime,
   getTimezoneOffset,

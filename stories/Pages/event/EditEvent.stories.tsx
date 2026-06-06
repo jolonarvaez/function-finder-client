@@ -21,7 +21,14 @@ const BASE_EVENT: ApiEvent = {
     longitude: 121.0244,
     address: "123 Ayala Ave, Makati City",
   },
-  flyer_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+  event_images: [
+    {
+      id: "img-001",
+      event_id: "evt-001",
+      url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+      sort_order: 0,
+    },
+  ],
   status: "upcoming",
   users: {
     id: "user-001",
@@ -64,15 +71,15 @@ export const Default: Story = {
   },
 };
 
-export const NoFlyer: Story = {
-  name: "No flyer",
+export const NoImages: Story = {
+  name: "No images",
   args: {
     eventId: "evt-002",
     event: {
       ...BASE_EVENT,
       id: "evt-002",
       name: "Concrete Jungle",
-      flyer_url: null,
+      event_images: [],
       entry_price: null,
       genres: ["DnB", "Techno"],
     },

@@ -1,16 +1,12 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import {
   SparklesIcon,
   TagIcon,
   ChevronDownIcon,
   PhilippinePesoIcon,
-  CalendarPlus2Icon,
-  PencilLineIcon,
-  ImageIcon,
-  XIcon,
   GlobeIcon,
   AlignLeftIcon,
 } from "lucide-react";
@@ -31,37 +27,25 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { GenreSelector } from "@/components/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
+import { EventImageManager } from "./EventImageManager";
+import { StagedImagePicker } from "./StagedImagePicker";
 import { cn } from "@/lib/utils";
-import { EVENT_CATEGORIES, MAKATI_CENTER, type Genre } from "@/lib/constants";
+import { EVENT_CATEGORIES, type Genre } from "@/lib/constants";
 import { toIsoDate, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
-import { uploadEventImage } from "@/lib/services/storage";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { reverseGeocode, type AddressSuggestion } from "@/lib/geocode";
-import { PageContainer, PageHeader } from "../reusables/PageContainer";
+import { PageContainer, PageHeader } from "../../reusables/PageContainer";
+import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
+import { MODE_CONFIG } from "./constants";
+import { buildInitialState } from "./utils";
+import type { EventFormMode, EventFormValues } from "./types";
 
-export type EventFormValues = {
-  name: string;
-  description: string | null;
-  category: string;
-  date: string;
-  start_time: string;
-  end_time: string;
-  entry_price: number | null;
-  genres: Genre[];
-  custom_location: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
-  flyer_url: string | null;
-};
-
-export type EventFormMode = "create" | "edit";
+export type { EventFormMode, EventFormValues };
 
 type EventFormProps = Readonly<{
   mode: EventFormMode;
   initialEvent?: ApiEvent;
-  onSubmit: (values: EventFormValues) => Promise<void>;
+  onSubmit: (values: EventFormValues, pendingImages: File[]) => Promise<void>;
 }>;
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -70,85 +54,6 @@ function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
       {children}
     </h2>
   );
-}
-
-type ModeConfig = {
-  formId: string;
-  headerTitle: string;
-  headerIcon: typeof CalendarPlus2Icon;
-  errorMessage: string;
-  idleLabel: string;
-  busyLabel: string;
-};
-
-const MODE_CONFIG: Record<EventFormMode, ModeConfig> = {
-  create: {
-    formId: "create-event-form",
-    headerTitle: "Create Event",
-    headerIcon: CalendarPlus2Icon,
-    errorMessage: "Failed to create event. Please try again.",
-    idleLabel: "Create Event",
-    busyLabel: "Creating...",
-  },
-  edit: {
-    formId: "edit-event-form",
-    headerTitle: "Edit Event",
-    headerIcon: PencilLineIcon,
-    errorMessage: "Failed to update event. Please try again.",
-    idleLabel: "Save Changes",
-    busyLabel: "Saving...",
-  },
-};
-
-const DEFAULT_COORDINATES = { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] };
-
-type InitialState = {
-  name: string;
-  description: string;
-  category: string;
-  date: Date | undefined;
-  startTime: string;
-  endTime: string;
-  entryPrice: string;
-  genres: Genre[];
-  address: string;
-  coordinates: { lng: number; lat: number };
-  flyerUrl: string | null;
-};
-
-function buildInitialState(
-  initialEvent: ApiEvent | undefined,
-  fallbackGenres: Genre[]
-): InitialState {
-  if (!initialEvent) {
-    return {
-      name: "",
-      description: "",
-      category: "",
-      date: undefined,
-      startTime: "",
-      endTime: "",
-      entryPrice: "",
-      genres: fallbackGenres,
-      address: "",
-      coordinates: DEFAULT_COORDINATES,
-      flyerUrl: null,
-    };
-  }
-  const loc = initialEvent.custom_location;
-  return {
-    name: initialEvent.name,
-    description: initialEvent.description ?? "",
-    category: initialEvent.category,
-    date: parseISO(initialEvent.date),
-    startTime: initialEvent.start_time.slice(0, 5),
-    endTime: initialEvent.end_time.slice(0, 5),
-    entryPrice: initialEvent.entry_price != null ? String(initialEvent.entry_price) : "",
-    genres: initialEvent.genres as Genre[],
-    address: loc?.address ?? "",
-    coordinates: loc ? { lng: loc.longitude, lat: loc.latitude } : DEFAULT_COORDINATES,
-    flyerUrl: initialEvent.flyer_url,
-  };
 }
 
 export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
@@ -168,9 +73,12 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>(initial.genres);
   const [address, setAddress] = useState(initial.address);
   const [coordinates, setCoordinates] = useState(initial.coordinates);
-  const [existingFlyerUrl, setExistingFlyerUrl] = useState<string | null>(initial.flyerUrl);
-  const [flyerFile, setFlyerFile] = useState<File | null>(null);
-  const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
+
+  // Edit mode: live event reflecting any image-manager mutations.
+  const [liveEvent, setLiveEvent] = useState<ApiEvent | undefined>(initialEvent);
+
+  // Create mode: image files staged in memory, uploaded after the event is created.
+  const [staged, setStaged] = useState<{ file: File; preview: string }[]>([]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -183,19 +91,35 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
 
   function handleAddressSelect(suggestion: AddressSuggestion) {
     setAddress(suggestion.display_name);
-    setCoordinates({ lat: Number.parseFloat(suggestion.lat), lng: Number.parseFloat(suggestion.lon) });
+    setCoordinates({
+      lat: Number.parseFloat(suggestion.lat),
+      lng: Number.parseFloat(suggestion.lon),
+    });
   }
 
-  function handleFlyerChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setFlyerFile(file);
-    setFlyerPreview(file ? URL.createObjectURL(file) : null);
+  function handleStagedAdd(e: React.ChangeEvent<HTMLInputElement>) {
+    const incoming = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (incoming.length === 0) return;
+
+    if (staged.length + incoming.length > MAX_EVENT_IMAGES) {
+      toast.error(`Maximum of ${MAX_EVENT_IMAGES} images per event.`);
+      return;
+    }
+    setStaged([...staged, ...incoming.map((file) => ({ file, preview: URL.createObjectURL(file) }))]);
   }
 
-  function handleFlyerClear() {
-    setFlyerFile(null);
-    setFlyerPreview(null);
-    setExistingFlyerUrl(null);
+  function handleStagedRemove(index: number) {
+    const item = staged[index];
+    if (item) URL.revokeObjectURL(item.preview);
+    setStaged(staged.filter((_, i) => i !== index));
+  }
+
+  function handleStagedReorder(from: number, to: number) {
+    const next = [...staged];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item!);
+    setStaged(next);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -204,35 +128,30 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
 
     setSubmitting(true);
     try {
-      let flyerUrl: string | null = existingFlyerUrl;
-      if (flyerFile) {
-        flyerUrl = await uploadEventImage(flyerFile, profile.id);
-      }
-
-      await onSubmit({
-        name: eventName.trim(),
-        description: description.trim() || null,
-        category,
-        date: toIsoDate(date),
-        start_time: `${startTime}:00${getTimezoneOffset()}`,
-        end_time: `${endTime}:00${getTimezoneOffset()}`,
-        entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
-        genres: selectedGenres,
-        custom_location: {
-          latitude: coordinates.lat,
-          longitude: coordinates.lng,
-          address: address.trim(),
+      await onSubmit(
+        {
+          name: eventName.trim(),
+          description: description.trim() || null,
+          category,
+          date: toIsoDate(date),
+          start_time: `${startTime}:00${getTimezoneOffset()}`,
+          end_time: `${endTime}:00${getTimezoneOffset()}`,
+          entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
+          genres: selectedGenres,
+          custom_location: {
+            latitude: coordinates.lat,
+            longitude: coordinates.lng,
+            address: address.trim(),
+          },
         },
-        flyer_url: flyerUrl,
-      });
+        isEdit ? [] : staged.map((s) => s.file)
+      );
     } catch {
       toast.error(config.errorMessage);
     } finally {
       setSubmitting(false);
     }
   }
-
-  const displayFlyer = flyerPreview ?? existingFlyerUrl;
 
   const isValid =
     eventName.trim() &&
@@ -426,41 +345,27 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
 
           <LocationPicker coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
 
-          {/* ── Flyer ───────────────────────────────────── */}
+          {/* ── Images ──────────────────────────────────── */}
           <div className="border-t border-border pt-4">
-            <SectionHeader>Flyer / Cover Image</SectionHeader>
+            <SectionHeader>Images</SectionHeader>
           </div>
 
-          <Field>
-            <FieldLabel>
-              Image <span className="text-muted-foreground">(Optional)</span>
-            </FieldLabel>
-            {displayFlyer ? (
-              <div className="relative overflow-hidden rounded-lg border border-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={displayFlyer} alt="Flyer preview" className="w-full object-contain" />
-                <button
-                  type="button"
-                  onClick={handleFlyerClear}
-                  aria-label="Remove image"
-                  className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:bg-background"
-                >
-                  <XIcon className="size-4" />
-                </button>
-              </div>
-            ) : (
-              <label className="relative flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border text-muted-foreground transition-colors hover:bg-muted">
-                <ImageIcon className="size-6" />
-                <span className="text-sm">Upload flyer</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 cursor-pointer opacity-0"
-                  onChange={handleFlyerChange}
-                />
-              </label>
-            )}
-          </Field>
+          {isEdit && liveEvent && profile ? (
+            <EventImageManager
+              eventId={liveEvent.id}
+              userId={profile.id}
+              images={liveEvent.event_images}
+              onChange={setLiveEvent}
+            />
+          ) : (
+            <StagedImagePicker
+              previews={staged.map((s) => s.preview)}
+              onAdd={handleStagedAdd}
+              onRemove={handleStagedRemove}
+              onSetCover={(i) => handleStagedReorder(i, 0)}
+              onReorder={handleStagedReorder}
+            />
+          )}
         </form>
       </div>
 

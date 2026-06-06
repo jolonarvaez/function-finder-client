@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { EventForm, type EventFormValues } from "./EventForm";
+import { EventForm, type EventFormValues } from "./event-form/EventForm";
 import { getEvent, updateEvent, type ApiEvent } from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
 

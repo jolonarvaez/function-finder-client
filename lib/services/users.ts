@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import type { OnboardingRole, Genre } from "@/lib/constants";
-import type { DJEvent } from "@/components/dj/dj-event.types";
+import type { DJEvent, EventImage } from "@/components/dj/dj-event.types";
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -43,7 +43,8 @@ type ApiEvent = {
   category: string;
   genres: string[];
   custom_location: { latitude: number; longitude: number; address: string } | null;
-  flyer_url: string | null;
+  /** Pre-sorted: index 0 is the cover. */
+  event_images: EventImage[];
 };
 
 type ApiUserEventsResponse = {
@@ -76,7 +77,7 @@ async function getUserEvents(id: string): Promise<DJEvent[]> {
       coordinates: e.custom_location
         ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
         : undefined,
-      flyerUrl: e.flyer_url ?? undefined,
+      eventImages: e.event_images,
     })
   );
 }

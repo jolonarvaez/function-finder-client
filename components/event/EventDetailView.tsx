@@ -9,6 +9,7 @@ import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, formatTime, type ApiEvent } from "@/lib/services/events";
+import { EventImageGallery } from "./EventImageGallery";
 import type { Genre } from "@/lib/constants";
 
 type Props = Readonly<{ eventId: string }>;
@@ -19,10 +20,16 @@ export function EventDetailView({ eventId }: Props) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    getEvent(eventId)
+    const controller = new AbortController();
+    getEvent(eventId, controller.signal)
       .then(setEvent)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+      .catch((err: unknown) => {
+        if ((err as { name?: string }).name !== "CanceledError") setError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
   }, [eventId]);
 
   return (
@@ -117,15 +124,8 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
             />
           </div>
 
-          {/* Flyer */}
-          {event.flyer_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={event.flyer_url}
-              alt={`${event.name} flyer`}
-              className="w-full rounded-lg object-contain"
-            />
-          )}
+          {/* Images */}
+          <EventImageGallery event={event} alt={`${event.name} cover`} />
         </div>
       </PageContainer>
     </div>

@@ -34,7 +34,14 @@ const BASE_EVENT: ApiEvent = {
     longitude: 121.0244,
     address: "123 Ayala Ave, Makati City",
   },
-  flyer_url: "https://placehold.co/400x533/1a1a2e/e0e0ff?text=Neon+Dreams",
+  event_images: [
+    {
+      id: "img-001",
+      event_id: "evt-001",
+      url: "https://placehold.co/400x533/1a1a2e/e0e0ff?text=Neon+Dreams",
+      sort_order: 0,
+    },
+  ],
   status: "upcoming",
   users: MOCK_DJ,
 };
@@ -58,13 +65,13 @@ const meta: Meta<typeof EventItem> = {
 export default meta;
 type Story = StoryObj<typeof EventItem>;
 
-export const WithFlyer: Story = {
-  name: "With flyer — Upcoming",
+export const WithImage: Story = {
+  name: "With image — Upcoming",
   args: { event: BASE_EVENT },
 };
 
-export const WithFlyerLive: Story = {
-  name: "With flyer — Live",
+export const WithImageLive: Story = {
+  name: "With image — Live",
   args: {
     event: {
       ...BASE_EVENT,
@@ -76,7 +83,14 @@ export const WithFlyerLive: Story = {
       entry_price: null,
       genres: ["Soul", "RnB", "Disco"],
       category: "Lounge",
-      flyer_url: "https://placehold.co/400x533/0d1b2a/f4c542?text=Deep+Cuts",
+      event_images: [
+        {
+          id: "img-002",
+          event_id: "evt-002",
+          url: "https://placehold.co/400x533/0d1b2a/f4c542?text=Deep+Cuts",
+          sort_order: 0,
+        },
+      ],
       status: "live",
       custom_location: {
         latitude: 14.552,
@@ -88,8 +102,8 @@ export const WithFlyerLive: Story = {
   },
 };
 
-export const NoFlyer: Story = {
-  name: "No flyer — Upcoming",
+export const NoImage: Story = {
+  name: "No image — Upcoming",
   args: {
     event: {
       ...BASE_EVENT,
@@ -101,7 +115,7 @@ export const NoFlyer: Story = {
       entry_price: 300,
       genres: ["DnB", "Techno"],
       category: "Underground",
-      flyer_url: null,
+      event_images: [],
       status: "upcoming",
       custom_location: {
         latitude: 14.5605,
@@ -113,8 +127,8 @@ export const NoFlyer: Story = {
   },
 };
 
-export const NoFlyerLive: Story = {
-  name: "No flyer — Live",
+export const NoImageLive: Story = {
+  name: "No image — Live",
   args: {
     event: {
       ...BASE_EVENT,
@@ -126,7 +140,7 @@ export const NoFlyerLive: Story = {
       entry_price: null,
       genres: ["Hip-Hop", "RnB", "Afrobeats"],
       category: "Bar",
-      flyer_url: null,
+      event_images: [],
       status: "live",
       custom_location: null,
       location: "Noir Lounge, BGC",
@@ -146,7 +160,14 @@ export const Done: Story = {
       entry_price: 250,
       genres: ["House", "Techno", "Disco"],
       category: "Nightclub",
-      flyer_url: "https://placehold.co/400x533/1c1c1c/888888?text=Resonance",
+      event_images: [
+        {
+          id: "img-005",
+          event_id: "evt-005",
+          url: "https://placehold.co/400x533/1c1c1c/888888?text=Resonance",
+          sort_order: 0,
+        },
+      ],
       status: "done",
       custom_location: {
         latitude: 14.555,
@@ -183,7 +204,7 @@ export const List: Story = {
           entry_price: null,
           genres: ["Soul", "RnB"],
           category: "Lounge",
-          flyer_url: null,
+          event_images: [],
           status: "live",
           custom_location: {
             latitude: 14.552,
@@ -202,7 +223,14 @@ export const List: Story = {
           entry_price: 300,
           genres: ["DnB", "Techno"],
           category: "Underground",
-          flyer_url: "https://placehold.co/400x533/0a0a0a/cc3333?text=Concrete+Jungle",
+          event_images: [
+            {
+              id: "img-l3",
+              event_id: "evt-list-3",
+              url: "https://placehold.co/400x533/0a0a0a/cc3333?text=Concrete+Jungle",
+              sort_order: 0,
+            },
+          ],
           status: "upcoming",
           users: { ...MOCK_DJ, display_name: "DJ Kade" },
         }}
