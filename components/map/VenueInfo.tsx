@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/Persona";
+import { EventImageGallery } from "@/components/event/EventImageGallery";
 import { XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { Genre } from "@/lib/constants";
+import type { EventImage } from "@/components/dj/dj-event.types";
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ export type VenueDJ = Readonly<{
 export type VenueEvent = Readonly<{
   id: string;
   name: string;
-  image?: string;
+  event_images?: EventImage[];
   address: string;
   category: string;
   /** ISO date string e.g. "2026-04-02" */
@@ -53,29 +54,25 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
         showCloseButton={false}
         className="mx-auto flex max-h-[85vh] max-w-xl flex-col gap-0 rounded-t-2xl p-0"
       >
-        {/* Top bar */}
-        <div className="flex shrink-0 items-center justify-between px-5 pt-5 pb-0">
-          <div>
-            {live && (
-              <Badge className="bg-primary text-white">
-                <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />{" "}
-                Live Now
-              </Badge>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className="flex size-8 items-center justify-center rounded-full bg-muted text-foreground transition-colors hover:bg-muted/80"
-          >
-            <XIcon className="size-4" />
-          </button>
-        </div>
+        {/* Floating close button */}
+        <button
+          type="button"
+          onClick={() => onOpenChange(false)}
+          className="absolute top-4 right-4 z-10 flex size-8 items-center justify-center rounded-full bg-muted text-foreground transition-colors hover:bg-muted/80"
+        >
+          <XIcon className="size-4" />
+        </button>
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
           {/* Venue info */}
-          <SheetHeader className="px-5 pt-4 pb-0">
+          <SheetHeader className="px-5 pt-5 pb-0">
+            {live && (
+              <Badge className="w-fit bg-primary text-white">
+                <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />{" "}
+                Live Now
+              </Badge>
+            )}
             <SheetTitle className="text-xl font-bold">{event.name}</SheetTitle>
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPinIcon className="size-3.5 shrink-0" />
@@ -131,20 +128,14 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
             </div>
           </div>
 
-          {/* Full flyer image */}
-          {event.image && (
-            <div className="mt-4 pb-4">
-              <Image
-                src={event.image}
-                alt={`${event.name} flyer`}
-                width={600}
-                height={900}
-                className="w-full object-contain"
-              />
+          {/* Image gallery */}
+          {(event.event_images?.length ?? 0) > 0 ? (
+            <div className="mt-4 px-5 pb-4">
+              <EventImageGallery event={event} alt={`${event.name} flyer`} />
             </div>
+          ) : (
+            <div className="h-4" />
           )}
-
-          {!event.image && <div className="h-4" />}
         </div>
 
         {/* Sticky CTA */}

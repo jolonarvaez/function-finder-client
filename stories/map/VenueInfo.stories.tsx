@@ -6,7 +6,20 @@ import { Button } from "@/components/ui/button";
 const MOCK_EVENT: VenueEvent = {
   id: "mock-event-1",
   name: "Pulse",
-  image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
+  event_images: [
+    {
+      id: "img-1",
+      event_id: "mock-event-1",
+      url: "https://placehold.co/600x800/1a1a2e/e94560?text=Pulse+Flyer",
+      sort_order: 0,
+    },
+    {
+      id: "img-2",
+      event_id: "mock-event-1",
+      url: "https://placehold.co/600x800/2e1a1a/60e945?text=Pulse+Flyer+2",
+      sort_order: 1,
+    },
+  ],
   address: "456 Downtown Ave, City Center",
   category: "Nightclub",
   startTime: "10PM",
@@ -63,7 +76,7 @@ export const Live: Story = {
 
 const MOCK_EVENT_NO_IMAGE: VenueEvent = {
   ...MOCK_EVENT,
-  image: undefined,
+  event_images: undefined,
 };
 
 export const NoImage: Story = {

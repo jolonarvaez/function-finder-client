@@ -100,7 +100,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
                 address={venue.event.address}
                 distance={venue.distance ?? ""}
                 genre={venue.event.dj.genre}
-                imageSrc={venue.event.image}
+                imageSrc={venue.event.event_images?.[0]?.url}
                 dj={venue.event.dj.name}
                 isLive={
                   !!venue.event.date &&

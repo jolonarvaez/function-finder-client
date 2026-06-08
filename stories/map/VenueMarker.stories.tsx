@@ -11,7 +11,14 @@ const todayISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
 const MOCK_EVENT_UPCOMING: VenueEvent = {
   id: "mock-event-1",
   name: "Pulse",
-  image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
+  event_images: [
+    {
+      id: "img-1",
+      event_id: "mock-event-1",
+      url: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse+Nightclub",
+      sort_order: 0,
+    },
+  ],
   address: "456 Downtown Ave, City Center",
   category: "Nightclub",
   date: todayISO,

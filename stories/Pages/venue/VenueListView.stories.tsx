@@ -34,7 +34,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-2",
       name: "Sabor",
-      image: "https://placehold.co/600x300/7f1d1d/fca5a5?text=Sabor",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-2",
+          url: "https://placehold.co/600x300/7f1d1d/fca5a5?text=Sabor",
+          sort_order: 0,
+        },
+      ],
       address: "42 Rada St, Makati",
       category: "Latin Club",
       date: "2026-03-30",
@@ -61,7 +68,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-3",
       name: "The Cypher",
-      image: "https://placehold.co/600x300/1c1917/f97316?text=The+Cypher",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-3",
+          url: "https://placehold.co/600x300/1c1917/f97316?text=The+Cypher",
+          sort_order: 0,
+        },
+      ],
       address: "55 Burgos Circle, Makati",
       category: "Hip-Hop Bar",
       date: "2026-03-31",
@@ -85,7 +99,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-4",
       name: "Tribe",
-      image: "https://placehold.co/600x300/422006/facc15?text=Tribe",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-4",
+          url: "https://placehold.co/600x300/422006/facc15?text=Tribe",
+          sort_order: 0,
+        },
+      ],
       address: "7 Nicanor Garcia St, Makati",
       category: "Club",
       date: "2026-03-31",
@@ -112,7 +133,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-5",
       name: "Noir Lounge",
-      image: "https://placehold.co/600x300/0d0d0d/ffffff?text=Noir",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-5",
+          url: "https://placehold.co/600x300/0d0d0d/ffffff?text=Noir",
+          sort_order: 0,
+        },
+      ],
       address: "12 Jupiter St, Makati",
       category: "Bar",
       date: "2026-04-01",
@@ -136,7 +164,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-6",
       name: "Neon",
-      image: "https://placehold.co/600x300/1e1b4b/a78bfa?text=Neon",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-6",
+          url: "https://placehold.co/600x300/1e1b4b/a78bfa?text=Neon",
+          sort_order: 0,
+        },
+      ],
       address: "101 Paseo de Roxas, Makati",
       category: "Nightclub",
       date: "2026-04-01",
@@ -159,7 +194,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-7",
       name: "Pulse",
-      image: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-7",
+          url: "https://placehold.co/600x300/1a1a2e/e94560?text=Pulse",
+          sort_order: 0,
+        },
+      ],
       address: "456 Downtown Ave, Makati",
       category: "Nightclub",
       date: "2026-04-02",
@@ -184,7 +226,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-8",
       name: "Bass District",
-      image: "https://placehold.co/600x300/1e3a5f/38bdf8?text=Bass+District",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-8",
+          url: "https://placehold.co/600x300/1e3a5f/38bdf8?text=Bass+District",
+          sort_order: 0,
+        },
+      ],
       address: "27 Kalayaan Ave, Makati",
       category: "Underground",
       date: "2026-04-02",
@@ -211,7 +260,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-9",
       name: "Fuego",
-      image: "https://placehold.co/600x300/7c2d12/fbbf24?text=Fuego",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-9",
+          url: "https://placehold.co/600x300/7c2d12/fbbf24?text=Fuego",
+          sort_order: 0,
+        },
+      ],
       address: "88 Rockwell Dr, Makati",
       category: "Club",
       date: "2026-04-03",
@@ -236,7 +292,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-10",
       name: "Velvet",
-      image: "https://placehold.co/600x300/4a1942/f472b6?text=Velvet",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-10",
+          url: "https://placehold.co/600x300/4a1942/f472b6?text=Velvet",
+          sort_order: 0,
+        },
+      ],
       address: "18 Salcedo St, Makati",
       category: "Lounge",
       date: "2026-04-03",
@@ -262,7 +325,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-11",
       name: "Yard",
-      image: "https://placehold.co/600x300/14532d/4ade80?text=Yard",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-11",
+          url: "https://placehold.co/600x300/14532d/4ade80?text=Yard",
+          sort_order: 0,
+        },
+      ],
       address: "33 Amorsolo St, Makati",
       category: "Outdoor Bar",
       date: "2026-04-04",
@@ -288,7 +358,14 @@ const MOCK_VENUES: MapEvents[] = [
     event: {
       id: "mock-12",
       name: "Studio 54 MNL",
-      image: "https://placehold.co/600x300/451a03/fbbf24?text=Studio+54",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "mock-12",
+          url: "https://placehold.co/600x300/451a03/fbbf24?text=Studio+54",
+          sort_order: 0,
+        },
+      ],
       address: "8 Leviste St, Makati",
       category: "Retro Club",
       date: "2026-04-05",

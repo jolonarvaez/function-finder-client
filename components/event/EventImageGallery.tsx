@@ -60,8 +60,8 @@ export function EventImageGallery({ event, alt }: Props) {
 
         {urls.length > 1 && (
           <>
-            <CarouselPrevious className="left-2" />
-            <CarouselNext className="right-2" />
+            <CarouselPrevious className="left-2 bg-muted! hover:bg-muted/80!" />
+            <CarouselNext className="right-2 bg-muted! hover:bg-muted/80!" />
           </>
         )}
       </Carousel>
