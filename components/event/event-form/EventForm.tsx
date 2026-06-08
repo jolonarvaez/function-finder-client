@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, type Genre } from "@/lib/constants";
 import { toIsoDate, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
-import { reverseGeocode, type AddressSuggestion } from "@/lib/geocode";
+import { reverseGeocode, type AddressSuggestion } from "@/lib/services/geocode/geocode";
 import { PageContainer, PageHeader } from "../../reusables/PageContainer";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
 import { MODE_CONFIG } from "./constants";

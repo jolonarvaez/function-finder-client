@@ -57,7 +57,13 @@
       "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\EventForm.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\EventForm.tsx\")",
       "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\EventImageManager.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\EventImageManager.tsx\")",
       "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\AddressAutocomplete.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\AddressAutocomplete.tsx\")",
-      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\LocationPicker.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\LocationPicker.tsx\")"
+      "Bash(Move-Item \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\LocationPicker.tsx\" \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\components\\\\event\\\\event-form\\\\LocationPicker.tsx\")",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\app\\\\api\\\\geocode\\\\reverse\")",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\app\\\\api\\\\geocode\\\\search\")",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\\\\app\\\\api\\\\geocode\\\\place\")",
+      "Bash(Write-Output \"Directories created\")",
+      "PowerShell(New-Item *)",
+      "PowerShell(cd \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\"; \\(Get-ChildItem app\\\\api\\\\geocode -Recurse -Filter \"route.ts\"\\).FullName | ForEach-Object { \\(Get-Content $_\\) -replace 'GOOGLE_MAPS_API_KEY', 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY' | Set-Content $_ -Encoding utf8 }; \"Done\")"
     ]
   }
 }

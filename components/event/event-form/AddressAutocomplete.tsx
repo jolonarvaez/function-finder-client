@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPinIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { searchAddress, type AddressSuggestion } from "@/lib/geocode";
+import {
+  searchAddress,
+  getPlaceDetails,
+  type AddressSuggestion,
+  type PlacePrediction,
+} from "@/lib/services/geocode/geocode";
 import { cn } from "@/lib/utils";
 
 type Props = Readonly<{
@@ -13,16 +18,22 @@ type Props = Readonly<{
 }>;
 
 export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
-  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<PlacePrediction[]>([]);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [resolving, setResolving] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipSearchRef = useRef(false);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(async () => {
+      if (skipSearchRef.current) {
+        skipSearchRef.current = false;
+        return;
+      }
       if (!value.trim()) {
         setSuggestions([]);
         setOpen(false);
@@ -59,16 +70,21 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
       setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && activeIndex >= 0) {
       e.preventDefault();
-      handleSelect(suggestions[activeIndex]);
+      void handleSelect(suggestions[activeIndex]);
     } else if (e.key === "Escape") {
       setOpen(false);
     }
   }
 
-  function handleSelect(suggestion: AddressSuggestion) {
-    onSelect(suggestion);
+  async function handleSelect(prediction: PlacePrediction) {
     setOpen(false);
     setSuggestions([]);
+    skipSearchRef.current = true;
+    onChange(prediction.display_name);
+    setResolving(true);
+    const details = await getPlaceDetails(prediction.place_id);
+    setResolving(false);
+    if (details) onSelect({ ...details, display_name: prediction.display_name });
   }
 
   return (
@@ -85,7 +101,8 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
         aria-autocomplete="list"
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="h-11 rounded-lg pl-10 dark:bg-card"
+        aria-busy={resolving}
+        className={cn("h-11 rounded-lg pl-10 dark:bg-card", resolving && "opacity-70")}
       />
 
       {open && suggestions.length > 0 && (
@@ -97,11 +114,11 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
         >
           {suggestions.map((s, i) => (
             <li
-              key={`${s.lat}-${s.lon}`}
+              key={s.place_id}
               role="option"
               aria-selected={i === activeIndex}
               onMouseDown={(e) => e.preventDefault()}
-              onClick={() => handleSelect(s)}
+              onClick={() => void handleSelect(s)}
               className={cn(
                 "flex cursor-pointer items-start gap-2.5 px-3 py-2.5 text-sm transition-colors",
                 i === activeIndex ? "bg-accent" : "hover:bg-accent/60"
