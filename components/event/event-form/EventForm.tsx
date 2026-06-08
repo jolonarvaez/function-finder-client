@@ -106,7 +106,10 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
       toast.error(`Maximum of ${MAX_EVENT_IMAGES} images per event.`);
       return;
     }
-    setStaged([...staged, ...incoming.map((file) => ({ file, preview: URL.createObjectURL(file) }))]);
+    setStaged([
+      ...staged,
+      ...incoming.map((file) => ({ file, preview: URL.createObjectURL(file) })),
+    ]);
   }
 
   function handleStagedRemove(index: number) {

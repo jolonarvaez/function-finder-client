@@ -1,0 +1,150 @@
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { EventForm } from "@/components/event/event-form/EventForm";
+import type { ApiEvent } from "@/lib/services/events";
+
+const MOCK_EVENT: ApiEvent = {
+  id: "evt-001",
+  name: "Neon Dreams",
+  description: "An immersive night of house and techno deep in the heart of Makati.",
+  location: null,
+  date: "2026-07-19",
+  start_time: "22:00:00+08",
+  end_time: "04:00:00+08",
+  entry_price: 500,
+  featured: false,
+  category: "Nightclub",
+  created_by: "user-001",
+  created_at: "2026-06-01T10:00:00Z",
+  genres: ["House", "Techno"],
+  custom_location: {
+    latitude: 14.5547,
+    longitude: 121.0244,
+    address: "123 Ayala Ave, Makati City",
+  },
+  event_images: [
+    {
+      id: "img-001",
+      event_id: "evt-001",
+      url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+      sort_order: 0,
+    },
+    {
+      id: "img-002",
+      event_id: "evt-001",
+      url: "https://placehold.co/400x600/0d1b2a/f4c542?text=Stage+Shot",
+      sort_order: 1,
+    },
+  ],
+  status: "upcoming",
+  users: {
+    id: "user-001",
+    first_name: "Alex",
+    last_name: "Santos",
+    display_name: "DJ AXLS",
+    bio: null,
+    genre_tags: ["House", "Techno"],
+    country: "PH",
+    socmed_links: null,
+    profile_type: "dj",
+    avatar_url: null,
+  },
+};
+
+const meta: Meta<typeof EventForm> = {
+  title: "Pages/Event/EventForm",
+  component: EventForm,
+  tags: ["autodocs"],
+  parameters: {
+    layout: "fullscreen",
+    nextjs: { appDirectory: true },
+  },
+  args: {
+    onSubmit: async () => {},
+  },
+  decorators: [
+    (Story) => (
+      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+export default meta;
+type Story = StoryObj<typeof EventForm>;
+
+export const CreateMode: Story = {
+  name: "Create mode — empty",
+  args: {
+    mode: "create",
+  },
+};
+
+export const EditMode: Story = {
+  name: "Edit mode — prefilled",
+  args: {
+    mode: "edit",
+    initialEvent: MOCK_EVENT,
+  },
+};
+
+export const EditModeNoImages: Story = {
+  name: "Edit mode — no images",
+  args: {
+    mode: "edit",
+    initialEvent: {
+      ...MOCK_EVENT,
+      id: "evt-002",
+      name: "Concrete Jungle",
+      description: null,
+      entry_price: null,
+      genres: ["DnB", "Techno"],
+      category: "Underground",
+      event_images: [],
+    },
+  },
+};
+
+export const EditModeAtImageCapacity: Story = {
+  name: "Edit mode — 5 images (capacity)",
+  args: {
+    mode: "edit",
+    initialEvent: {
+      ...MOCK_EVENT,
+      id: "evt-003",
+      name: "Deep Cuts",
+      event_images: [
+        {
+          id: "img-1",
+          event_id: "evt-003",
+          url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=1",
+          sort_order: 0,
+        },
+        {
+          id: "img-2",
+          event_id: "evt-003",
+          url: "https://placehold.co/400x600/0d1b2a/f4c542?text=2",
+          sort_order: 1,
+        },
+        {
+          id: "img-3",
+          event_id: "evt-003",
+          url: "https://placehold.co/400x600/1c1c1c/cc3333?text=3",
+          sort_order: 2,
+        },
+        {
+          id: "img-4",
+          event_id: "evt-003",
+          url: "https://placehold.co/400x600/0a2a1a/44cc88?text=4",
+          sort_order: 3,
+        },
+        {
+          id: "img-5",
+          event_id: "evt-003",
+          url: "https://placehold.co/400x600/2a1a0a/cc8844?text=5",
+          sort_order: 4,
+        },
+      ],
+    },
+  },
+};

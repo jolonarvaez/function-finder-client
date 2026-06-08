@@ -113,3 +113,35 @@ export const Past: Story = {
   name: "Past (no image, no coordinates)",
   args: { event: PAST_EVENT },
 };
+
+export const MultipleImages: Story = {
+  name: "Multiple images",
+  args: {
+    event: {
+      ...BASE_EVENT,
+      id: "evt-004",
+      name: "Frequency",
+      description: "Three floors. One night. No rules.",
+      event_images: [
+        {
+          id: "img-004-1",
+          event_id: "evt-004",
+          url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Cover",
+          sort_order: 0,
+        },
+        {
+          id: "img-004-2",
+          event_id: "evt-004",
+          url: "https://placehold.co/400x600/0d1b2a/f4c542?text=Stage",
+          sort_order: 1,
+        },
+        {
+          id: "img-004-3",
+          event_id: "evt-004",
+          url: "https://placehold.co/400x600/1c1c1c/cc3333?text=Crowd",
+          sort_order: 2,
+        },
+      ],
+    },
+  },
+};
