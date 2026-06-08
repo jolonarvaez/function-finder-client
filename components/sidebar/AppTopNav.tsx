@@ -37,7 +37,7 @@ export function AppTopNav() {
             className={cn(
               "flex size-7 items-center justify-center rounded-md transition-colors",
               mounted && theme === value
-                ? "bg-foreground text-background"
+                ? "bg-primary text-white"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground"
             )}
           >
