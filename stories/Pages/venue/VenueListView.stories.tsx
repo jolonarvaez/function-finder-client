@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { VenueListView } from "@/components/VenueListView";
+import { VenueListView } from "@/components/venues/VenueListView";
 import type { MapEvents } from "@/components/map/MapView";
 
 const MOCK_VENUES: MapEvents[] = [

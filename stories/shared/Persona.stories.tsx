@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Persona } from "@/components/Persona";
+import { Persona } from "@/components/shared/Persona";
 
 const meta: Meta<typeof Persona> = {
   title: "Components/Persona",

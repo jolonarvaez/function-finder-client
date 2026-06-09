@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { GenreSelector, type Genre } from "@/components/GenreSelector";
+import { GenreSelector, type Genre } from "@/components/shared/GenreSelector";
 
 const meta: Meta<typeof GenreSelector> = {
   title: "Components/Filters/GenreSelector",

@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { GenreSelector } from "@/components/GenreSelector";
+import { GenreSelector } from "@/components/shared/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
 import { EventImageManager } from "./EventImageManager";

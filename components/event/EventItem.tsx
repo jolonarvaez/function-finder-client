@@ -5,7 +5,7 @@ import { format, parseISO } from "date-fns";
 import { CalendarIcon, ClockIcon, MapPinIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Persona } from "@/components/Persona";
+import { Persona } from "@/components/shared/Persona";
 import { cn } from "@/lib/utils";
 import { formatTime, getEventCoverOrNull } from "@/components/dj/dj-event.types";
 import type { ApiEvent } from "@/lib/services/events";

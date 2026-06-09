@@ -2,10 +2,10 @@
 // test deployment
 
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import type { OnboardingRole } from "@/lib/constants";
-import { useUserStore } from "./auth/use-user-store";
+import { useUserStore } from "@/components/auth/use-user-store";
 
 export function ConnectedAppSidebar() {
   const router = useRouter();

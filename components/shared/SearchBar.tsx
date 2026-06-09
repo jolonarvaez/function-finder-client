@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { GenreSelector } from "@/components/GenreSelector";
-import { VenueFilterSelector } from "@/components/VenueFilterSelector";
+import { GenreSelector } from "@/components/shared/GenreSelector";
+import { VenueFilterSelector } from "@/components/shared/VenueFilterSelector";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { cn } from "@/lib/utils";
 

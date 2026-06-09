@@ -106,7 +106,7 @@ export function Persona({
         </div>
 
         {/* <div className="flex flex-col gap-1.5">
-            
+
           </div> */}
       </CardContent>
     </Card>

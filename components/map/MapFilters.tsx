@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { GenreSelector } from "@/components/GenreSelector";
+import { GenreSelector } from "@/components/shared/GenreSelector";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { EVENT_STATUSES, EVENT_STATUS_LABELS, type EventStatus } from "@/lib/constants";
 import { cn } from "@/lib/utils";

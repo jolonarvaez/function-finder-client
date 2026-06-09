@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { VenueFilterSelector } from "@/components/VenueFilterSelector";
+import { VenueFilterSelector } from "@/components/shared/VenueFilterSelector";
 import type { VenueFilter } from "@/lib/constants";
 
 function VenueFilterSelectorDemo({ initial = "live-now" }: { initial?: VenueFilter }) {

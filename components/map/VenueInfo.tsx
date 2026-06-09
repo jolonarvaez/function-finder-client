@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Persona } from "@/components/Persona";
+import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
 import { XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LoginPage } from "@/components/LoginPage";
+import { LoginPage } from "@/components/auth/LoginPage";
 
 const meta: Meta<typeof LoginPage> = {
   title: "Pages/LoginPage",

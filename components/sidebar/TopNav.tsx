@@ -1,6 +1,6 @@
 "use client";
 
-import { ConnectedAppSidebar } from "@/components/ConnectedAppSidebar";
+import { ConnectedAppSidebar } from "@/components/sidebar/ConnectedAppSidebar";
 import { AppTopNav } from "@/components/sidebar/AppTopNav";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";

@@ -1,6 +1,6 @@
 "use client";
 
-import { VenueListView } from "@/components/VenueListView";
+import { VenueListView } from "@/components/venues/VenueListView";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export default function ProfilePage() {

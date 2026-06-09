@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LocationItem } from "@/components/LocationItem";
+import { LocationItem } from "@/components/shared/LocationItem";
 
 const meta: Meta<typeof LocationItem> = {
   title: "Components/LocationItem",

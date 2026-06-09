@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { loginWithEmail } from "@/lib/services/auth";
-import { PageContainer } from "./reusables/PageContainer";
+import { PageContainer } from "@/components/reusables/PageContainer";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

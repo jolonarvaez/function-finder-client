@@ -12,7 +12,7 @@ import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM, type Genre } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { getEventsList, formatTime, type ApiEvent } from "@/lib/services/events";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
 import { PageHeader } from "../reusables/PageContainer";

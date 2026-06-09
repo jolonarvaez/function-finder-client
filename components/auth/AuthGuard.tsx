@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export function AuthGuard({ children }: Readonly<{ children: ReactNode }>) {
   const { user, loading } = useAuth();

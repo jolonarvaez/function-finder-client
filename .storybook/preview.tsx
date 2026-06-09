@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import { withThemeByClassName } from '@storybook/addon-themes';
 import React from "react";
-import { AuthProvider } from "../components/auth/AuthProvider";
+import { AuthProvider } from "../components/providers/AuthProvider";
 
 import "../app/globals.css";
 

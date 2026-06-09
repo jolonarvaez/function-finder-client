@@ -33,9 +33,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { GenreSelector } from "@/components/GenreSelector";
+import { GenreSelector } from "@/components/shared/GenreSelector";
 import { CountrySelect } from "@/components/reusables/CountrySelect";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { updateUser } from "@/lib/services/users";
 import { uploadAvatarImage } from "@/lib/services/storage";

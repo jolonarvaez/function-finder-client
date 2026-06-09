@@ -8,7 +8,7 @@ import { MobileMapFilters } from "@/components/map/MobileMapFilters";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { getEventsList } from "@/lib/services/events";
 import type { ApiEvent } from "@/lib/services/events";

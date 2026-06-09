@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { SearchBar } from "@/components/SearchBar";
+import { SearchBar } from "@/components/shared/SearchBar";
 
 const meta: Meta<typeof SearchBar> = {
   title: "Components/Filters/SearchBar",

@@ -6,7 +6,7 @@ import { format, parseISO } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
-import { Persona } from "@/components/Persona";
+import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, formatTime, type ApiEvent } from "@/lib/services/events";
 import { EventImageGallery } from "./EventImageGallery";

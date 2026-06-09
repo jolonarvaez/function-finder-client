@@ -1,8 +1,8 @@
 "use client";
 
 import { useDeferredValue, useMemo } from "react";
-import { LocationItem } from "@/components/LocationItem";
-import { SearchBar } from "@/components/SearchBar";
+import { LocationItem } from "@/components/shared/LocationItem";
+import { SearchBar } from "@/components/shared/SearchBar";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getStatus } from "@/components/dj/dj-event.types";
