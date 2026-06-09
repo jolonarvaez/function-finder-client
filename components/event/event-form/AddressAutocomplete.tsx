@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MapPinIcon } from "lucide-react";
+import { MapPinIcon, XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   searchAddress,
@@ -87,6 +87,13 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
     if (details) onSelect({ ...details, display_name: prediction.display_name });
   }
 
+  function handleClear() {
+    skipSearchRef.current = true;
+    onChange("");
+    setSuggestions([]);
+    setOpen(false);
+  }
+
   return (
     <div ref={containerRef} className="relative">
       <MapPinIcon className="absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -102,8 +109,22 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-busy={resolving}
-        className={cn("h-11 rounded-lg pl-10 dark:bg-card", resolving && "opacity-70")}
+        className={cn(
+          "h-11 rounded-lg pl-10 dark:bg-card",
+          resolving && "opacity-70",
+          value && "pr-9"
+        )}
       />
+      {value && (
+        <button
+          type="button"
+          aria-label="Clear address"
+          onClick={handleClear}
+          className="cursor-pointer absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <XIcon className="size-4" />
+        </button>
+      )}
 
       {open && suggestions.length > 0 && (
         <ul
