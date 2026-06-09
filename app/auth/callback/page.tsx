@@ -14,6 +14,9 @@ export default function AuthCallbackPage() {
         return;
       }
 
+      const savedNext = sessionStorage.getItem("auth_next") ?? "";
+      if (savedNext) sessionStorage.removeItem("auth_next");
+
       // Check if this user has completed onboarding (profile_type is set)
       const { data } = await supabase
         .from("users")
@@ -22,9 +25,12 @@ export default function AuthCallbackPage() {
         .single();
 
       if (data?.profile_type) {
-        router.replace("/");
+        router.replace(savedNext || "/");
       } else {
-        router.replace("/onboarding");
+        const onboardingUrl = savedNext
+          ? "/onboarding?next=" + encodeURIComponent(savedNext)
+          : "/onboarding";
+        router.replace(onboardingUrl);
       }
     });
   }, [router]);

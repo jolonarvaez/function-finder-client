@@ -1,14 +1,10 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
+import { Suspense } from "react";
+import { OnboardingPageClient } from "@/components/onboarding/OnboardingPageClient";
 
 export default function OnboardingPage() {
-  const router = useRouter();
-
   return (
-    <main className="min-h-screen bg-background">
-      <OnboardingFlow onComplete={() => router.replace("/")} />
-    </main>
+    <Suspense>
+      <OnboardingPageClient />
+    </Suspense>
   );
 }

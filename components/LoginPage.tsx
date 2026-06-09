@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import { PageContainer } from "@/components/reusables/PageContainer";
 
 export function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "";
   const { user, loading: authLoading } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
@@ -24,11 +26,16 @@ export function LoginPage() {
 
   React.useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/");
+      router.replace(next || "/");
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, next]);
+
+  function saveNextForOAuth() {
+    if (next) sessionStorage.setItem("auth_next", next);
+  }
 
   async function signInWithGoogle() {
+    saveNextForOAuth();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -39,6 +46,7 @@ export function LoginPage() {
   }
 
   async function signInWithFacebook() {
+    saveNextForOAuth();
     await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
@@ -74,7 +82,12 @@ export function LoginPage() {
         .eq("id", userId)
         .single();
 
-      router.replace(data?.profile_type ? "/" : "/onboarding");
+      if (data?.profile_type) {
+        router.replace(next || "/");
+      } else {
+        const onboardingUrl = next ? "/onboarding?next=" + encodeURIComponent(next) : "/onboarding";
+        router.replace(onboardingUrl);
+      }
     } catch {
       setError("Invalid email or password.");
     } finally {
@@ -190,7 +203,7 @@ export function LoginPage() {
         <div className="mb-6 text-center">
           <span className="text-sm text-muted-foreground">Don&apos;t have an account? </span>
           <Link
-            href="/signup"
+            href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
             className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
           >
             Sign Up

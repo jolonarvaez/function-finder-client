@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon, XIcon } from "lucide-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ const PASSWORD_RULES = [
 
 export function SignUpPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "";
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserStore();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -40,16 +42,26 @@ export function SignUpPage() {
 
   React.useEffect(() => {
     if (!authLoading && !profileLoading && user) {
-      router.replace(profile?.profile_type ? "/" : "/onboarding");
+      if (profile?.profile_type) {
+        router.replace(next || "/");
+      } else {
+        const onboardingUrl = next ? "/onboarding?next=" + encodeURIComponent(next) : "/onboarding";
+        router.replace(onboardingUrl);
+      }
     }
-  }, [user, authLoading, profile, profileLoading, router]);
+  }, [user, authLoading, profile, profileLoading, router, next]);
 
   const emailInvalid = emailTouched && email.length > 0 && !EMAIL_RE.test(email);
   const passwordRules = PASSWORD_RULES.map((r) => ({ ...r, passing: r.test(password) }));
   const passwordValid = passwordRules.every((r) => r.passing);
   const confirmMismatch = confirmTouched && confirm.length > 0 && confirm !== password;
 
+  function saveNextForOAuth() {
+    if (next) sessionStorage.setItem("auth_next", next);
+  }
+
   async function signUpWithGoogle() {
+    saveNextForOAuth();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -59,6 +71,7 @@ export function SignUpPage() {
   }
 
   async function signUpWithFacebook() {
+    saveNextForOAuth();
     await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
@@ -301,7 +314,7 @@ export function SignUpPage() {
         <div className="mb-6 text-center">
           <span className="text-sm text-muted-foreground">Already have an account? </span>
           <Link
-            href="/login"
+            href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
             className="text-sm text-primary hover:underline focus-visible:outline-none focus-visible:underline"
           >
             Sign In
