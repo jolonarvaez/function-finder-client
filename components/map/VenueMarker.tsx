@@ -7,7 +7,7 @@ import { VenueInfo, type VenueEvent } from "@/components/map/VenueInfo";
 import { cn } from "@/lib/utils";
 
 const Z_INDEX: Record<"done" | "upcoming" | "live", number> = { done: 0, upcoming: 1, live: 2 };
-const ALWAYS_OPEN_ZOOM = 16;
+const ALWAYS_OPEN_ZOOM = 13;
 
 export type VenueMarkerProps = Readonly<{
   longitude: number;
