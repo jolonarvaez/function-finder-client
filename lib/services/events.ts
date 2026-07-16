@@ -18,6 +18,19 @@ type ApiUser = {
   avatar_url: string | null;
 };
 
+/** Performer embedded on an event: user profile plus optional set times ("HH:MM:SS+off"). */
+type ApiPerformer = ApiUser & {
+  set_start_time: string | null;
+  set_end_time: string | null;
+};
+
+/** Performer entry sent on event create/update. Times use "HH:MM:00+off", null when unset. */
+export type EventPerformerInput = {
+  user_id: string;
+  set_start_time: string | null;
+  set_end_time: string | null;
+};
+
 type ApiCustomLocation = {
   latitude: number;
   longitude: number;
@@ -42,6 +55,8 @@ type ApiEvent = {
   /** Pre-sorted: index 0 is the cover. */
   event_images: EventImage[];
   users: ApiUser;
+  /** Lineup; absent/empty on legacy events — fall back to the creator (`users`). */
+  performers?: ApiPerformer[];
   status: Exclude<EventStatus, "all">;
 };
 
@@ -62,6 +77,18 @@ type ApiSingleResponse = {
 /** "10:00:00+08" → "10:00" */
 function formatTime(raw: string): string {
   return raw.slice(0, 5);
+}
+
+/** Inverse of `formatTime`: "10:00" → "10:00:00+08:00" (browser offset). */
+function toApiTime(hhmm: string): string {
+  return `${hhmm}:00${getTimezoneOffset()}`;
+}
+
+/** Event lineup; legacy events without performers fall back to the creator. */
+function getEventPerformers(event: ApiEvent): ApiPerformer[] {
+  return event.performers?.length
+    ? event.performers
+    : [{ ...event.users, set_start_time: null, set_end_time: null }];
 }
 
 /** Returns the browser's UTC offset as "+HH:MM" or "-HH:MM" */
@@ -124,6 +151,7 @@ export type CreateEventBody = {
   created_by: string;
   location: string | null;
   custom_location: ApiCustomLocation | null;
+  event_performers: EventPerformerInput[];
 };
 
 export type UpdateEventBody = {
@@ -136,6 +164,7 @@ export type UpdateEventBody = {
   entry_price: number | null;
   genres: Genre[];
   custom_location: ApiCustomLocation | null;
+  event_performers: EventPerformerInput[];
 };
 
 async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
@@ -193,10 +222,11 @@ async function reorderEventImages(eventId: string, imageIds: string[]): Promise<
   }
 }
 
-export type { ApiEvent, ApiUser };
+export type { ApiEvent, ApiUser, ApiPerformer };
 export {
   getEventsList,
   getEvent,
+  getEventPerformers,
   createEvent,
   updateEvent,
   addEventImages,
@@ -204,5 +234,6 @@ export {
   reorderEventImages,
   toIsoDate,
   formatTime,
+  toApiTime,
   getTimezoneOffset,
 };

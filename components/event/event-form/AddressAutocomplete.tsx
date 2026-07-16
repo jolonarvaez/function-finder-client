@@ -10,6 +10,7 @@ import {
   type PlacePrediction,
 } from "@/lib/services/geocode/geocode";
 import { cn } from "@/lib/utils";
+import { useClickOutside } from "@/lib/hooks/use-click-outside";
 
 type Props = Readonly<{
   value: string;
@@ -50,15 +51,7 @@ export function AddressAutocomplete({ value, onChange, onSelect }: Props) {
     };
   }, [value]);
 
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside(containerRef, () => setOpen(false), open);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!open) return;

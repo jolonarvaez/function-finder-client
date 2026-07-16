@@ -27,18 +27,19 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { GenreSelector } from "@/components/shared/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
+import { PerformerSelector } from "./PerformerSelector";
 import { EventImageManager } from "./EventImageManager";
 import { StagedImagePicker } from "./StagedImagePicker";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, type Genre } from "@/lib/constants";
-import { toIsoDate, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
+import { toIsoDate, toApiTime, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { reverseGeocode, type AddressSuggestion } from "@/lib/services/geocode/geocode";
 import { PageContainer, PageHeader } from "../../reusables/PageContainer";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
 import { MODE_CONFIG } from "./constants";
 import { buildInitialState } from "./utils";
-import type { EventFormMode, EventFormValues } from "./types";
+import type { EventFormMode, EventFormValues, Performer } from "./types";
 
 export type { EventFormMode, EventFormValues };
 
@@ -60,7 +61,8 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   const { profile } = useUserStore();
   const isEdit = mode === "edit";
   const config = MODE_CONFIG[mode];
-  const initial = buildInitialState(initialEvent, profile?.genre_tags ?? []);
+  // Lazy: the initial snapshot only feeds the useState initializers below.
+  const [initial] = useState(() => buildInitialState(initialEvent, profile));
 
   const [eventName, setEventName] = useState(initial.name);
   const [description, setDescription] = useState(initial.description);
@@ -71,6 +73,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   const [endTime, setEndTime] = useState(initial.endTime);
   const [entryPrice, setEntryPrice] = useState(initial.entryPrice);
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>(initial.genres);
+  const [performers, setPerformers] = useState<Performer[]>(initial.performers);
   const [address, setAddress] = useState(initial.address);
   const [coordinates, setCoordinates] = useState(initial.coordinates);
 
@@ -137,10 +140,15 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
           description: description.trim() || null,
           category,
           date: toIsoDate(date),
-          start_time: `${startTime}:00${getTimezoneOffset()}`,
-          end_time: `${endTime}:00${getTimezoneOffset()}`,
+          start_time: toApiTime(startTime),
+          end_time: toApiTime(endTime),
           entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
           genres: selectedGenres,
+          event_performers: performers.map((p) => ({
+            user_id: p.id,
+            set_start_time: p.set_start_time ? toApiTime(p.set_start_time) : null,
+            set_end_time: p.set_end_time ? toApiTime(p.set_end_time) : null,
+          })),
           custom_location: {
             latitude: coordinates.lat,
             longitude: coordinates.lng,
@@ -231,6 +239,20 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
                 ))}
               </SelectContent>
             </Select>
+          </Field>
+
+          {/* ── Lineup ──────────────────────────────────── */}
+          <div className="border-t border-border pt-4">
+            <SectionHeader>Lineup</SectionHeader>
+          </div>
+
+          <Field>
+            <FieldLabel htmlFor="performer-search">Performers</FieldLabel>
+            <PerformerSelector
+              selected={performers}
+              onChange={setPerformers}
+              currentUser={profile ?? null}
+            />
           </Field>
 
           {/* ── Date & Time ─────────────────────────────── */}

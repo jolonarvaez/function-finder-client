@@ -7,6 +7,7 @@ const meta: Meta<typeof CreateEventView> = {
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
+    nextjs: { appDirectory: true },
   },
   decorators: [
     (Story) => (

@@ -23,6 +23,12 @@ type ApiUserResponse = {
   data: UserProfile;
 };
 
+type ApiUserListResponse = {
+  status: number;
+  message: string;
+  data: UserProfile[];
+};
+
 type UpdateUserBody = {
   profile_type?: OnboardingRole;
   genre_tags?: Genre[];
@@ -60,6 +66,15 @@ async function getUser(id: string): Promise<UserProfile> {
   return data.data;
 }
 
+/** Searches DJ profiles by display name (case-insensitive substring match). */
+async function searchUsers(query: string, signal?: AbortSignal): Promise<UserProfile[]> {
+  const { data } = await api.get<ApiUserListResponse>("/users/search", {
+    params: { key: query, profileType: "dj" },
+    signal,
+  });
+  return data.data;
+}
+
 async function getUserEvents(id: string): Promise<DJEvent[]> {
   const { data } = await api.get<ApiUserEventsResponse>(`/users/${id}/events`);
   return data.data.map(
@@ -86,4 +101,4 @@ async function updateUser(id: string, body: UpdateUserBody): Promise<void> {
   await api.patch(`/users/${id}`, body);
 }
 
-export { getUser, getUserEvents, updateUser };
+export { getUser, getUserEvents, updateUser, searchUsers };

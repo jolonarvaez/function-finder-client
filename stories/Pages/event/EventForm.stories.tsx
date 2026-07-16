@@ -1,6 +1,46 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EventForm } from "@/components/event/event-form/EventForm";
-import type { ApiEvent } from "@/lib/services/events";
+import { useUserStore } from "@/components/auth/use-user-store";
+import type { ApiEvent, ApiPerformer } from "@/lib/services/events";
+import type { UserProfile } from "@/lib/services/users";
+import type { Genre } from "@/lib/constants";
+
+const MOCK_PROFILE: UserProfile = {
+  id: "user-001",
+  first_name: "Alex",
+  last_name: "Santos",
+  display_name: "DJ AXLS",
+  bio: null,
+  genre_tags: ["House", "Techno"] as Genre[],
+  country: "PH",
+  socmed_links: null,
+  profile_type: "dj",
+  avatar_url: null,
+};
+
+const MOCK_PERFORMERS: ApiPerformer[] = [
+  // The creator is also the first performer.
+  {
+    ...MOCK_PROFILE,
+    profile_type: "dj",
+    set_start_time: "22:00:00+08:00",
+    set_end_time: "00:00:00+08:00",
+  },
+  {
+    id: "dj-002",
+    first_name: "Marco",
+    last_name: "Reyes",
+    display_name: "DJ Marco",
+    bio: null,
+    genre_tags: ["House"],
+    country: "PH",
+    socmed_links: null,
+    profile_type: "dj",
+    avatar_url: "https://placehold.co/96x96/1a1a2e/e0e0ff?text=M",
+    set_start_time: "00:00:00+08:00",
+    set_end_time: "04:00:00+08:00",
+  },
+];
 
 const MOCK_EVENT: ApiEvent = {
   id: "evt-001",
@@ -36,18 +76,8 @@ const MOCK_EVENT: ApiEvent = {
     },
   ],
   status: "upcoming",
-  users: {
-    id: "user-001",
-    first_name: "Alex",
-    last_name: "Santos",
-    display_name: "DJ AXLS",
-    bio: null,
-    genre_tags: ["House", "Techno"],
-    country: "PH",
-    socmed_links: null,
-    profile_type: "dj",
-    avatar_url: null,
-  },
+  users: { ...MOCK_PROFILE, profile_type: "dj" },
+  performers: MOCK_PERFORMERS,
 };
 
 const meta: Meta<typeof EventForm> = {
@@ -62,11 +92,15 @@ const meta: Meta<typeof EventForm> = {
     onSubmit: async () => {},
   },
   decorators: [
-    (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
-        <Story />
-      </div>
-    ),
+    (Story) => {
+      // Seed the user store so create mode pre-adds the creator to the lineup.
+      useUserStore.setState({ profile: MOCK_PROFILE });
+      return (
+        <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+          <Story />
+        </div>
+      );
+    },
   ],
 };
 
@@ -85,6 +119,19 @@ export const EditMode: Story = {
   args: {
     mode: "edit",
     initialEvent: MOCK_EVENT,
+  },
+};
+
+export const EditModeLegacyPerformers: Story = {
+  name: "Edit mode — legacy (no performers)",
+  args: {
+    mode: "edit",
+    initialEvent: {
+      ...MOCK_EVENT,
+      id: "evt-004",
+      name: "Warehouse Sessions",
+      performers: undefined,
+    },
   },
 };
 
