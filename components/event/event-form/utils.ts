@@ -68,7 +68,9 @@ export function buildInitialState(
     endTime: formatTime(initialEvent.end_time),
     entryPrice: initialEvent.entry_price != null ? String(initialEvent.entry_price) : "",
     genres: initialEvent.genres as Genre[],
-    performers: getEventPerformers(initialEvent).map(toPerformer),
+    performers: getEventPerformers(initialEvent).map((p) =>
+      toPerformer({ ...p.users, set_start_time: p.set_start_time, set_end_time: p.set_end_time })
+    ),
     address: loc?.address ?? "",
     coordinates: loc ? { lng: loc.longitude, lat: loc.latitude } : DEFAULT_COORDINATES,
   };

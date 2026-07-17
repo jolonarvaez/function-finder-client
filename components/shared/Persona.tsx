@@ -1,5 +1,5 @@
 "use client";
-import { MapPinIcon, CalendarIcon } from "lucide-react";
+import { MapPinIcon, ClockIcon } from "lucide-react";
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export type PersonaProps = Readonly<{
   avatarFallback?: string;
   isActive?: boolean;
   venue?: string;
-  nextEvent?: string;
+  setTime?: string;
   variant?: "full" | "min";
   className?: string;
   userId?: string;
@@ -27,14 +27,14 @@ export function Persona({
   avatarFallback,
   isActive,
   venue,
-  nextEvent,
+  setTime,
   variant = "full",
   className,
   userId,
 }: PersonaProps) {
   if (variant === "min") {
     return (
-      <div className={cn("flex items-center gap-4", className)}>
+      <div className={cn("@container flex flex-wrap items-center gap-4", className)}>
         <Avatar size="lg">
           {avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
           <AvatarFallback>{avatarFallback ?? name[0]}</AvatarFallback>
@@ -52,10 +52,19 @@ export function Persona({
               ))}
             </div>
           )}
+          {setTime && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <ClockIcon className="size-3 shrink-0" />
+              <span>Set: {setTime}</span>
+            </div>
+          )}
         </div>
 
-        <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto">
-          <Button variant="ghost" className="shrink-0 text-muted-foreground">
+        <Link
+          href={userId ? `/profile/${userId}` : "#"}
+          className="ml-auto @max-sm:ml-0 @max-sm:basis-full"
+        >
+          <Button variant="ghost" className="shrink-0 text-muted-foreground @max-sm:w-full">
             View Profile →
           </Button>
         </Link>
@@ -64,9 +73,9 @@ export function Persona({
   }
 
   return (
-    <Card className={cn("gap-3", className)}>
+    <Card className={cn("@container gap-3", className)}>
       <CardContent>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <Avatar size="lg" className="w-16 h-16">
             {avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
             <AvatarFallback>{avatarFallback ?? name[0]}</AvatarFallback>
@@ -90,16 +99,19 @@ export function Persona({
                 {venue}
               </Badge>
             )}
-            {nextEvent && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <CalendarIcon className="size-3 shrink-0" />
-                <span>Next: {nextEvent}</span>
+            {setTime && (
+              <div className="flex items-center gap-1 text-sm text-foreground">
+                <ClockIcon className="size-3.5 shrink-0" />
+                <span> {setTime}</span>
               </div>
             )}
           </div>
 
-          <Link href={userId ? `/profile/${userId}` : "#"} className="ml-auto self-center">
-            <Button variant="ghost" className="shrink-0 text-muted-foreground">
+          <Link
+            href={userId ? `/profile/${userId}` : "#"}
+            className="ml-auto self-center @max-sm:ml-0 @max-sm:basis-full"
+          >
+            <Button variant="ghost" className="shrink-0 text-muted-foreground @max-sm:w-full">
               View Profile →
             </Button>
           </Link>

@@ -10,7 +10,6 @@ import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, formatTime, type ApiEvent } from "@/lib/services/events";
 import { EventImageGallery } from "./EventImageGallery";
-import type { Genre } from "@/lib/constants";
 
 type Props = Readonly<{ eventId: string }>;
 
@@ -50,18 +49,17 @@ export function EventDetailView({ eventId }: Props) {
 
 export function EventDetailContent({ event }: { event: ApiEvent }) {
   const address = event.custom_location?.address ?? event.location ?? "Location TBA";
-  const startTime = formatTime(event.start_time.slice(0, 5));
-  const endTime = formatTime(event.end_time.slice(0, 5));
-  const djName = event.users.display_name;
-  const djGenres =
-    (event.genres as Genre[]).length > 0
-      ? (event.genres as Genre[])
-      : (event.users.genre_tags as Genre[]);
+  const startTime = formatTime(event.start_time);
+  const endTime = formatTime(event.end_time);
+  const performers = [...(event.event_performers ?? [])].sort(
+    (a, b) => a.performance_order - b.performance_order
+  );
+         console.log(event)
+
   return (
     <div>
       <PageContainer>
         <PageHeader title={event.name} showBack />
-
         <div className="flex flex-col gap-5">
           {/* Category + status */}
           <div className="flex items-center gap-2">
@@ -111,18 +109,24 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
             {event.entry_price != null ? `₱${event.entry_price.toLocaleString()}` : "Free entry"}
           </Section>
 
-          {/* DJ */}
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Performed by</span>
-            <Persona
-              variant="full"
-              name={djName}
-              genre={djGenres}
-              avatarSrc={event.users.avatar_url ?? undefined}
-              avatarFallback={djName[0]}
-              userId={event.created_by}
-            />
-          </div>
+          {/* Lineup */}
+          {performers.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <span className="text-sm font-medium text-muted-foreground">Performed by</span>
+              {performers.map((p) => (
+                <Persona
+                  key={p.id}
+                  variant="full"
+                  name={p.users.display_name}
+                  genre={p.users.genre_tags.length > 0 ? p.users.genre_tags : event.genres}
+                  avatarSrc={p.users.avatar_url ?? undefined}
+                  avatarFallback={p.users.display_name[0]}
+                  userId={p.user_id}
+                  setTime={formatSetTime(p.set_start_time, p.set_end_time)}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Images */}
           <EventImageGallery event={event} alt={`${event.name} cover`} />
@@ -130,6 +134,11 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
       </PageContainer>
     </div>
   );
+}
+
+function formatSetTime(start?: string | null, end?: string | null): string | undefined {
+  if (!start && !end) return undefined;
+  return `${start ? formatTime(start) : "—"} - ${end ? formatTime(end) : "—"}`;
 }
 
 function Section({

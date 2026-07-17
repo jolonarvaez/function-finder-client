@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EventDetailContent } from "@/components/event/EventDetailView";
-import type { ApiEvent, ApiUser } from "@/lib/services/events";
+import type { ApiEvent, ApiEventPerformer, ApiUser } from "@/lib/services/events";
 
 const MOCK_DJ: ApiUser = {
   id: "dj-001",
@@ -43,8 +43,28 @@ const BASE_EVENT: ApiEvent = {
     },
   ],
   status: "upcoming",
+  flyer_url: null,
   users: MOCK_DJ,
 };
+
+function toPerformerRow(
+  user: ApiUser,
+  order: number,
+  setStart: string | null,
+  setEnd: string | null
+): ApiEventPerformer {
+  return {
+    id: `ep-${user.id}`,
+    event_id: "evt-005",
+    user_id: user.id,
+    performance_order: order,
+    set_start_time: setStart,
+    set_end_time: setEnd,
+    created_at: "2026-04-01T10:00:00Z",
+    status: "pending",
+    users: user,
+  };
+}
 
 const LIVE_EVENT: ApiEvent = {
   ...BASE_EVENT,
@@ -91,7 +111,7 @@ const meta: Meta<typeof EventDetailContent> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+      <div className="mx-auto w-full max-w-xl overflow-hidden bg-background">
         <Story />
       </div>
     ),
@@ -122,34 +142,32 @@ export const MultiplePerformers: Story = {
       id: "evt-005",
       name: "Back to Back",
       description: "Four DJs. One booth. All night long.",
-      performers: [
-        { ...MOCK_DJ, set_start_time: "22:00:00+08:00", set_end_time: "23:30:00+08:00" },
-        {
-          ...MOCK_DJ,
-          id: "dj-002",
-          display_name: "DJ Soleil",
-          genre_tags: ["Soul", "RnB"],
-          set_start_time: "23:30:00+08:00",
-          set_end_time: "01:00:00+08:00",
-        },
-        {
-          ...MOCK_DJ,
-          id: "dj-003",
-          display_name: "DJ Kade",
-          genre_tags: ["DnB", "Techno"],
-          avatar_url: null,
-          set_start_time: "01:00:00+08:00",
-          set_end_time: "04:00:00+08:00",
-        },
-        {
-          ...MOCK_DJ,
-          id: "dj-004",
-          display_name: "Solenoid",
-          genre_tags: [],
-          avatar_url: null,
-          set_start_time: null,
-          set_end_time: null,
-        },
+      event_performers: [
+        toPerformerRow(MOCK_DJ, 0, "22:00:00+08:00", "23:30:00+08:00"),
+        toPerformerRow(
+          { ...MOCK_DJ, id: "dj-002", display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
+          1,
+          "23:30:00+08:00",
+          "01:00:00+08:00"
+        ),
+        toPerformerRow(
+          {
+            ...MOCK_DJ,
+            id: "dj-003",
+            display_name: "DJ Kade",
+            genre_tags: ["DnB", "Techno"],
+            avatar_url: null,
+          },
+          2,
+          "01:00:00+08:00",
+          "04:00:00+08:00"
+        ),
+        toPerformerRow(
+          { ...MOCK_DJ, id: "dj-004", display_name: "Solenoid", genre_tags: [], avatar_url: null },
+          3,
+          null,
+          null
+        ),
       ],
     },
   },

@@ -35,12 +35,12 @@ export const Full: Story = {
   },
 };
 
-export const FullWithNextEvent: Story = {
+export const FullWithSetTime: Story = {
   args: {
     ...defaultArgs,
     variant: "full",
-    isActive: false,
-    nextEvent: "Noir · Tonight",
+    isActive: true,
+    setTime: "10:00 PM - 11:30 PM",
   },
 };
 

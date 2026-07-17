@@ -18,10 +18,17 @@ type ApiUser = {
   avatar_url: string | null;
 };
 
-/** Performer embedded on an event: user profile plus optional set times ("HH:MM:SS+off"). */
-type ApiPerformer = ApiUser & {
+/** `event_performers` join row as returned on fetched events. */
+type ApiEventPerformer = {
+  id: string;
+  event_id: string;
+  user_id: string;
+  performance_order: number;
   set_start_time: string | null;
   set_end_time: string | null;
+  created_at: string;
+  status: string;
+  users: ApiUser;
 };
 
 /** Performer entry sent on event create/update. Times use "HH:MM:00+off", null when unset. */
@@ -52,11 +59,13 @@ type ApiEvent = {
   created_at: string;
   genres: string[];
   custom_location: ApiCustomLocation | null;
+  flyer_url: string | null;
   /** Pre-sorted: index 0 is the cover. */
   event_images: EventImage[];
-  users: ApiUser;
-  /** Lineup; absent/empty on legacy events — fall back to the creator (`users`). */
-  performers?: ApiPerformer[];
+  /** Creator profile; only present on legacy responses — prefer `event_performers`. */
+  users?: ApiUser;
+  /** Lineup join rows; absent/empty on legacy events — fall back to the creator (`users`). */
+  event_performers?: ApiEventPerformer[];
   status: Exclude<EventStatus, "all">;
 };
 
@@ -84,11 +93,35 @@ function toApiTime(hhmm: string): string {
   return `${hhmm}:00${getTimezoneOffset()}`;
 }
 
-/** Event lineup; legacy events without performers fall back to the creator. */
-function getEventPerformers(event: ApiEvent): ApiPerformer[] {
-  return event.performers?.length
-    ? event.performers
-    : [{ ...event.users, set_start_time: null, set_end_time: null }];
+/** Event lineup rows, ordered by `performance_order`; legacy events without performers fall back to the creator. */
+function getEventPerformers(event: ApiEvent): ApiEventPerformer[] {
+  if (event.event_performers?.length) {
+    return [...event.event_performers].sort((a, b) => a.performance_order - b.performance_order);
+  }
+  if (!event.users) return [];
+  return [
+    {
+      id: event.users.id,
+      event_id: event.id,
+      user_id: event.users.id,
+      performance_order: 0,
+      set_start_time: null,
+      set_end_time: null,
+      created_at: event.created_at,
+      status: "pending",
+      users: event.users,
+    },
+  ];
+}
+
+/** Event host: the `created_by` performer, falling back to legacy `users`, then the first performer. */
+function getEventHost(event: ApiEvent): ApiUser | null {
+  return (
+    event.event_performers?.find((p) => p.user_id === event.created_by)?.users ??
+    event.users ??
+    event.event_performers?.[0]?.users ??
+    null
+  );
 }
 
 /** Returns the browser's UTC offset as "+HH:MM" or "-HH:MM" */
@@ -222,11 +255,12 @@ async function reorderEventImages(eventId: string, imageIds: string[]): Promise<
   }
 }
 
-export type { ApiEvent, ApiUser, ApiPerformer };
+export type { ApiEvent, ApiUser, ApiEventPerformer };
 export {
   getEventsList,
   getEvent,
   getEventPerformers,
+  getEventHost,
   createEvent,
   updateEvent,
   addEventImages,

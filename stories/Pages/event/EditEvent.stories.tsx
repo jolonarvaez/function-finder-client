@@ -30,6 +30,7 @@ const BASE_EVENT: ApiEvent = {
     },
   ],
   status: "upcoming",
+  flyer_url: null,
   users: {
     id: "user-001",
     first_name: "Alex",

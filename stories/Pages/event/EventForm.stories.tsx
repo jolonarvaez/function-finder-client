@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EventForm } from "@/components/event/event-form/EventForm";
 import { useUserStore } from "@/components/auth/use-user-store";
-import type { ApiEvent, ApiPerformer } from "@/lib/services/events";
+import type { ApiEvent, ApiEventPerformer } from "@/lib/services/events";
 import type { UserProfile } from "@/lib/services/users";
 import type { Genre } from "@/lib/constants";
 
@@ -18,27 +18,40 @@ const MOCK_PROFILE: UserProfile = {
   avatar_url: null,
 };
 
-const MOCK_PERFORMERS: ApiPerformer[] = [
+const MOCK_PERFORMERS: ApiEventPerformer[] = [
   // The creator is also the first performer.
   {
-    ...MOCK_PROFILE,
-    profile_type: "dj",
+    id: "ep-001",
+    event_id: "evt-001",
+    user_id: MOCK_PROFILE.id,
+    performance_order: 0,
     set_start_time: "22:00:00+08:00",
     set_end_time: "00:00:00+08:00",
+    created_at: "2026-06-01T10:00:00Z",
+    status: "pending",
+    users: { ...MOCK_PROFILE, profile_type: "dj" },
   },
   {
-    id: "dj-002",
-    first_name: "Marco",
-    last_name: "Reyes",
-    display_name: "DJ Marco",
-    bio: null,
-    genre_tags: ["House"],
-    country: "PH",
-    socmed_links: null,
-    profile_type: "dj",
-    avatar_url: "https://placehold.co/96x96/1a1a2e/e0e0ff?text=M",
+    id: "ep-002",
+    event_id: "evt-001",
+    user_id: "dj-002",
+    performance_order: 1,
     set_start_time: "00:00:00+08:00",
     set_end_time: "04:00:00+08:00",
+    created_at: "2026-06-01T10:00:00Z",
+    status: "pending",
+    users: {
+      id: "dj-002",
+      first_name: "Marco",
+      last_name: "Reyes",
+      display_name: "DJ Marco",
+      bio: null,
+      genre_tags: ["House"],
+      country: "PH",
+      socmed_links: null,
+      profile_type: "dj",
+      avatar_url: "https://placehold.co/96x96/1a1a2e/e0e0ff?text=M",
+    },
   },
 ];
 
@@ -76,8 +89,9 @@ const MOCK_EVENT: ApiEvent = {
     },
   ],
   status: "upcoming",
+  flyer_url: null,
   users: { ...MOCK_PROFILE, profile_type: "dj" },
-  performers: MOCK_PERFORMERS,
+  event_performers: MOCK_PERFORMERS,
 };
 
 const meta: Meta<typeof EventForm> = {
@@ -130,7 +144,7 @@ export const EditModeLegacyPerformers: Story = {
       ...MOCK_EVENT,
       id: "evt-004",
       name: "Warehouse Sessions",
-      performers: undefined,
+      event_performers: undefined,
     },
   },
 };
