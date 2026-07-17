@@ -31,18 +31,30 @@ const BASE_EVENT: ApiEvent = {
   ],
   status: "upcoming",
   flyer_url: null,
-  users: {
-    id: "user-001",
-    first_name: "Alex",
-    last_name: "Santos",
-    display_name: "DJ AXLS",
-    bio: null,
-    genre_tags: ["House", "Techno"],
-    country: "PH",
-    socmed_links: null,
-    profile_type: "dj",
-    avatar_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
-  },
+  event_performers: [
+    {
+      id: "ep-001",
+      event_id: "evt-001",
+      user_id: "user-001",
+      performance_order: 0,
+      set_start_time: null,
+      set_end_time: null,
+      created_at: "2026-05-01T10:00:00Z",
+      status: "pending",
+      users: {
+        id: "user-001",
+        first_name: "Alex",
+        last_name: "Santos",
+        display_name: "DJ AXLS",
+        bio: null,
+        genre_tags: ["House", "Techno"],
+        country: "PH",
+        socmed_links: null,
+        profile_type: "dj",
+        avatar_url: "https://placehold.co/400x600/1a1a2e/e0e0ff?text=Neon+Dreams",
+      },
+    },
+  ],
 };
 
 const meta: Meta<typeof EditEventContent> = {

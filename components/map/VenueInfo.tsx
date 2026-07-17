@@ -6,17 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
-import { XIcon, MapPinIcon, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
+import { XIcon, MapPinIcon, Turntable, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import type { Genre } from "@/lib/constants";
 import type { EventImage } from "@/components/dj/dj-event.types";
 
 // ── Types ────────────────────────────────────────────────────
 
-export type VenueDJ = Readonly<{
+export type VenuePerformer = Readonly<{
   name: string;
   avatar?: string;
-  genre: Genre[];
+  genre: string[];
+  userId?: string;
+  setTime?: string;
 }>;
 
 export type VenueEvent = Readonly<{
@@ -33,7 +34,7 @@ export type VenueEvent = Readonly<{
   featured: boolean;
   attending: number;
   status: "live" | "upcoming" | "done";
-  dj: VenueDJ;
+  performers: VenuePerformer[];
   created_by: string;
 }>;
 
@@ -80,23 +81,27 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
             </p>
           </SheetHeader>
 
-          {/* DJ */}
-          <div className="mx-5 mt-4 border-t border-border pt-4">
-            {live && (
-              <p className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                <MusicIcon className="size-3.5 shrink-0" />
-                Now Playing
+          {/* Performers */}
+          {event.performers.length > 0 && (
+            <div className="mx-5 my-4 flex flex-col gap-3 border-t border-border py-4">
+              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <Turntable className="size-3.5 shrink-0" />
+                {live ? "Now Playing" : "Lineup"}
               </p>
-            )}
-            <Persona
-              userId={event.created_by}
-              name={event.dj.name}
-              genre={event.dj.genre}
-              avatarSrc={event.dj.avatar}
-              isActive={live}
-              variant="min"
-            />
-          </div>
+              {event.performers.map((performer) => (
+                <Persona
+                  key={`${performer.userId ?? performer.name}`}
+                  userId={performer.userId}
+                  name={performer.name}
+                  genre={performer.genre}
+                  avatarSrc={performer.avatar}
+                  setTime={performer.setTime}
+                  isActive={live}
+                  variant="min"
+                />
+              ))}
+            </div>
+          )}
 
           {/* Stats */}
           <div className="mx-5 mt-4 grid grid-cols-2 gap-3">

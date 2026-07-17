@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EventsContent } from "@/components/event/EventsView";
-import type { ApiEvent, ApiUser } from "@/lib/services/events";
+import type { ApiEvent, ApiEventPerformer, ApiUser } from "@/lib/services/events";
 
 const MOCK_DJ: ApiUser = {
   id: "dj-001",
@@ -14,6 +14,22 @@ const MOCK_DJ: ApiUser = {
   profile_type: "dj",
   avatar_url: null,
 };
+
+function toLineup(user: ApiUser): ApiEventPerformer[] {
+  return [
+    {
+      id: `ep-${user.id}`,
+      event_id: "evt-001",
+      user_id: user.id,
+      performance_order: 0,
+      set_start_time: null,
+      set_end_time: null,
+      created_at: "2026-04-01T10:00:00Z",
+      status: "pending",
+      users: user,
+    },
+  ];
+}
 
 const BASE: ApiEvent = {
   id: "evt-001",
@@ -43,7 +59,8 @@ const BASE: ApiEvent = {
     },
   ],
   status: "upcoming",
-  users: MOCK_DJ,
+  flyer_url: null,
+  event_performers: toLineup(MOCK_DJ),
 };
 
 const MOCK_EVENTS: ApiEvent[] = [
@@ -65,7 +82,11 @@ const MOCK_EVENTS: ApiEvent[] = [
       longitude: 121.022,
       address: "92 Polaris St, Makati City",
     },
-    users: { ...MOCK_DJ, display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
+    event_performers: toLineup({
+      ...MOCK_DJ,
+      display_name: "DJ Soleil",
+      genre_tags: ["Soul", "RnB"],
+    }),
   },
   {
     ...BASE,
@@ -91,7 +112,11 @@ const MOCK_EVENTS: ApiEvent[] = [
       longitude: 121.0215,
       address: "15 Salcedo St, Makati City",
     },
-    users: { ...MOCK_DJ, display_name: "DJ Kade", genre_tags: ["DnB", "Techno"] },
+    event_performers: toLineup({
+      ...MOCK_DJ,
+      display_name: "DJ Kade",
+      genre_tags: ["DnB", "Techno"],
+    }),
   },
   {
     ...BASE,
@@ -107,7 +132,11 @@ const MOCK_EVENTS: ApiEvent[] = [
     status: "upcoming",
     custom_location: null,
     location: "Noir Lounge, BGC",
-    users: { ...MOCK_DJ, display_name: "DJ Aria", genre_tags: ["Hip-Hop", "Afrobeats"] },
+    event_performers: toLineup({
+      ...MOCK_DJ,
+      display_name: "DJ Aria",
+      genre_tags: ["Hip-Hop", "Afrobeats"],
+    }),
   },
   {
     ...BASE,
@@ -126,7 +155,11 @@ const MOCK_EVENTS: ApiEvent[] = [
       },
     ],
     status: "done",
-    users: { ...MOCK_DJ, display_name: "DJ Nova", genre_tags: ["House", "Disco"] },
+    event_performers: toLineup({
+      ...MOCK_DJ,
+      display_name: "DJ Nova",
+      genre_tags: ["House", "Disco"],
+    }),
   },
 ];
 

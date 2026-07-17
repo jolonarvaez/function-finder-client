@@ -62,9 +62,7 @@ type ApiEvent = {
   flyer_url: string | null;
   /** Pre-sorted: index 0 is the cover. */
   event_images: EventImage[];
-  /** Creator profile; only present on legacy responses — prefer `event_performers`. */
-  users?: ApiUser;
-  /** Lineup join rows; absent/empty on legacy events — fall back to the creator (`users`). */
+  /** Lineup join rows. */
   event_performers?: ApiEventPerformer[];
   status: Exclude<EventStatus, "all">;
 };
@@ -93,32 +91,16 @@ function toApiTime(hhmm: string): string {
   return `${hhmm}:00${getTimezoneOffset()}`;
 }
 
-/** Event lineup rows, ordered by `performance_order`; legacy events without performers fall back to the creator. */
+/** Event lineup rows, ordered by `performance_order`. */
 function getEventPerformers(event: ApiEvent): ApiEventPerformer[] {
-  if (event.event_performers?.length) {
-    return [...event.event_performers].sort((a, b) => a.performance_order - b.performance_order);
-  }
-  if (!event.users) return [];
-  return [
-    {
-      id: event.users.id,
-      event_id: event.id,
-      user_id: event.users.id,
-      performance_order: 0,
-      set_start_time: null,
-      set_end_time: null,
-      created_at: event.created_at,
-      status: "pending",
-      users: event.users,
-    },
-  ];
+  if (!event.event_performers?.length) return [];
+  return [...event.event_performers].sort((a, b) => a.performance_order - b.performance_order);
 }
 
-/** Event host: the `created_by` performer, falling back to legacy `users`, then the first performer. */
+/** Event host: the `created_by` performer, falling back to the first performer. */
 function getEventHost(event: ApiEvent): ApiUser | null {
   return (
     event.event_performers?.find((p) => p.user_id === event.created_by)?.users ??
-    event.users ??
     event.event_performers?.[0]?.users ??
     null
   );

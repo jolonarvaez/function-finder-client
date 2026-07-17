@@ -13,11 +13,12 @@ export type VenueListViewProps = Readonly<{
   defaultDate?: Date;
 }>;
 
+function venueGenres(venue: MapEvents): string[] {
+  return [...new Set(venue.event.performers.flatMap((p) => p.genre))];
+}
+
 function venueMatchesGenres(venue: MapEvents, genres: string[]): boolean {
-  const djGenres = Array.isArray(venue.event.dj.genre)
-    ? venue.event.dj.genre
-    : [venue.event.dj.genre];
-  return djGenres.some((g) => genres.includes(g));
+  return venueGenres(venue).some((g) => genres.includes(g));
 }
 
 function venueMatchesQuery(venue: MapEvents, query: string): boolean {
@@ -25,7 +26,7 @@ function venueMatchesQuery(venue: MapEvents, query: string): boolean {
   return (
     venue.event.name.toLowerCase().includes(q) ||
     venue.event.address.toLowerCase().includes(q) ||
-    venue.event.dj.name.toLowerCase().includes(q)
+    venue.event.performers.some((p) => p.name.toLowerCase().includes(q))
   );
 }
 
@@ -99,9 +100,9 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
                 name={venue.event.name}
                 address={venue.event.address}
                 distance={venue.distance ?? ""}
-                genre={venue.event.dj.genre}
+                genre={venueGenres(venue)}
                 imageSrc={venue.event.event_images?.[0]?.url}
-                dj={venue.event.dj.name}
+                dj={venue.event.performers.map((p) => p.name).join(", ") || undefined}
                 isLive={
                   !!venue.event.date &&
                   getStatus({

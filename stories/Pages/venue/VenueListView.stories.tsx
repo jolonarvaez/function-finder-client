@@ -19,11 +19,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 54,
       status: "done",
-      dj: {
-        name: "Smooth Mike",
-        avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
-        genre: ["Soul"],
-      },
+      performers: [
+        {
+          name: "Smooth Mike",
+          avatar: "https://placehold.co/80x80/f59e0b/fff?text=SM",
+          genre: ["Soul"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -51,11 +54,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 145,
       status: "done",
-      dj: {
-        name: "DJ Fuego",
-        avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
-        genre: ["Latin"],
-      },
+      performers: [
+        {
+          name: "DJ Fuego",
+          avatar: "https://placehold.co/80x80/ef4444/fff?text=DF",
+          genre: ["Latin"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -84,11 +90,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 132,
       status: "done",
-      dj: {
-        name: "DJ Phonix",
-        avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
-        genre: ["Hip-Hop", "RnB"],
-      },
+      performers: [
+        {
+          name: "DJ Phonix",
+          avatar: "https://placehold.co/80x80/ea580c/fff?text=DP",
+          genre: ["Hip-Hop", "RnB"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -116,11 +125,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 165,
       status: "done",
-      dj: {
-        name: "Kwame",
-        avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
-        genre: ["Afrobeats"],
-      },
+      performers: [
+        {
+          name: "Kwame",
+          avatar: "https://placehold.co/80x80/ca8a04/fff?text=KW",
+          genre: ["Afrobeats"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -149,11 +161,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 89,
       status: "done",
-      dj: {
-        name: "Mara Santos",
-        avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
-        genre: ["Techno"],
-      },
+      performers: [
+        {
+          name: "Mara Santos",
+          avatar: "https://placehold.co/80x80/9333ea/fff?text=MS",
+          genre: ["Techno"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -181,7 +196,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 280,
       status: "done",
-      dj: { name: "MIKA", avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK", genre: ["Pop"] },
+      performers: [
+        {
+          name: "MIKA",
+          avatar: "https://placehold.co/80x80/7c3aed/fff?text=MK",
+          genre: ["Pop"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -211,11 +233,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 247,
       status: "done",
-      dj: {
-        name: "DJ Nexus",
-        avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
-        genre: ["House", "Techno", "Disco"],
-      },
+      performers: [
+        {
+          name: "DJ Nexus",
+          avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
+          genre: ["House", "Techno", "Disco"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -243,11 +268,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 178,
       status: "done",
-      dj: {
-        name: "PRISM",
-        avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
-        genre: ["DnB"],
-      },
+      performers: [
+        {
+          name: "PRISM",
+          avatar: "https://placehold.co/80x80/06b6d4/fff?text=PR",
+          genre: ["DnB"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -277,11 +305,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 312,
       status: "upcoming",
-      dj: {
-        name: "DJ Caliente",
-        avatar: "https://placehold.co/80x80/dc2626/fff?text=DC",
-        genre: ["Reggaeton", "Latin", "Dancehall"],
-      },
+      performers: [
+        {
+          name: "DJ Caliente",
+          avatar: "https://placehold.co/80x80/dc2626/fff?text=DC",
+          genre: ["Reggaeton", "Latin", "Dancehall"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -308,11 +339,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 98,
       status: "upcoming",
-      dj: {
-        name: "Soulée",
-        avatar: "https://placehold.co/80x80/ec4899/fff?text=SL",
-        genre: ["RnB"],
-      },
+      performers: [
+        {
+          name: "Soulée",
+          avatar: "https://placehold.co/80x80/ec4899/fff?text=SL",
+          genre: ["RnB"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -341,11 +375,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: false,
       attending: 74,
       status: "upcoming",
-      dj: {
-        name: "Selecta Jay",
-        avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
-        genre: ["Dancehall"],
-      },
+      performers: [
+        {
+          name: "Selecta Jay",
+          avatar: "https://placehold.co/80x80/16a34a/fff?text=SJ",
+          genre: ["Dancehall"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },
@@ -375,11 +412,14 @@ const MOCK_VENUES: MapEvents[] = [
       featured: true,
       attending: 203,
       status: "upcoming",
-      dj: {
-        name: "Groove Master G",
-        avatar: "https://placehold.co/80x80/d97706/fff?text=GM",
-        genre: ["Disco", "Soul", "House"],
-      },
+      performers: [
+        {
+          name: "Groove Master G",
+          avatar: "https://placehold.co/80x80/d97706/fff?text=GM",
+          genre: ["Disco", "Soul", "House"],
+          userId: "user_123",
+        },
+      ],
       created_by: "user_123",
     },
   },

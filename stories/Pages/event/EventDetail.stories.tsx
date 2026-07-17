@@ -44,7 +44,7 @@ const BASE_EVENT: ApiEvent = {
   ],
   status: "upcoming",
   flyer_url: null,
-  users: MOCK_DJ,
+  event_performers: [toPerformerRow(MOCK_DJ, 0, null, null)],
 };
 
 function toPerformerRow(
@@ -82,7 +82,14 @@ const LIVE_EVENT: ApiEvent = {
     address: "92 Polaris St, Makati City",
   },
   status: "live",
-  users: { ...MOCK_DJ, display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
+  event_performers: [
+    toPerformerRow(
+      { ...MOCK_DJ, display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
+      0,
+      null,
+      null
+    ),
+  ],
 };
 
 const PAST_EVENT: ApiEvent = {
@@ -99,7 +106,14 @@ const PAST_EVENT: ApiEvent = {
   custom_location: null,
   location: "The Bunker, BGC",
   status: "done",
-  users: { ...MOCK_DJ, display_name: "DJ Kade", genre_tags: ["DnB", "Techno"] },
+  event_performers: [
+    toPerformerRow(
+      { ...MOCK_DJ, display_name: "DJ Kade", genre_tags: ["DnB", "Techno"] },
+      0,
+      null,
+      null
+    ),
+  ],
 };
 
 const meta: Meta<typeof EventDetailContent> = {

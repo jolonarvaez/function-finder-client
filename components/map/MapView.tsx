@@ -9,9 +9,14 @@ import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
 import { Locate, LocateOff, X, MapIcon } from "lucide-react";
-import { MAKATI_CENTER, DEFAULT_ZOOM, type Genre } from "@/lib/constants";
+import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { getEventsList, formatTime, type ApiEvent } from "@/lib/services/events";
+import {
+  getEventsList,
+  getEventPerformers,
+  formatTime,
+  type ApiEvent,
+} from "@/lib/services/events";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
@@ -23,6 +28,11 @@ export type MapEvents = Readonly<{
   distance?: string;
   event: VenueEvent;
 }>;
+
+function formatSetTime(start: string | null, end: string | null): string | undefined {
+  if (!start && !end) return undefined;
+  return `${start ? formatTime(start) : "—"} - ${end ? formatTime(end) : "—"}`;
+}
 
 function toMapVenue(event: ApiEvent): MapEvents | null {
   if (!event.custom_location) return null;
@@ -43,11 +53,13 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
       attending: 0,
       status: event.status,
       created_by: event.created_by,
-      dj: {
-        name: event.users.display_name,
-        avatar: event.users.avatar_url ?? undefined,
-        genre: event.genres as Genre[],
-      },
+      performers: getEventPerformers(event).map((p) => ({
+        name: p.users.display_name,
+        avatar: p.users.avatar_url ?? undefined,
+        genre: p.users.genre_tags.length > 0 ? p.users.genre_tags : event.genres,
+        userId: p.user_id,
+        setTime: formatSetTime(p.set_start_time, p.set_end_time),
+      })),
     },
   };
 }

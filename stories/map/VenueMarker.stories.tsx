@@ -28,11 +28,20 @@ const MOCK_EVENT_UPCOMING: VenueEvent = {
   featured: true,
   attending: 247,
   status: "upcoming",
-  dj: {
-    name: "DJ Nexus",
-    avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
-    genre: ["House", "Techno"],
-  },
+  performers: [
+    {
+      name: "DJ Nexus",
+      avatar: "https://placehold.co/80x80/3b82f6/fff?text=DN",
+      genre: ["House", "Techno"],
+      userId: "user_123",
+    },
+    {
+      name: "Luna Waves",
+      avatar: "https://placehold.co/80x80/e94560/fff?text=LW",
+      genre: ["Disco"],
+      userId: "user_456",
+    },
+  ],
   created_by: "user_123",
 };
 

@@ -90,7 +90,6 @@ const MOCK_EVENT: ApiEvent = {
   ],
   status: "upcoming",
   flyer_url: null,
-  users: { ...MOCK_PROFILE, profile_type: "dj" },
   event_performers: MOCK_PERFORMERS,
 };
 

@@ -54,7 +54,6 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
   const performers = [...(event.event_performers ?? [])].sort(
     (a, b) => a.performance_order - b.performance_order
   );
-         console.log(event)
 
   return (
     <div>
