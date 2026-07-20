@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { getUser, getUserEvents, type UserProfile } from "@/lib/services/users";
+import { getUser, getUserPerformers, type UserProfile } from "@/lib/services/users";
 import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
 import { ProfileHeader } from "./ProfileHeader";
+import { PublicLiveEvents } from "./PublicLiveEvents";
 import { PublicUpcomingEvents } from "./PublicUpcomingEvents";
 
 type ProfileViewProps = Readonly<{
@@ -19,12 +20,14 @@ export function ProfileView({ userId }: ProfileViewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [liveEvents, setLiveEvents] = useState<DJEvent[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<DJEvent[]>([]);
 
   useEffect(() => {
-    Promise.all([getUser(userId), getUserEvents(userId)])
+    Promise.all([getUser(userId), getUserPerformers(userId)])
       .then(([fetchedProfile, events]) => {
         setProfile(fetchedProfile);
+        setLiveEvents(events.filter((e) => getStatus(e) === "live"));
         const upcoming = events
           .filter((e) => getStatus(e) === "upcoming")
           .sort((a, b) =>
@@ -86,6 +89,7 @@ export function ProfileView({ userId }: ProfileViewProps) {
       <div className="flex flex-col gap-6">
         <ProfileHeader profile={profile} />
         <div className="h-px bg-border" />
+        <PublicLiveEvents events={liveEvents} />
         <PublicUpcomingEvents events={upcomingEvents} displayName={profile.display_name} />
       </div>
     </PageContainer>

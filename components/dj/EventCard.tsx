@@ -36,7 +36,11 @@ export function EventCard({ event, status, onEdit, onView }: EventCardProps) {
         <div className="min-w-0 space-y-0.5">
           <div className="flex items-center gap-2">
             {isLive && (
-              <span className="flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-0.5 text-sm font-semibold uppercase tracking-wide text-primary">
+              <span className="flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground opacity-75 motion-reduce:animate-none" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-primary-foreground" /> 
+                </span>
                 Live
               </span>
             )}
