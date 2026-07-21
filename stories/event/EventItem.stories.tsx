@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EventItem } from "@/components/event/EventItem";
-import type { ApiEvent, ApiUser } from "@/lib/services/events";
+import type { ApiEvent, ApiEventPerformer, ApiUser } from "@/lib/services/events";
 
 const MOCK_DJ: ApiUser = {
   id: "dj-001",
@@ -14,6 +14,32 @@ const MOCK_DJ: ApiUser = {
   profile_type: "dj",
   avatar_url: null,
 };
+
+function toLineup(user: ApiUser): ApiEventPerformer[] {
+  return toLineupMulti([user]);
+}
+
+function toLineupMulti(users: ApiUser[]): ApiEventPerformer[] {
+  return users.map((user, index) => ({
+    id: `ep-${user.id}`,
+    event_id: "evt-001",
+    user_id: user.id,
+    performance_order: index,
+    set_start_time: null,
+    set_end_time: null,
+    created_at: "2026-04-01T10:00:00Z",
+    status: "pending",
+    users: user,
+  }));
+}
+
+const MOCK_LINEUP: ApiUser[] = [
+  MOCK_DJ,
+  { ...MOCK_DJ, id: "dj-002", display_name: "DJ Soleil", genre_tags: ["Soul", "RnB"] },
+  { ...MOCK_DJ, id: "dj-003", display_name: "DJ Kade", genre_tags: ["DnB", "Techno"] },
+  { ...MOCK_DJ, id: "dj-004", display_name: "DJ Aria", genre_tags: ["Hip-Hop", "Afrobeats"] },
+  { ...MOCK_DJ, id: "dj-005", display_name: "DJ Nova", genre_tags: ["House", "Disco"] },
+];
 
 const BASE_EVENT: ApiEvent = {
   id: "evt-001",
@@ -43,7 +69,8 @@ const BASE_EVENT: ApiEvent = {
     },
   ],
   status: "upcoming",
-  users: MOCK_DJ,
+  flyer_url: null,
+  event_performers: toLineup(MOCK_DJ),
 };
 
 const meta: Meta<typeof EventItem> = {
@@ -97,7 +124,7 @@ export const WithImageLive: Story = {
         longitude: 121.022,
         address: "92 Polaris St, Makati City",
       },
-      users: { ...MOCK_DJ, display_name: "DJ Soleil" },
+      event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Soleil" }),
     },
   },
 };
@@ -122,7 +149,7 @@ export const NoImage: Story = {
         longitude: 121.0215,
         address: "15 Salcedo St, Makati City",
       },
-      users: { ...MOCK_DJ, display_name: "DJ Kade" },
+      event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Kade" }),
     },
   },
 };
@@ -144,7 +171,7 @@ export const NoImageLive: Story = {
       status: "live",
       custom_location: null,
       location: "Noir Lounge, BGC",
-      users: { ...MOCK_DJ, display_name: "DJ Aria" },
+      event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Aria" }),
     },
   },
 };
@@ -174,7 +201,20 @@ export const Done: Story = {
         longitude: 121.028,
         address: "201 Makati Ave, Makati City",
       },
-      users: { ...MOCK_DJ, display_name: "DJ Nova" },
+      event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Nova" }),
+    },
+  },
+};
+
+export const MultiplePerformers: Story = {
+  name: "Multiple performers",
+  args: {
+    event: {
+      ...BASE_EVENT,
+      id: "evt-006",
+      name: "B2B Sessions",
+      genres: ["House", "Techno", "DnB", "Soul", "Disco"],
+      event_performers: toLineupMulti(MOCK_LINEUP),
     },
   },
 };
@@ -211,7 +251,7 @@ export const List: Story = {
             longitude: 121.022,
             address: "92 Polaris St, Makati City",
           },
-          users: { ...MOCK_DJ, display_name: "DJ Soleil" },
+          event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Soleil" }),
         }}
       />
       <EventItem
@@ -232,7 +272,7 @@ export const List: Story = {
             },
           ],
           status: "upcoming",
-          users: { ...MOCK_DJ, display_name: "DJ Kade" },
+          event_performers: toLineup({ ...MOCK_DJ, display_name: "DJ Kade" }),
         }}
       />
     </>

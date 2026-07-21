@@ -39,7 +39,7 @@ export function EventCard({ event, status, onEdit, onView }: EventCardProps) {
               <span className="flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground opacity-75 motion-reduce:animate-none" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-primary-foreground" /> 
+                  <span className="relative inline-flex size-1.5 rounded-full bg-primary-foreground" />
                 </span>
                 Live
               </span>

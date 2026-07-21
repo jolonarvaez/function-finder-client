@@ -65,7 +65,9 @@
       "PowerShell(New-Item *)",
       "PowerShell(cd \"C:\\\\Users\\\\jolon\\\\Documents\\\\function-finder-client\"; \\(Get-ChildItem app\\\\api\\\\geocode -Recurse -Filter \"route.ts\"\\).FullName | ForEach-Object { \\(Get-Content $_\\) -replace 'GOOGLE_MAPS_API_KEY', 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY' | Set-Content $_ -Encoding utf8 }; \"Done\")",
       "Skill(simplify)",
-      "PowerShell(npm run *)"
+      "PowerShell(npm run *)",
+      "PowerShell(npx tsc --noEmit)",
+      "Bash(node *)"
     ]
   }
 }

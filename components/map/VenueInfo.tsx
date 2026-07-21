@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
-import { XIcon, MapPinIcon, Turntable, MusicIcon, ClockIcon, CalendarIcon } from "lucide-react";
+import { XIcon, MapPinIcon, Turntable, ClockIcon, CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { EventImage } from "@/components/dj/dj-event.types";
 
