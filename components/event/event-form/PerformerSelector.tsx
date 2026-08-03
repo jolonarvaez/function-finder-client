@@ -24,8 +24,8 @@ function clearSetTimes(p: Performer): Performer {
 type Props = Readonly<{
   selected: Performer[];
   onChange: (performers: Performer[]) => void;
-  /** Enables the "Add myself" shortcut and the "(You)" badge. */
-  currentUser?: PerformerProfile | null;
+  /** Enables the "Add myself" shortcut and the "(You)" badge. Hidden for hosts, who aren't performers. */
+  currentUser?: (PerformerProfile & { profile_type?: string | null }) | null;
   /** Injectable for Storybook; defaults to the users service. */
   search?: (query: string, signal?: AbortSignal) => Promise<PerformerProfile[]>;
 }>;
@@ -346,7 +346,7 @@ export function PerformerSelector({
         </>
       )}
 
-      {currentUser && !selfSelected && (
+      {currentUser && currentUser.profile_type !== "host" && !selfSelected && (
         <Button
           type="button"
           variant="ghost"

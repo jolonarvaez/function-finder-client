@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { getUser, getUserPerformers, type UserProfile } from "@/lib/services/users";
+import { getUser, getUserEvents, getUserPerformers, type UserProfile } from "@/lib/services/users";
 import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
 import { ProfileHeader } from "./ProfileHeader";
 import { PublicLiveEvents } from "./PublicLiveEvents";
@@ -24,7 +24,13 @@ export function ProfileView({ userId }: ProfileViewProps) {
   const [upcomingEvents, setUpcomingEvents] = useState<DJEvent[]>([]);
 
   useEffect(() => {
-    Promise.all([getUser(userId), getUserPerformers(userId)])
+    getUser(userId)
+      .then(async (fetchedProfile) => {
+        const events = await (fetchedProfile.profile_type === "host"
+          ? getUserEvents(userId)
+          : getUserPerformers(userId));
+        return [fetchedProfile, events] as const;
+      })
       .then(([fetchedProfile, events]) => {
         setProfile(fetchedProfile);
         setLiveEvents(events.filter((e) => getStatus(e) === "live"));

@@ -36,6 +36,15 @@ const DJ_ITEMS = [
   { label: "Create Event", href: "/dj/create-event", icon: CalendarPlus2Icon },
 ] as const;
 
+const HOST_ITEMS = [
+  {
+    label: "Events Manager",
+    href: "/host/event-manager",
+    icon: CalendarDaysIcon,
+  },
+  { label: "Create Event", href: "/host/create-event", icon: CalendarPlus2Icon },
+] as const;
+
 export type AppSidebarProps = ProfileFooterProps &
   Readonly<{
     role?: OnboardingRole;
@@ -148,6 +157,35 @@ export function AppSidebar({
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
                   {DJ_ITEMS.map(({ label, href, icon: Icon }) => (
+                    <SidebarMenuItem key={label}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === href}
+                        size="default"
+                        tooltip={label}
+                      >
+                        <Link href={href}>
+                          <Icon />
+                          <span>{label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
+
+        {/* Host Tools */}
+        {!loading && role === "host" && (
+          <>
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupLabel>Host Tools</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1">
+                  {HOST_ITEMS.map(({ label, href, icon: Icon }) => (
                     <SidebarMenuItem key={label}>
                       <SidebarMenuButton
                         asChild

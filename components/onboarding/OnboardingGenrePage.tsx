@@ -22,6 +22,11 @@ const copy: Record<OnboardingRole, { heading: string; description: string }> = {
     description:
       "Select the genres in your sets. We'll match you with the right venues and crowds.",
   },
+  host: {
+    heading: "What's your scene?",
+    description:
+      "Pick the genres that match the events you host. We'll match you with the right crowd.",
+  },
   "event-goer": {
     heading: "What's your sound?",
     description: "Pick the genres you vibe with. We'll personalise your feed.",

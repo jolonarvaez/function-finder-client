@@ -40,9 +40,11 @@ export function toPerformer(
 
 export function buildInitialState(
   initialEvent: ApiEvent | undefined,
-  currentUser?: PerformerProfile | null
+  currentUser?: (PerformerProfile & { profile_type?: string | null }) | null
 ): InitialState {
   if (!initialEvent) {
+    // Hosts organize the lineup but aren't performers themselves — only pre-add DJs/event-goers.
+    const isHost = currentUser?.profile_type === "host";
     return {
       name: "",
       description: "",
@@ -53,7 +55,7 @@ export function buildInitialState(
       entryPrice: "",
       genres: (currentUser?.genre_tags ?? []) as Genre[],
       // Creator is pre-added to the lineup, removable.
-      performers: currentUser ? [toPerformer(currentUser)] : [],
+      performers: currentUser && !isHost ? [toPerformer(currentUser)] : [],
       address: "",
       coordinates: DEFAULT_COORDINATES,
     };

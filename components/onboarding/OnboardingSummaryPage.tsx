@@ -21,6 +21,12 @@ export type OnboardingSummaryPageProps = Readonly<{
   error?: string;
 }>;
 
+const GENRES_HEADING: Record<OnboardingRole, string> = {
+  dj: "Genres You Play",
+  host: "Genres You Host",
+  "event-goer": "Favourite Genres",
+};
+
 export function OnboardingSummaryPage({
   role,
   displayName,
@@ -92,7 +98,7 @@ export function OnboardingSummaryPage({
           <div className="space-y-2.5">
             <div className="flex items-start justify-between">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                {role === "dj" ? "Genres You Play" : "Favourite Genres"}
+                {GENRES_HEADING[role]}
               </p>
               <button
                 type="button"

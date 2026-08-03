@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
-import { XIcon, MapPinIcon, Turntable, ClockIcon, CalendarIcon } from "lucide-react";
+import { XIcon, MapPinIcon, Turntable, ClockIcon, CalendarIcon, UserIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { EventImage } from "@/components/dj/dj-event.types";
 
@@ -37,6 +37,7 @@ export type VenueEvent = Readonly<{
   status: "live" | "upcoming" | "done";
   performers: VenuePerformer[];
   created_by: string;
+  hostName?: string;
 }>;
 
 export type VenueInfoProps = Readonly<{
@@ -140,6 +141,13 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
               </p>
             </div>
           </div>
+
+          {event.hostName && (
+            <p className="mx-5 mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <UserIcon className="size-3 shrink-0" />
+              Hosted by {event.hostName}
+            </p>
+          )}
 
           {/* Image gallery */}
           {(event.event_images?.length ?? 0) > 0 ? (

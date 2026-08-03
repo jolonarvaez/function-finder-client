@@ -14,6 +14,7 @@ type Props = Readonly<{ eventId: string }>;
 export function EditEventView({ eventId }: Props) {
   const { profile } = useUserStore();
   const router = useRouter();
+  const basePath = profile?.profile_type === "host" ? "/host" : "/dj";
   const [event, setEvent] = useState<ApiEvent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -23,14 +24,14 @@ export function EditEventView({ eventId }: Props) {
       .then((e) => {
         if (profile && e.created_by !== profile.id) {
           toast.error("You are not authorized to edit this event.");
-          router.replace("/dj/event-manager");
+          router.replace(`${basePath}/event-manager`);
           return;
         }
         setEvent(e);
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [eventId, profile, router]);
+  }, [eventId, profile, router, basePath]);
 
   if (loading) return <EditEventSkeleton />;
 
@@ -48,10 +49,12 @@ export function EditEventView({ eventId }: Props) {
 
 export function EditEventContent({ eventId, event }: { eventId: string; event: ApiEvent }) {
   const router = useRouter();
+  const { profile } = useUserStore();
+  const basePath = profile?.profile_type === "host" ? "/host" : "/dj";
 
   async function handleSubmit(values: EventFormValues) {
     await updateEvent(eventId, values);
-    router.push("/dj/event-manager");
+    router.push(`${basePath}/event-manager`);
     toast.success("Event updated successfully.");
   }
 

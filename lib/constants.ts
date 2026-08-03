@@ -2,12 +2,13 @@
 
 export const ONBOARDING_STEP_COUNT = 4;
 
-export const ROLES = ["dj", "event-goer"] as const;
+export const ROLES = ["dj", "host", "event-goer"] as const;
 
 export type OnboardingRole = (typeof ROLES)[number];
 
 export const ROLE_LABELS: Record<OnboardingRole, string> = {
   dj: "DJ",
+  host: "Host",
   "event-goer": "Event-Goer",
 };
 

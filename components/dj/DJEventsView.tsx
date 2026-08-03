@@ -22,6 +22,7 @@ function SectionLabel({ children }: Readonly<{ children: React.ReactNode }>) {
 export function DJEventsView() {
   const { profile } = useUserStore();
   const router = useRouter();
+  const basePath = profile?.profile_type === "host" ? "/host" : "/dj";
   const [events, setEvents] = useState<DJEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,7 +91,7 @@ export function DJEventsView() {
                     event={e}
                     status="upcoming"
                     onView={() => router.push(`/events/${e.id}`)}
-                    onEdit={() => router.push(`/dj/edit-event/${e.id}`)}
+                    onEdit={() => router.push(`${basePath}/edit-event/${e.id}`)}
                   />
                 ))
               )}

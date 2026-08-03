@@ -77,6 +77,15 @@ export const DJRole: Story = {
   },
 };
 
+export const HostRole: Story = {
+  args: {
+    name: "Jolo Narvaez",
+    email: "jolo@example.com",
+    avatarUrl: "https://placehold.co/40x40/4338ca/ffffff?text=JN",
+    role: "host",
+  },
+};
+
 export const EventGoerRole: Story = {
   args: {
     name: "Jolo Narvaez",

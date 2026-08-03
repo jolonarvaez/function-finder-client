@@ -11,7 +11,12 @@ import { useGeolocation } from "@/components/map/use-geolocation";
 import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { getEventsList, getEventPerformers, type ApiEvent } from "@/lib/services/events";
+import {
+  getEventsList,
+  getEventPerformers,
+  getEventHost,
+  type ApiEvent,
+} from "@/lib/services/events";
 import { formatTime } from "@/components/dj/dj-event.types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
@@ -32,6 +37,7 @@ function formatSetTime(start: string | null, end: string | null): string | undef
 
 function toMapVenue(event: ApiEvent): MapEvents | null {
   if (!event.custom_location) return null;
+  const host = getEventHost(event);
   return {
     lng: event.custom_location.longitude,
     lat: event.custom_location.latitude,
@@ -50,6 +56,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
       attending: 0,
       status: event.status,
       created_by: event.created_by,
+      hostName: host?.profile_type === "host" ? host.display_name : undefined,
       performers: getEventPerformers(event).map((p) => ({
         name: p.users.display_name,
         avatar: p.users.avatar_url ?? undefined,

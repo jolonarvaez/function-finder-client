@@ -10,6 +10,7 @@ import { useUserStore } from "@/components/auth/use-user-store";
 export function CreateEventView() {
   const router = useRouter();
   const { profile } = useUserStore();
+  const basePath = profile?.profile_type === "host" ? "/host" : "/dj";
 
   async function handleSubmit(values: EventFormValues, pendingImages: File[]) {
     if (!profile) return;
@@ -32,12 +33,12 @@ export function CreateEventView() {
         } else {
           toast.error("Event created, but image upload failed. Edit the event to retry.");
         }
-        router.push(`/dj/edit-event/${created.id}`);
+        router.push(`${basePath}/edit-event/${created.id}`);
         return;
       }
     }
 
-    router.push("/dj/event-manager");
+    router.push(`${basePath}/event-manager`);
     toast.success("Event created successfully.");
   }
 

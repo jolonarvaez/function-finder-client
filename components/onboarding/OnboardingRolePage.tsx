@@ -21,6 +21,11 @@ const roles: { value: OnboardingRole; label: string; description: string }[] = [
     description: "Find gigs, promote your sets, and grow your audience.",
   },
   {
+    value: "host",
+    label: "I'm a Host",
+    description: "Organize events and let people know you're behind them.",
+  },
+  {
     value: "event-goer",
     label: "I'm an Event-Goer",
     description: "Discover events, follow DJs, and never miss a night out.",

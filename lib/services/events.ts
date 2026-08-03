@@ -64,6 +64,8 @@ type ApiEvent = {
   event_images: EventImage[];
   /** Lineup join rows. */
   event_performers?: ApiEventPerformer[];
+  /** The user who created the event, joined by the API for "Hosted by" display. */
+  creator?: ApiUser | null;
   status: Exclude<EventStatus, "all">;
 };
 
@@ -97,11 +99,11 @@ function getEventPerformers(event: ApiEvent): ApiEventPerformer[] {
   return [...event.event_performers].sort((a, b) => a.performance_order - b.performance_order);
 }
 
-/** Event host: the `created_by` performer, falling back to the first performer. */
+/** Event host/organizer: the joined `created_by` user, falling back to a matching performer row. */
 function getEventHost(event: ApiEvent): ApiUser | null {
   return (
+    event.creator ??
     event.event_performers?.find((p) => p.user_id === event.created_by)?.users ??
-    event.event_performers?.[0]?.users ??
     null
   );
 }

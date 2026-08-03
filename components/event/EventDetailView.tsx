@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { getEvent, type ApiEvent } from "@/lib/services/events";
+import { getEvent, getEventHost, type ApiEvent } from "@/lib/services/events";
 import { formatTime } from "@/components/dj/dj-event.types";
 import { EventImageGallery } from "./EventImageGallery";
 
@@ -56,6 +56,8 @@ export function EventDetailContent({ event }: Readonly<{ event: ApiEvent }>) {
   const performers = [...(event.event_performers ?? [])].sort(
     (a, b) => a.performance_order - b.performance_order
   );
+  const host = getEventHost(event);
+  const showHost = host?.profile_type === "host";
 
   return (
     <div>
@@ -76,6 +78,20 @@ export function EventDetailContent({ event }: Readonly<{ event: ApiEvent }>) {
               {event.genres.map((g) => (
                 <Badge key={g}>{g}</Badge>
               ))}
+            </div>
+          )}
+
+          {/* Hosted by */}
+          {showHost && host && (
+            <div className="flex flex-col gap-3">
+              <span className="text-sm font-medium text-muted-foreground">Hosted by</span>
+              <Persona
+                variant="min"
+                name={host.display_name}
+                avatarSrc={host.avatar_url ?? undefined}
+                avatarFallback={host.display_name[0]}
+                userId={host.id}
+              />
             </div>
           )}
 

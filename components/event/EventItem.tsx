@@ -13,7 +13,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { formatTime, getEventCoverOrNull } from "@/components/dj/dj-event.types";
-import { getEventPerformers, type ApiEvent } from "@/lib/services/events";
+import { getEventHost, getEventPerformers, type ApiEvent } from "@/lib/services/events";
 
 type Props = Readonly<{ event: ApiEvent }>;
 
@@ -22,6 +22,7 @@ const MAX_VISIBLE_PERFORMERS = 4;
 export function EventItem({ event }: Props) {
   const address = event.custom_location?.address ?? event.location ?? "Location TBA";
   const performers = getEventPerformers(event);
+  const host = getEventHost(event);
   const coverUrl = getEventCoverOrNull(event);
   const startTime = formatTime(event.start_time.slice(0, 5));
   const endTime = formatTime(event.end_time.slice(0, 5));
@@ -66,6 +67,17 @@ export function EventItem({ event }: Props) {
             <MapPinIcon className="size-3.5 shrink-0" />
             <span className="truncate">{address}</span>
           </div>
+          {host?.profile_type === "host" && (
+            <p className="truncate text-xs text-muted-foreground">
+              Hosted by:{" "}
+              <Link
+                href={`/profile/${host.id}`}
+                className="hover:underline hover:underline-offset-2 focus-visible:underline"
+              >
+                {host.display_name}
+              </Link>
+            </p>
+          )}
         </div>
 
         {event.description && (
