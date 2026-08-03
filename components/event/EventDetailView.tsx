@@ -8,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
-import { getEvent, formatTime, type ApiEvent } from "@/lib/services/events";
+import { getEvent, type ApiEvent } from "@/lib/services/events";
+import { formatTime } from "@/components/dj/dj-event.types";
 import { EventImageGallery } from "./EventImageGallery";
 
 type Props = Readonly<{ eventId: string }>;
@@ -31,23 +32,24 @@ export function EventDetailView({ eventId }: Props) {
     return () => controller.abort();
   }, [eventId]);
 
-  return (
-    <div>
-      {loading ? (
-        <EventDetailSkeleton />
-      ) : error || !event ? (
-        <PageContainer>
-          <PageHeader title="Event" showBack />
-          <p className="mt-6 text-center text-muted-foreground">Event not found.</p>
-        </PageContainer>
-      ) : (
-        <EventDetailContent event={event} />
-      )}
-    </div>
-  );
+  let content: React.ReactNode;
+  if (loading) {
+    content = <EventDetailSkeleton />;
+  } else if (error || !event) {
+    content = (
+      <PageContainer>
+        <PageHeader title="Event" showBack />
+        <p className="mt-6 text-center text-muted-foreground">Event not found.</p>
+      </PageContainer>
+    );
+  } else {
+    content = <EventDetailContent event={event} />;
+  }
+
+  return <div>{content}</div>;
 }
 
-export function EventDetailContent({ event }: { event: ApiEvent }) {
+export function EventDetailContent({ event }: Readonly<{ event: ApiEvent }>) {
   const address = event.custom_location?.address ?? event.location ?? "Location TBA";
   const startTime = formatTime(event.start_time);
   const endTime = formatTime(event.end_time);
@@ -72,9 +74,7 @@ export function EventDetailContent({ event }: { event: ApiEvent }) {
           {event.genres.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {event.genres.map((g) => (
-                <Badge key={g} variant="outline">
-                  {g}
-                </Badge>
+                <Badge key={g}>{g}</Badge>
               ))}
             </div>
           )}
@@ -156,7 +156,7 @@ function Section({
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status }: Readonly<{ status: string }>) {
   if (status === "live") {
     return <Badge className="bg-primary text-primary-foreground">Live Now</Badge>;
   }

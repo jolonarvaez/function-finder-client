@@ -11,12 +11,8 @@ import { useGeolocation } from "@/components/map/use-geolocation";
 import { Locate, LocateOff, X, MapIcon } from "lucide-react";
 import { MAKATI_CENTER, DEFAULT_ZOOM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import {
-  getEventsList,
-  getEventPerformers,
-  formatTime,
-  type ApiEvent,
-} from "@/lib/services/events";
+import { getEventsList, getEventPerformers, type ApiEvent } from "@/lib/services/events";
+import { formatTime } from "@/components/dj/dj-event.types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import type { VenueEvent } from "@/components/map/VenueInfo";
@@ -45,6 +41,7 @@ function toMapVenue(event: ApiEvent): MapEvents | null {
       event_images: event.event_images,
       address: event.custom_location.address,
       category: event.category,
+      genres: event.genres,
       date: event.date,
       startTime: formatTime(event.start_time),
       endTime: formatTime(event.end_time),

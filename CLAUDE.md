@@ -2,43 +2,6 @@
 
 A Next.js web app for discovering music venues and DJs, featuring an interactive map interface.
 
-## Commands
-
-```bash
-npm run dev          # Start dev server (port 3000)
-npm run build        # Production build
-npm run lint         # Run ESLint
-npm run storybook    # Start Storybook (port 6006)
-npm run build-storybook  # Build Storybook
-```
-
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript 5 (strict)
-- **Styling**: Tailwind CSS 4 + shadcn/ui (Radix Nova style)
-- **Maps**: MapLibre GL + react-map-gl + Stadia Maps API
-- **Icons**: Lucide React + HugeIcons
-- **Theming**: next-themes (light/dark)
-- **Dev**: Storybook 10 (Vite)
-
-## Project Structure
-
-```
-app/                    # Next.js App Router pages and layouts
-  components/maps/      # Map-specific components
-app/map/page.tsx        # Map page route
-components/             # Shared feature components
-  ui/                   # shadcn/ui primitives
-  onboarding/           # Onboarding flow components
-lib/
-  maps/                 # Stadia Maps helpers and types
-  utils.ts              # cn() utility (clsx + tailwind-merge)
-stories/                # Storybook stories
-  Pages/onboarding/     # Onboarding page stories
-.storybook/             # Storybook config
-```
-
 ## Conventions
 
 - **Components**: PascalCase, functional with TypeScript, `"use client"` where needed

@@ -86,7 +86,7 @@ function formatTime(raw: string): string {
   return raw.slice(0, 5);
 }
 
-/** Inverse of `formatTime`: "10:00" → "10:00:00+08:00" (browser offset). */
+/** Inverse of `formatTime`: "10:00" → "10:00:00+0800" (browser offset). */
 function toApiTime(hhmm: string): string {
   return `${hhmm}:00${getTimezoneOffset()}`;
 }
@@ -106,14 +106,14 @@ function getEventHost(event: ApiEvent): ApiUser | null {
   );
 }
 
-/** Returns the browser's UTC offset as "+HH:MM" or "-HH:MM" */
+/** Returns the browser's UTC offset as "+HHMM" or "-HHMM" (no colon, per the API's OffsetTime format). */
 function getTimezoneOffset(): string {
   const offsetMinutes = -new Date().getTimezoneOffset();
   const sign = offsetMinutes >= 0 ? "+" : "-";
   const abs = Math.abs(offsetMinutes);
   const hours = String(Math.floor(abs / 60)).padStart(2, "0");
   const mins = String(abs % 60).padStart(2, "0");
-  return `${sign}${hours}:${mins}`;
+  return `${sign}${hours}${mins}`;
 }
 
 function toIsoDate(date: Date): string {

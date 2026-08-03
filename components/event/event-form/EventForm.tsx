@@ -328,7 +328,8 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <GlobeIcon className="size-3 shrink-0" />
               <span>
-                {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC{getTimezoneOffset()})
+                {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC
+                {getTimezoneOffset().replace(/(\d{2})(\d{2})$/, "$1:$2")})
               </span>
             </div>
           )}

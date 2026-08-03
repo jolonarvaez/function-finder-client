@@ -21,6 +21,7 @@ const MOCK_EVENT_UPCOMING: VenueEvent = {
   ],
   address: "456 Downtown Ave, City Center",
   category: "Nightclub",
+  genres: ["House", "Techno", "Disco"],
   date: todayISO,
   startTime: "23:00",
   endTime: "04:00",

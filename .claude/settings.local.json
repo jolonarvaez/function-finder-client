@@ -67,7 +67,29 @@
       "Skill(simplify)",
       "PowerShell(npm run *)",
       "PowerShell(npx tsc --noEmit)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(claude --version)",
+      "Bash(npm -g config get prefix)",
+      "Read(//c/Users/jolon/.claude/**)",
+      "Read(//c/Users/jolon/**)",
+      "Bash(jq '.env | keys // \"none\"' ~/.claude/settings.json)",
+      "Bash(command -v node)",
+      "Bash(command -v python)",
+      "Bash(python3 -c ' *)",
+      "Read(//c/npm/node_modules/**)",
+      "Read(//c/ProgramData/ClaudeCode/**)"
     ]
+  },
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "obsidian-mcp"
+      ],
+      "env": {
+        "OBSIDIAN_API_KEY": "Bearer eabebda184f15a3b3c2a939f087067476e0c50ee57f6b98603d0445139820edd"
+      }
+    }
   }
 }

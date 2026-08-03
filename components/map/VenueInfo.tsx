@@ -26,6 +26,7 @@ export type VenueEvent = Readonly<{
   event_images?: EventImage[];
   address: string;
   category: string;
+  genres: string[];
   /** ISO date string e.g. "2026-04-02" */
   date?: string;
   startTime: string;
@@ -79,6 +80,13 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
               <MapPinIcon className="size-3.5 shrink-0" />
               {event.address}
             </p>
+            {event.genres.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {event.genres.map((g) => (
+                  <Badge key={g}>{g}</Badge>
+                ))}
+              </div>
+            )}
           </SheetHeader>
 
           {/* Performers */}
