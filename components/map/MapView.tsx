@@ -88,6 +88,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
 
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);
+  const hasAutoCenteredRef = useRef(false);
 
   const { coords, status, start, stop } = useGeolocation();
   const [locationVisible, setLocationVisible] = useState(false);
@@ -101,12 +102,22 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
     });
   };
 
-  // Center when coords arrive after the toggle (first fix)
+  // Center (animated) when coords arrive after the toggle is turned on
   useEffect(() => {
-    if (!coords || hasCenteredRef.current) return;
+    if (!coords || !locationVisible || hasCenteredRef.current) return;
     hasCenteredRef.current = true;
     flyToLocation(coords);
-  }, [coords]);
+  }, [coords, locationVisible]);
+
+  // Silently snap to the user's location once, on load, only if permission was
+  // already granted before this visit. Never animates, never shows the toggle/marker.
+  useEffect(() => {
+    if (!coords || hasAutoCenteredRef.current || locationVisible) return;
+    if (!mapRef.current) return;
+    hasAutoCenteredRef.current = true;
+    mapRef.current.jumpTo({ center: [coords.lng, coords.lat], zoom: DEFAULT_ZOOM });
+    stop(); // no marker/toggle showing — no need to keep watchPosition running
+  }, [coords, locationVisible, stop]);
 
   const handleLocationToggle = () => {
     if (!locationVisible) {

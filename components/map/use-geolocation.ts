@@ -47,13 +47,16 @@ export function useGeolocation(): GeolocationState {
   }, [stop]);
 
   // Proactively detect if permission is already denied so the banner shows
-  // immediately without requiring a click
+  // immediately without requiring a click. If already granted from a prior
+  // visit, silently start watching too — the browser won't prompt since
+  // permission already exists.
   useEffect(() => {
     if (typeof navigator === "undefined" || !("permissions" in navigator)) return;
     navigator.permissions
       .query({ name: "geolocation" })
       .then((result) => {
         if (result.state === "denied") setStatus("denied");
+        else if (result.state === "granted") start();
         result.addEventListener("change", () => {
           if (result.state === "denied") setStatus("denied");
           else if (result.state === "prompt") setStatus("idle");
@@ -62,7 +65,7 @@ export function useGeolocation(): GeolocationState {
       .catch(() => {
         /* permissions API not supported */
       });
-  }, []);
+  }, [start]);
 
   // Clean up the watcher when the component unmounts
   useEffect(() => () => stop(), [stop]);
