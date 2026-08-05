@@ -1,5 +1,5 @@
 "use client";
-import { MapPinIcon, ClockIcon } from "lucide-react";
+import { MapPinIcon, ClockIcon, ExternalLinkIcon } from "lucide-react";
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,28 @@ export type PersonaProps = Readonly<{
   className?: string;
   userId?: string;
 }>;
+
+function GenreBadges({ genre }: Readonly<{ genre: string[] }>) {
+  return (
+    <div className="flex flex-wrap gap-1">
+      {genre.map((g) => (
+        <Badge key={g} variant="outline" className="w-fit">
+          {g}
+        </Badge>
+      ))}
+    </div>
+  );
+}
+
+function ProfileLink({ userId, className }: Readonly<{ userId?: string; className?: string }>) {
+  return (
+    <Link href={userId ? `/profile/${userId}` : "#"} className={cn("ml-auto shrink-0", className)}>
+      <Button variant="ghost" size="icon" aria-label="View profile">
+        <ExternalLinkIcon className="size-5" />
+      </Button>
+    </Link>
+  );
+}
 
 export function Persona({
   name,
@@ -43,15 +65,7 @@ export function Persona({
 
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="truncate text-md font-semibold">{name}</span>
-          {genre && genre.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {genre.map((g) => (
-                <Badge key={g} variant="outline" className="w-fit">
-                  {g}
-                </Badge>
-              ))}
-            </div>
-          )}
+          {genre && genre.length > 0 && <GenreBadges genre={genre} />}
           {setTime && (
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <ClockIcon className="size-3 shrink-0" />
@@ -60,14 +74,7 @@ export function Persona({
           )}
         </div>
 
-        <Link
-          href={userId ? `/profile/${userId}` : "#"}
-          className="ml-auto @max-sm:ml-0 @max-sm:basis-full"
-        >
-          <Button variant="ghost" className="shrink-0 text-muted-foreground @max-sm:w-full">
-            View Profile →
-          </Button>
-        </Link>
+        <ProfileLink userId={userId} />
       </div>
     );
   }
@@ -76,23 +83,15 @@ export function Persona({
     <Card className={cn("@container gap-3", className)}>
       <CardContent>
         <div className="flex flex-wrap items-center gap-4">
-          <Avatar size="lg" className="w-16 h-16">
+          <Avatar size="lg" className="w-16 h-16 shrink-0">
             {avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
             <AvatarFallback>{avatarFallback ?? name[0]}</AvatarFallback>
             {isActive && <AvatarBadge />}
           </Avatar>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
             <span className="text-lg font-semibold leading-tight">{name}</span>
-            {genre && genre.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {genre.map((g) => (
-                  <Badge key={g} variant="outline" className="w-fit">
-                    {g}
-                  </Badge>
-                ))}
-              </div>
-            )}
+            {genre && genre.length > 0 && <GenreBadges genre={genre} />}
             {venue && (
               <Badge variant="default" className="w-fit">
                 <MapPinIcon />
@@ -107,19 +106,8 @@ export function Persona({
             )}
           </div>
 
-          <Link
-            href={userId ? `/profile/${userId}` : "#"}
-            className="ml-auto self-center @max-sm:ml-0 @max-sm:basis-full"
-          >
-            <Button variant="ghost" className="shrink-0 text-muted-foreground @max-sm:w-full">
-              View Profile →
-            </Button>
-          </Link>
+          <ProfileLink userId={userId} className="self-center" />
         </div>
-
-        {/* <div className="flex flex-col gap-1.5">
-
-          </div> */}
       </CardContent>
     </Card>
   );
