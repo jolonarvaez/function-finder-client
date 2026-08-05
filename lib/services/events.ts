@@ -189,8 +189,17 @@ async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
   return data.data;
 }
 
-async function updateEvent(id: string, body: UpdateEventBody): Promise<void> {
-  await api.patch(`/events/${id}`, body);
+async function updateEvent(id: string, body: UpdateEventBody): Promise<ApiEvent> {
+  const { data } = await api.patch<ApiSingleResponse>(`/events/${id}`, body);
+  return data.data;
+}
+
+/** Persists lineup order. `performerIds` are `event_performers` row ids (not user ids) and must exactly match the event's existing performer set. */
+async function reorderEventPerformers(eventId: string, performerIds: string[]): Promise<ApiEvent> {
+  const { data } = await api.patch<ApiSingleResponse>(`/events/${eventId}/performers/order`, {
+    performerIds,
+  });
+  return data.data;
 }
 
 async function getEvent(id: string, signal?: AbortSignal): Promise<ApiEvent> {
@@ -250,6 +259,7 @@ export {
   addEventImages,
   deleteEventImage,
   reorderEventImages,
+  reorderEventPerformers,
   toIsoDate,
   formatTime,
   toApiTime,

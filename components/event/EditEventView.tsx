@@ -6,7 +6,12 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { EventForm, type EventFormValues } from "./event-form/EventForm";
-import { getEvent, updateEvent, type ApiEvent } from "@/lib/services/events";
+import {
+  getEvent,
+  updateEvent,
+  reorderEventPerformers,
+  type ApiEvent,
+} from "@/lib/services/events";
 import { useUserStore } from "@/components/auth/use-user-store";
 
 type Props = Readonly<{ eventId: string }>;
@@ -53,7 +58,21 @@ export function EditEventContent({ eventId, event }: { eventId: string; event: A
   const basePath = profile?.profile_type === "host" ? "/host" : "/dj";
 
   async function handleSubmit(values: EventFormValues) {
-    await updateEvent(eventId, values);
+    const updated = await updateEvent(eventId, values);
+
+    // The lineup order isn't part of the general event patch — persist it
+    // explicitly via the dedicated reorder endpoint once we know each
+    // performer's row id (including any just-added by the update above).
+    if (values.event_performers.length > 1) {
+      const rowIdByUserId = new Map(updated.event_performers?.map((p) => [p.user_id, p.id]));
+      const orderedIds = values.event_performers
+        .map((p) => rowIdByUserId.get(p.user_id))
+        .filter((id): id is string => Boolean(id));
+      if (orderedIds.length === updated.event_performers?.length) {
+        await reorderEventPerformers(eventId, orderedIds);
+      }
+    }
+
     router.push(`${basePath}/event-manager`);
     toast.success("Event updated successfully.");
   }
