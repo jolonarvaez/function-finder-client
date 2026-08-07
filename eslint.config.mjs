@@ -15,6 +15,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Cypress tests use their own tsconfig/globals (cy, describe, it, ...)
+    // and aren't part of the Next.js app bundle.
+    "cypress/**",
   ]),
   ...storybook.configs["flat/recommended"],
 ]);

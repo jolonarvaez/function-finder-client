@@ -9,7 +9,9 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.0.0",
@@ -46,6 +48,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^15.20.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "eslint-plugin-storybook": "^10.3.1",

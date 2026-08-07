@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
@@ -99,6 +100,14 @@ export function LoginPage() {
     <PageContainer>
       <div className="flex min-h-screen flex-col pb-10 pt-14">
         <div className="mb-8">
+          <Image
+            src="/logo.png"
+            alt=""
+            width={48}
+            height={48}
+            className="mb-4 rounded-xl"
+            priority
+          />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Welcome to Function Finder
           </h1>

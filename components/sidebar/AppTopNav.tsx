@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import Image from "next/image";
 import { useTheme } from "next-themes";
 import { SunIcon, MoonIcon, MonitorIcon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -24,6 +25,7 @@ export function AppTopNav() {
     <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-3">
       <div className="flex items-center gap-2">
         <SidebarTrigger />
+        <Image src="/logo.png" alt="" width={24} height={24} className="rounded-md" priority />
         <span className="text-xl font-bold tracking-tight text-foreground">Function Finder</span>
       </div>
 
