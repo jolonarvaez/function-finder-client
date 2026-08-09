@@ -13,6 +13,7 @@ import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { loginWithEmail } from "@/lib/services/auth";
 import { PageContainer } from "@/components/reusables/PageContainer";
+import { Logo } from "@/components/shared/Logo";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -137,10 +138,10 @@ export function SignUpPage() {
 
   return (
     <PageContainer>
-      <div className="flex min-h-screen flex-col pb-10 pt-14">
+      <div className="flex min-h-screen flex-col pb-10 pt-14 text-center">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Create Account</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">Join the nightlife community</p>
+          <Logo priority className="mb-2 mx-auto" />
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Create an Account</h1>
         </div>
 
         <form onSubmit={signUpWithEmail} className="mb-6 space-y-4">

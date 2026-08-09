@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { loginWithEmail } from "@/lib/services/auth";
 import { PageContainer } from "@/components/reusables/PageContainer";
+import { Logo } from "@/components/shared/Logo";
 
 export function LoginPage() {
   const router = useRouter();
@@ -98,13 +99,11 @@ export function LoginPage() {
   return (
     <PageContainer>
       <div className="flex min-h-screen flex-col pb-10 pt-14">
-        <div className="mb-8">
+        <div className="mb-8 text-center">
+          <Logo priority className="mb-2 mx-auto" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Welcome to Function Finder
           </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            Sign in to continue your nightlife journey
-          </p>
         </div>
 
         <form onSubmit={signInWithEmail} className="mb-6 space-y-4">

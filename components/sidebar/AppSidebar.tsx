@@ -18,7 +18,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -70,17 +69,11 @@ export function AppSidebar({
 
   return (
     <Sidebar>
-      <SidebarHeader className="px-4 py-4">
-        <span className="text-lg font-bold tracking-tight text-sidebar-foreground">
-          Function Finder
-        </span>
-      </SidebarHeader>
-
       <SidebarContent>
         {/* Discover */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-1 mt-4">
               {[
                 { label: "Map", href: "/", icon: MapIcon },
                 { label: "Events", href: "/events", icon: PartyPopper },
