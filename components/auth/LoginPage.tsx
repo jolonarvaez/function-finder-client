@@ -18,7 +18,7 @@ export function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "";
-  const { user, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -26,10 +26,10 @@ export function LoginPage() {
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && isAuthenticated) {
       router.replace(next || "/");
     }
-  }, [user, authLoading, router, next]);
+  }, [isAuthenticated, authLoading, router, next]);
 
   function saveNextForOAuth() {
     if (next) sessionStorage.setItem("auth_next", next);

@@ -27,7 +27,7 @@ export function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "";
-  const { user, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserStore();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
@@ -42,7 +42,7 @@ export function SignUpPage() {
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (!authLoading && !profileLoading && user) {
+    if (!authLoading && !profileLoading && isAuthenticated) {
       if (profile?.profile_type) {
         router.replace(next || "/");
       } else {
@@ -50,7 +50,7 @@ export function SignUpPage() {
         router.replace(onboardingUrl);
       }
     }
-  }, [user, authLoading, profile, profileLoading, router, next]);
+  }, [isAuthenticated, authLoading, profile, profileLoading, router, next]);
 
   const emailInvalid = emailTouched && email.length > 0 && !EMAIL_RE.test(email);
   const passwordRules = PASSWORD_RULES.map((r) => ({ ...r, passing: r.test(password) }));

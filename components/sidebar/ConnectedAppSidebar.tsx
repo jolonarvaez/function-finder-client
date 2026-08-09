@@ -9,8 +9,8 @@ import { useUserStore } from "@/components/auth/use-user-store";
 
 export function ConnectedAppSidebar() {
   const router = useRouter();
-  const { user, signOut } = useAuth();
-  const { profile, loading } = useUserStore();
+  const { user, isAuthenticated, loading: authLoading, signOut } = useAuth();
+  const { profile, loading: profileLoading } = useUserStore();
 
   const name = profile?.display_name ?? (user?.user_metadata?.full_name as string | undefined);
   const email = user?.email;
@@ -23,11 +23,13 @@ export function ConnectedAppSidebar() {
   }
 
   const userId = user?.id;
+  const loading = authLoading || (isAuthenticated && profileLoading);
 
   return (
     <AppSidebar
       role={role}
       loading={loading}
+      isAuthenticated={isAuthenticated}
       name={name}
       email={email}
       avatarUrl={avatarUrl}

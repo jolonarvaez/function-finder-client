@@ -10,16 +10,20 @@ import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, getEventHost, type ApiEvent } from "@/lib/services/events";
 import { formatTime } from "@/components/dj/dj-event.types";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { EventImageGallery } from "./EventImageGallery";
 
 type Props = Readonly<{ eventId: string }>;
 
 export function EventDetailView({ eventId }: Props) {
+  const { loading: authLoading } = useAuth();
   const [event, setEvent] = useState<ApiEvent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+
     const controller = new AbortController();
     getEvent(eventId, controller.signal)
       .then(setEvent)
@@ -30,7 +34,7 @@ export function EventDetailView({ eventId }: Props) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [eventId]);
+  }, [eventId, authLoading]);
 
   let content: React.ReactNode;
   if (loading) {

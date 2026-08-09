@@ -8,12 +8,15 @@ import type { User } from "@supabase/supabase-js";
 
 type AuthContextValue = {
   user: User | null;
+  /** True for a real (non-anonymous) signed-in user. */
+  isAuthenticated: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
+  isAuthenticated: false,
   loading: true,
   signOut: async () => {},
 });
@@ -39,10 +42,21 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      // No session (first visit, or an expired one) — sign in anonymously so
+      // public pages (map, events) still get an authenticated API request,
+      // without requiring the visitor to create an account.
+      if (!session) {
+        const { error } = await supabase.auth.signInAnonymously();
+        if (error) {
+          console.error("Anonymous sign-in failed:", error.message);
+          setLoading(false);
+        }
+        return;
+      }
+      setUser(session.user);
       setLoading(false);
-      if (session?.user) fetchProfile(session.user.id);
+      if (!session.user.is_anonymous) fetchProfile(session.user.id);
     });
 
     const {
@@ -50,17 +64,20 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
-      if (event === "SIGNED_IN" && session?.user) {
+      if (event === "SIGNED_IN" && session?.user && !session.user.is_anonymous) {
         fetchProfile(session.user.id);
       }
       if (event === "SIGNED_OUT") {
         clear();
+        supabase.auth.signInAnonymously();
       }
     });
 
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isAuthenticated = !!user && !user.is_anonymous;
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -71,5 +88,5 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   };
 
-  return <AuthContext value={{ user, loading, signOut }}>{children}</AuthContext>;
+  return <AuthContext value={{ user, isAuthenticated, loading, signOut }}>{children}</AuthContext>;
 }

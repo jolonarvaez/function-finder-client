@@ -32,6 +32,7 @@ const meta: Meta<typeof AppSidebar> = {
     ),
   ],
   args: {
+    isAuthenticated: true,
     onProfile: () => alert("Profile"),
     onSettings: () => alert("Settings"),
     onSignOut: () => alert("Sign out"),
@@ -58,6 +59,12 @@ export const WithInitials: Story = {
 
 export const NoUser: Story = {
   args: {},
+};
+
+export const LoggedOut: Story = {
+  args: {
+    isAuthenticated: false,
+  },
 };
 
 export const LongName: Story = {

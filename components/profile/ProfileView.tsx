@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getUser, getUserEvents, getUserPerformers, type UserProfile } from "@/lib/services/users";
 import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { ProfileHeader } from "./ProfileHeader";
 import { PublicLiveEvents } from "./PublicLiveEvents";
 import { PublicUpcomingEvents } from "./PublicUpcomingEvents";
@@ -17,6 +18,7 @@ type ProfileViewProps = Readonly<{
 
 export function ProfileView({ userId }: ProfileViewProps) {
   const router = useRouter();
+  const { loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -24,6 +26,8 @@ export function ProfileView({ userId }: ProfileViewProps) {
   const [upcomingEvents, setUpcomingEvents] = useState<DJEvent[]>([]);
 
   useEffect(() => {
+    if (authLoading) return;
+
     getUser(userId)
       .then(async (fetchedProfile) => {
         const events = await (fetchedProfile.profile_type === "host"
@@ -45,7 +49,7 @@ export function ProfileView({ userId }: ProfileViewProps) {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [userId]);
+  }, [userId, authLoading]);
 
   if (loading) {
     return (

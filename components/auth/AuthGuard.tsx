@@ -5,15 +5,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 
 export function AuthGuard({ children }: Readonly<{ children: ReactNode }>) {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !isAuthenticated) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     }
-  }, [user, loading, router, pathname]);
+  }, [isAuthenticated, loading, router, pathname]);
 
   if (loading) {
     return (
@@ -23,7 +23,7 @@ export function AuthGuard({ children }: Readonly<{ children: ReactNode }>) {
     );
   }
 
-  if (!user) return null;
+  if (!isAuthenticated) return null;
 
   return <>{children}</>;
 }
