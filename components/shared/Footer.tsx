@@ -11,24 +11,28 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer className={cn("border-t border-border bg-card", className)}>
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-6 py-5 sm:flex-row sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Logo size="sm" />
-          <span className="text-sm text-muted-foreground">&copy; {year} Function Finder</span>
+      <div className="mx-auto flex w-full max-w-6xl flex-row items-center justify-between gap-2 px-4 py-2.5 sm:gap-4 sm:px-6 sm:py-5">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Logo size="sm" className="hidden sm:block" />
+          <span className="whitespace-nowrap text-xs text-muted-foreground sm:text-sm">
+            &copy; {year} <span>Function Finder</span>
+          </span>
         </div>
 
-        <nav aria-label="Legal" className="flex items-center gap-6">
+        <nav aria-label="Legal" className="flex items-center gap-3 sm:gap-6">
           <Link
             href="/privacy"
-            className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-sm whitespace-nowrap text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
           >
-            Privacy Policy
+            <span className="sm:hidden">Privacy</span>
+            <span className="hidden sm:inline">Privacy Policy</span>
           </Link>
           <Link
             href="/terms"
-            className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-sm whitespace-nowrap text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
           >
-            Terms and Conditions
+            <span className="sm:hidden">Terms</span>
+            <span className="hidden sm:inline">Terms and Conditions</span>
           </Link>
         </nav>
       </div>

@@ -15,14 +15,13 @@ export default function LegalLayout({ children }: Readonly<{ children: React.Rea
             </span>
           </Link>
           <div className="flex items-center gap-4">
-         
             <Link
               href="/"
               className="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Back
             </Link>
-               <ThemeToggle />
+            <ThemeToggle />
           </div>
         </div>
       </header>

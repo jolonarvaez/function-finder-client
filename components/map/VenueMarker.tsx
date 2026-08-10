@@ -46,7 +46,7 @@ export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: V
             {showCard && (
               <div
                 className={cn(
-                  "absolute bottom-full left-1/2 z-50 mb-2 w-32 -translate-x-1/2 overflow-hidden",
+                  "absolute bottom-full left-1/2 z-50 mb-2 w-56 -translate-x-1/2 overflow-hidden",
                   "rounded-lg border border-border bg-popover shadow-md ring-1 ring-foreground/10",
                   "animate-in fade-in-0 zoom-in-95 duration-100 font-sans"
                 )}
@@ -59,8 +59,8 @@ export function VenueMarker({ longitude, latitude, event, onClick, zoom = 0 }: V
                       alt={event.name}
                       className="w-full object-cover"
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent px-2 py-2">
-                      <p className="text-xs font-semibold leading-tight text-white">{event.name}</p>
+                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent px-3 py-2.5">
+                      <p className="text-sm font-semibold leading-tight text-white">{event.name}</p>
                     </div>
                   </div>
                 ) : (
