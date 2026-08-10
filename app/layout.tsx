@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://functionfinder.app";
+const siteUrl = "https://function-finder.app";
 const siteName = "Function Finder";
 const description =
   "Discover music venues and DJs near you with Function Finder's interactive map. Find where to play, party, or book your next event.";
@@ -38,6 +38,8 @@ export const metadata: Metadata = {
     "nightlife map",
     "book a DJ",
     "venue discovery",
+    "events in manila near me",
+    "manila events",
   ],
   applicationName: siteName,
   authors: [{ name: siteName }],
