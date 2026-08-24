@@ -12,8 +12,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@hugeicons/core-free-icons": "^4.2.3",
-    "@hugeicons/react": "^1.1.9",
+    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/react": "^1.1.10",
     "@supabase/supabase-js": "^2.112.3",
     "axios": "^1.19.0",
     "class-variance-authority": "^0.7.1",
@@ -40,15 +40,15 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@storybook/addon-themes": "^10.5.8",
-    "@storybook/nextjs-vite": "^10.5.8",
+    "@storybook/addon-themes": "^10.5.10",
+    "@storybook/nextjs-vite": "^10.5.10",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
-    "eslint-plugin-storybook": "^10.5.8",
+    "eslint-plugin-storybook": "^10.5.10",
     "prettier": "^3.9.6",
     "storybook": "^10.3.1",
     "storybook-dark-mode": "^5.0.0",
