@@ -137,12 +137,12 @@ export function AppSidebar({
   }
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         {/* Discover */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1 mt-4">
+            <SidebarMenu className="space-y-1 mt-1">
               {[
                 { label: "Map", href: "/", icon: MapIcon },
                 { label: "Events", href: "/events", icon: PartyPopper },
@@ -237,9 +237,9 @@ export function AppSidebar({
       {(loading || isAuthenticated) && (
         <SidebarFooter>
           {loading ? (
-            <div className="flex items-center gap-3 px-2 py-2">
+            <div className="flex items-center gap-3 overflow-hidden px-2 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
               <Skeleton className="size-8 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-1.5">
+              <div className="flex-1 space-y-1.5 group-data-[collapsible=icon]:hidden">
                 <Skeleton className="h-3 w-24" />
                 <Skeleton className="h-3 w-32" />
               </div>

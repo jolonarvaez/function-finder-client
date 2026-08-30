@@ -9,13 +9,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -89,18 +82,32 @@ function SidebarProvider({
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen, setOpenMobile]);
 
-  // Adds a keyboard shortcut to toggle the sidebar.
+  // Adds a keyboard shortcut to toggle the sidebar, and Escape to dismiss the
+  // mobile off-canvas panel (previously handled by the Sheet's dialog).
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         toggleSidebar();
       }
+      if (event.key === "Escape") {
+        setOpenMobile(false);
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [toggleSidebar]);
+  }, [toggleSidebar, setOpenMobile]);
+
+  // Lock body scroll while the mobile panel covers the page.
+  React.useEffect(() => {
+    if (!isMobile || !openMobile) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isMobile, openMobile]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
@@ -126,6 +133,7 @@ function SidebarProvider({
         style={
           {
             "--sidebar-width": SIDEBAR_WIDTH,
+            "--sidebar-width-mobile": SIDEBAR_WIDTH_MOBILE,
             "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
             ...style,
           } as React.CSSProperties
@@ -156,6 +164,21 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const restoreFocusRef = React.useRef<HTMLElement | null>(null);
+
+  // Move focus into the panel when it opens on mobile and hand it back to the
+  // trigger on close — the Sheet's dialog used to do this for us.
+  React.useEffect(() => {
+    if (!isMobile) return;
+    if (openMobile) {
+      restoreFocusRef.current = document.activeElement as HTMLElement | null;
+      panelRef.current?.focus({ preventScroll: true });
+    } else {
+      restoreFocusRef.current?.focus({ preventScroll: true });
+      restoreFocusRef.current = null;
+    }
+  }, [isMobile, openMobile]);
 
   if (collapsible === "none") {
     return (
@@ -172,46 +195,40 @@ function Sidebar({
     );
   }
 
-  if (isMobile) {
-    return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-        <SheetContent
-          dir={dir}
-          data-sidebar="sidebar"
-          data-slot="sidebar"
-          data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as React.CSSProperties
-          }
-          side={side}
-        >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
+  // On mobile the panel is driven by its own open state and always slides
+  // off-canvas when closed, whatever the desktop `collapsible` mode is.
+  const currentState = isMobile ? (openMobile ? "expanded" : "collapsed") : state;
+  const currentCollapsible = isMobile ? "offcanvas" : collapsible;
+  const hiddenOffCanvas = isMobile && !openMobile;
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
-      data-state={state}
-      data-collapsible={state === "collapsed" ? collapsible : ""}
+      className="group peer text-sidebar-foreground"
+      data-state={currentState}
+      data-collapsible={currentState === "collapsed" ? currentCollapsible : ""}
       data-variant={variant}
       data-side={side}
+      data-mobile={isMobile ? "true" : undefined}
       data-slot="sidebar"
+      dir={dir}
     >
+      {/* Scrim behind the mobile panel — click to dismiss */}
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        data-slot="sidebar-backdrop"
+        onClick={() => setOpenMobile(false)}
+        className={cn(
+          "fixed inset-0 z-40 bg-black/10 transition-opacity duration-200 ease-linear supports-backdrop-filter:backdrop-blur-xs md:hidden",
+          openMobile ? "opacity-100" : "pointer-events-none opacity-0"
+        )}
+      />
       {/* This is what handles the sidebar gap on desktop */}
       <div
         data-slot="sidebar-gap"
         className={cn(
-          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear max-md:hidden",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
@@ -220,10 +237,16 @@ function Sidebar({
         )}
       />
       <div
+        ref={panelRef}
         data-slot="sidebar-container"
         data-side={side}
+        role={isMobile ? "dialog" : undefined}
+        aria-modal={isMobile ? true : undefined}
+        aria-label={isMobile ? "Sidebar" : undefined}
+        tabIndex={isMobile ? -1 : undefined}
+        inert={hiddenOffCanvas}
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex",
+          "fixed inset-y-0 z-50 flex h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear outline-none data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] max-md:w-(--sidebar-width-mobile) max-md:shadow-lg max-md:data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width-mobile)*-1)] max-md:data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width-mobile)*-1)] md:z-10",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
@@ -278,7 +301,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
       onClick={toggleSidebar}
       title="Toggle Sidebar"
       className={cn(
-        "absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:start-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2",
+        "absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:start-1/2 after:w-[2px] hover:after:bg-sidebar-border md:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2",
         "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
         "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
         "group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar",
@@ -453,7 +476,7 @@ const sidebarMenuButtonVariants = cva(
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+          "bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
       },
       size: {
         default: "h-8 text-sm",

@@ -11,7 +11,7 @@ const config: StorybookConfig = {
   "addons": ["@storybook/addon-themes"],
   "framework": "@storybook/nextjs-vite",
   "staticDirs": [
-    "..\\public"
+    "../public"
   ],
   viteFinal(config) {
     const define: Record<string, string> = {};
