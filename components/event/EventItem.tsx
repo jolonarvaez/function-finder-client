@@ -31,7 +31,7 @@ export function EventItem({ event }: Props) {
   const isUpcoming = event.status === "upcoming";
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border bg-card">
+    <div className="relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card">
       {/* Stretched card link — sits beneath all interactive children */}
       <Link
         href={`/events/${event.id}`}
@@ -39,17 +39,31 @@ export function EventItem({ event }: Props) {
         aria-label={event.name}
       />
 
-      {/* Cover image — full width, clipped to the card's rounded corners */}
-      {coverUrl && (
-        <div className="relative aspect-16/10 w-full overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* Cover — always occupies the same slot so cards stay uniform in a grid.
+          Events without a photo get a themed placeholder rather than no block
+          at all, which would otherwise leave a gap in equal-height rows. */}
+      <div className="relative aspect-16/10 w-full shrink-0 overflow-hidden bg-muted">
+        {coverUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={coverUrl} alt={`${event.name} cover`} className="size-full object-cover" />
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/5" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Turntable className="size-10 text-muted-foreground/40" aria-hidden="true" />
+            </div>
+          </>
+        )}
+      </div>
 
-      <div className="relative space-y-3 p-4">
+      {/* flex-1 absorbs the extra height so the lineup footer stays bottom-aligned
+          across cards of differing content length in the same grid row */}
+      <div className="relative flex-1 space-y-3 p-4">
         <div className="min-w-0 space-y-0.5">
-          <div className="flex items-center gap-2">
+          {/* Status sits on its own row rather than beside the title — in a
+              narrow grid column there isn't room for both, and the name is
+              what matters most on the card. */}
+          <div className="flex flex-col items-start gap-1.5">
             {isLive && (
               <span className="flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
                 <span className="relative flex size-1.5">
@@ -61,7 +75,9 @@ export function EventItem({ event }: Props) {
             )}
             {isUpcoming && <Badge variant="secondary">Upcoming</Badge>}
             {isDone && <Badge variant="outline">Done</Badge>}
-            <p className="truncate text-lg font-semibold text-foreground">{event.name}</p>
+            <p className="line-clamp-2 text-lg font-semibold leading-snug text-foreground">
+              {event.name}
+            </p>
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground">
             <MapPinIcon className="size-3.5 shrink-0" />

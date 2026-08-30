@@ -20,25 +20,39 @@ type ContentProps = Readonly<{
   loading?: boolean;
 }>;
 
+// One column on mobile, two on tablet and bigger.
+const EVENT_GRID = "grid grid-cols-1 gap-4 sm:grid-cols-2";
+
+// Keeps the sticky header's contents aligned with the grid below it.
+const CONTENT_WIDTH = "mx-auto w-full max-w-6xl";
+
 export function EventsContent({ events, loading = false }: ContentProps) {
   return (
     <div>
       <div className="sticky top-0 z-20 border-b border-border bg-card px-4 py-3">
-        <PageHeader title="Events" icon={PartyPopper} />
-        <MobileMapFilters className="mt-2 sm:hidden" />
-        <EventListFilters className="mt-2 hidden sm:flex" />
+        <div className={CONTENT_WIDTH}>
+          <PageHeader title="Events" icon={PartyPopper} />
+          <MobileMapFilters className="mt-2 sm:hidden" />
+          <EventListFilters className="mt-2 hidden sm:flex" />
+        </div>
       </div>
 
-      <PageContainer>
-        <div className="space-y-3 py-4">
+      <PageContainer className="max-w-6xl">
+        <div className="py-4">
           {loading ? (
-            <EventsSkeleton />
+            <div className={EVENT_GRID}>
+              <EventsSkeleton />
+            </div>
           ) : events.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               No events found for the selected filters.
             </p>
           ) : (
-            events.map((event) => <EventItem key={event.id} event={event} />)
+            <div className={EVENT_GRID}>
+              {events.map((event) => (
+                <EventItem key={event.id} event={event} />
+              ))}
+            </div>
           )}
         </div>
       </PageContainer>
@@ -98,28 +112,26 @@ export function EventsView() {
 // ── Skeleton ──────────────────────────────────────────────────
 
 function EventsSkeleton() {
+  // Mirrors EventItem's shape (cover → body → lineup footer) so the grid
+  // doesn't reflow when the real cards arrive. Six fills whole rows at every
+  // breakpoint (1, 2 and 3 columns).
   return (
     <>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-lg border border-border">
-          <div className="flex">
-            <div className="flex-1 space-y-3 p-4">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-4 w-2/5" />
-            </div>
-            <Skeleton className="w-1/2" />
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="flex flex-col overflow-hidden rounded-lg border border-border">
+          <Skeleton className="aspect-21/9 w-full rounded-none" />
+          <div className="flex-1 space-y-3 p-4">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-2/3" />
+            <Skeleton className="h-4 w-2/5" />
           </div>
-          <div className="border-t border-border p-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="size-10 rounded-full" />
-              <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
+          <div className="border-t border-border px-4 pb-4 pt-3">
+            <div className="mb-3 flex items-center gap-3">
+              <Skeleton className="size-8 rounded-full" />
+              <Skeleton className="h-4 w-1/3" />
             </div>
+            <Skeleton className="h-9 w-full rounded-md" />
           </div>
         </div>
       ))}

@@ -172,7 +172,7 @@ const meta: Meta<typeof EventsContent> = {
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto w-full max-w-107.5 overflow-hidden bg-background">
+      <div className="mx-auto w-full overflow-hidden bg-background">
         <Story />
       </div>
     ),
