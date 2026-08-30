@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Map, MapControls, type MapRef } from "@/components/ui/map";
 import { MapFilters } from "@/components/map/MapFilters";
 import { MobileMapFilters } from "@/components/map/MobileMapFilters";
 import { VenueMarker } from "@/components/map/VenueMarker";
+import { VenueClusterMarker } from "@/components/map/clusters/VenueClusterMarker";
+import { useVenueClusters } from "@/components/map/clusters/use-venue-clusters";
 import { UserLocationMarker } from "@/components/map/UserLocationMarker";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { useGeolocation } from "@/components/map/use-geolocation";
@@ -89,6 +91,34 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const hasCenteredRef = useRef(false);
   const hasAutoCenteredRef = useRef(false);
+
+  // Clustering needs the map instance reactively (to read bounds on move), so
+  // mirror the ref into state as well.
+  const [mapInstance, setMapInstance] = useState<MapRef | null>(null);
+  const attachMap = useCallback((map: MapRef | null) => {
+    mapRef.current = map;
+    setMapInstance(map);
+  }, []);
+
+  const clusterPoints = useMemo(
+    () => venues.map((venue) => ({ lng: venue.lng, lat: venue.lat, data: venue })),
+    [venues]
+  );
+  const { clusters, getExpansionZoom } = useVenueClusters({
+    map: mapInstance,
+    points: clusterPoints,
+  });
+
+  const handleClusterClick = useCallback(
+    (clusterId: number, lng: number, lat: number) => {
+      mapRef.current?.easeTo({
+        center: [lng, lat],
+        zoom: getExpansionZoom(clusterId),
+        duration: 500,
+      });
+    },
+    [getExpansionZoom]
+  );
 
   const { coords, status, start, stop } = useGeolocation();
   const [locationVisible, setLocationVisible] = useState(false);
@@ -176,7 +206,7 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
 
       {/* Full-screen map */}
       <Map
-        ref={mapRef}
+        ref={attachMap}
         className="h-full w-full"
         center={MAKATI_CENTER}
         zoom={DEFAULT_ZOOM}
@@ -211,16 +241,27 @@ export function MapView({ defaultDate, venues: initialVenues }: MapViewProps) {
           <UserLocationMarker longitude={coords.lng} latitude={coords.lat} />
         )}
 
-        {/* Venue markers */}
-        {venues.map((venue) => (
-          <VenueMarker
-            key={venue.event.name}
-            longitude={venue.lng}
-            latitude={venue.lat}
-            event={venue.event}
-            zoom={zoom}
-          />
-        ))}
+        {/* Venue markers — nearby events collapse into a bubble that splits
+            apart as you zoom in */}
+        {clusters.map((entry) =>
+          entry.kind === "cluster" ? (
+            <VenueClusterMarker
+              key={`cluster-${entry.id}`}
+              longitude={entry.lng}
+              latitude={entry.lat}
+              count={entry.count}
+              onClick={() => handleClusterClick(entry.id, entry.lng, entry.lat)}
+            />
+          ) : (
+            <VenueMarker
+              key={entry.data.event.id}
+              longitude={entry.lng}
+              latitude={entry.lat}
+              event={entry.data.event}
+              zoom={zoom}
+            />
+          )
+        )}
       </Map>
 
       {/* Location denied banner */}
