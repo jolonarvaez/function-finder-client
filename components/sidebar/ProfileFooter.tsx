@@ -48,7 +48,7 @@ export function ProfileFooter({
           aria-label="Open user menu"
           aria-expanded={open}
           aria-haspopup="menu"
-          className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+          className="flex w-full items-center gap-3 overflow-hidden rounded-lg px-2 py-2 text-left transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
           <Avatar className="size-8 shrink-0">
             {avatarUrl && <AvatarImage src={avatarUrl} alt={name ?? "User avatar"} />}
@@ -56,7 +56,7 @@ export function ProfileFooter({
               {initials || <UserIcon className="size-4" />}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
             {name && <p className="truncate text-sm font-medium text-sidebar-foreground">{name}</p>}
             {email && <p className="truncate text-xs text-sidebar-foreground/60">{email}</p>}
           </div>
