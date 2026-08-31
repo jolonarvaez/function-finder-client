@@ -50,6 +50,7 @@ const BASE_EVENT: ApiEvent = {
   start_time: "22:00:00+08",
   end_time: "04:00:00+08",
   entry_price: 500,
+  ticket_link: "https://tickets.example.com/neon-nights",
   featured: true,
   category: "Nightclub",
   created_by: "dj-001",

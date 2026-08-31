@@ -18,6 +18,7 @@ export type InitialState = {
   startTime: string;
   endTime: string;
   entryPrice: string;
+  ticketLink: string;
   genres: Genre[];
   performers: Performer[];
   address: string;
@@ -53,6 +54,7 @@ export function buildInitialState(
       startTime: "",
       endTime: "",
       entryPrice: "",
+      ticketLink: "",
       genres: (currentUser?.genre_tags ?? []) as Genre[],
       // Creator is pre-added to the lineup, removable.
       performers: currentUser && !isHost ? [toPerformer(currentUser)] : [],
@@ -69,6 +71,7 @@ export function buildInitialState(
     startTime: formatTime(initialEvent.start_time),
     endTime: formatTime(initialEvent.end_time),
     entryPrice: initialEvent.entry_price != null ? String(initialEvent.entry_price) : "",
+    ticketLink: initialEvent.ticket_link ?? "",
     genres: initialEvent.genres as Genre[],
     performers: getEventPerformers(initialEvent).map((p) =>
       toPerformer({ ...p.users, set_start_time: p.set_start_time, set_end_time: p.set_end_time })
@@ -84,4 +87,25 @@ export function reportError(err: unknown, fallback: string) {
     return;
   }
   toast.error(fallback);
+}
+
+/**
+ * Normalizes a user-typed ticket URL for the API: trims it, prefixes a bare
+ * host with `https://`, and returns null when the field is left empty.
+ */
+export function normalizeTicketLink(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+/** True when the ticket link is empty or normalizes to a parseable http(s) URL. */
+export function isTicketLinkValid(raw: string): boolean {
+  const normalized = normalizeTicketLink(raw);
+  if (normalized === null) return true;
+  try {
+    return Boolean(new URL(normalized).hostname.includes("."));
+  } catch {
+    return false;
+  }
 }

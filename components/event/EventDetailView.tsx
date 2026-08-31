@@ -1,9 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPinIcon, CalendarIcon, ClockIcon, TicketIcon, AlignLeftIcon } from "lucide-react";
+import {
+  MapPinIcon,
+  CalendarIcon,
+  ClockIcon,
+  TicketIcon,
+  AlignLeftIcon,
+  ExternalLinkIcon,
+} from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { Persona } from "@/components/shared/Persona";
@@ -127,6 +135,17 @@ export function EventDetailContent({ event }: Readonly<{ event: ApiEvent }>) {
           <Section icon={TicketIcon} label="Entry">
             {event.entry_price != null ? `₱${event.entry_price.toLocaleString()}` : "Free entry"}
           </Section>
+
+          {/* Buy tickets */}
+          {event.ticket_link && (
+            <Button asChild variant="outline" className="h-11 w-full rounded-lg">
+              <a href={event.ticket_link} target="_blank" rel="noopener noreferrer">
+                Buy Tickets
+                <ExternalLinkIcon className="size-4" aria-hidden="true" />
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
+            </Button>
+          )}
 
           {/* Lineup */}
           {performers.length > 0 && (

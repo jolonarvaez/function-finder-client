@@ -25,6 +25,7 @@ export type EventFormValues = {
   start_time: string;
   end_time: string;
   entry_price: number | null;
+  ticket_link: string | null;
   genres: Genre[];
   event_performers: EventPerformerInput[];
   custom_location: {

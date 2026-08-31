@@ -24,6 +24,7 @@ const BASE_EVENT: ApiEvent = {
   start_time: "22:00:00+08",
   end_time: "04:00:00+08",
   entry_price: 500,
+  ticket_link: "https://tickets.example.com/neon-nights",
   featured: true,
   category: "Nightclub",
   created_by: "dj-001",
@@ -74,6 +75,7 @@ const LIVE_EVENT: ApiEvent = {
   start_time: "00:00:00+08",
   end_time: "23:59:00+08",
   entry_price: null,
+  ticket_link: null,
   genres: ["Soul", "RnB", "Disco"],
   category: "Lounge",
   custom_location: {

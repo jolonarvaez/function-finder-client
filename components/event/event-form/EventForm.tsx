@@ -9,6 +9,7 @@ import {
   PhilippinePesoIcon,
   GlobeIcon,
   AlignLeftIcon,
+  TicketCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { GenreSelector } from "@/components/shared/GenreSelector";
 import { LocationPicker } from "./LocationPicker";
 import { AddressAutocomplete } from "./AddressAutocomplete";
@@ -38,7 +39,7 @@ import { reverseGeocode, type AddressSuggestion } from "@/lib/services/geocode/g
 import { PageContainer, PageHeader } from "../../reusables/PageContainer";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
 import { MODE_CONFIG } from "./constants";
-import { buildInitialState } from "./utils";
+import { buildInitialState, isTicketLinkValid, normalizeTicketLink } from "./utils";
 import type { EventFormMode, EventFormValues, Performer } from "./types";
 
 export type { EventFormMode, EventFormValues };
@@ -72,6 +73,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   const [startTime, setStartTime] = useState(initial.startTime);
   const [endTime, setEndTime] = useState(initial.endTime);
   const [entryPrice, setEntryPrice] = useState(initial.entryPrice);
+  const [ticketLink, setTicketLink] = useState(initial.ticketLink);
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>(initial.genres);
   const [performers, setPerformers] = useState<Performer[]>(initial.performers);
   const [address, setAddress] = useState(initial.address);
@@ -143,6 +145,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
           start_time: toApiTime(startTime),
           end_time: toApiTime(endTime),
           entry_price: entryPrice ? Number.parseFloat(entryPrice) : null,
+          ticket_link: normalizeTicketLink(ticketLink),
           genres: selectedGenres,
           event_performers: performers.map((p) => ({
             user_id: p.id,
@@ -164,6 +167,8 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
     }
   }
 
+  const ticketLinkValid = isTicketLinkValid(ticketLink);
+
   const isValid =
     eventName.trim() &&
     category &&
@@ -171,7 +176,8 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
     startTime &&
     endTime &&
     selectedGenres.length > 0 &&
-    address.trim();
+    address.trim() &&
+    ticketLinkValid;
 
   const submitLabel = submitting ? config.busyLabel : config.idleLabel;
 
@@ -351,6 +357,33 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
                 className="h-11 rounded-lg pl-10 dark:bg-card"
               />
             </div>
+          </Field>
+
+          <Field data-invalid={!ticketLinkValid || undefined}>
+            <FieldLabel htmlFor="ticket-link">
+              Ticket Link <span className="text-muted-foreground">(Optional)</span>
+            </FieldLabel>
+            <div className="relative">
+              <TicketCheck className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="ticket-link"
+                type="url"
+                inputMode="url"
+                autoComplete="url"
+                value={ticketLink}
+                onChange={(e) => setTicketLink(e.target.value)}
+                onBlur={() => setTicketLink(normalizeTicketLink(ticketLink) ?? "")}
+                placeholder="https://tickets.example.com/your-event"
+                aria-invalid={!ticketLinkValid}
+                aria-describedby="ticket-link-description"
+                className="h-11 rounded-lg pl-10 dark:bg-card"
+              />
+            </div>
+            <FieldDescription id="ticket-link-description" aria-live="polite">
+              {ticketLinkValid
+                ? "Where attendees can buy tickets. We'll add https:// if you leave it off."
+                : "Enter a valid ticket URL, e.g. https://tickets.example.com/your-event."}
+            </FieldDescription>
           </Field>
 
           <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />

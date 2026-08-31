@@ -53,6 +53,8 @@ type ApiEvent = {
   start_time: string;
   end_time: string;
   entry_price: number | null;
+  /** External URL where attendees can buy tickets. */
+  ticket_link: string | null;
   featured: boolean | null;
   category: string;
   created_by: string;
@@ -164,6 +166,7 @@ export type CreateEventBody = {
   start_time: string;
   end_time: string;
   entry_price: number | null;
+  ticket_link: string | null;
   genres: Genre[];
   created_by: string;
   location: string | null;
@@ -179,6 +182,7 @@ export type UpdateEventBody = {
   start_time: string;
   end_time: string;
   entry_price: number | null;
+  ticket_link: string | null;
   genres: Genre[];
   custom_location: ApiCustomLocation | null;
   event_performers: EventPerformerInput[];
