@@ -13,6 +13,12 @@ export type StagedImagePickerProps = Readonly<{
   onReorder: (from: number, to: number) => void;
 }>;
 
+function toSafeImageSrc(preview: string): string | null {
+  if (preview.startsWith("blob:")) return preview;
+  if (preview.startsWith("data:image/")) return preview;
+  return null;
+}
+
 export function StagedImagePicker({
   previews,
   onAdd,
@@ -31,10 +37,13 @@ export function StagedImagePicker({
       </p>
       <div className="flex flex-wrap gap-2">
         {previews.map((preview, index) => {
+          const safePreview = toSafeImageSrc(preview);
+          if (!safePreview) return null;
+
           const isCover = index === 0;
           return (
             <div
-              key={preview}
+              key={safePreview}
               draggable
               onDragStart={() => setDragSourceIndex(index)}
               onDragOver={(e) => {
@@ -62,7 +71,7 @@ export function StagedImagePicker({
               )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={preview} alt="" className="h-full w-full object-cover" />
+              <img src={safePreview} alt="" className="h-full w-full object-cover" />
               {isCover ? (
                 <span className="absolute left-1 top-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-primary-foreground">
                   Cover
