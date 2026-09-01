@@ -45,9 +45,10 @@ export function PerformerSelector({
   const [withSetTimes, setWithSetTimes] = useState(() =>
     selected.some((p) => p.set_start_time || p.set_end_time)
   );
-  // Drag-to-reorder: rows are only draggable while grabbed by their handle so
-  // the set-time inputs keep normal text interaction.
-  const [dragEnabledIndex, setDragEnabledIndex] = useState<number | null>(null);
+  // Drag-to-reorder: the whole row is the drag source. Pressing on one of its
+  // controls (set-time inputs, remove) suspends that so they keep normal
+  // pointer interaction; the grip handle is exempt.
+  const [dragSuspended, setDragSuspended] = useState(false);
   const [dragSourceIndex, setDragSourceIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -154,9 +155,17 @@ export function PerformerSelector({
   }
 
   function endDrag() {
-    setDragEnabledIndex(null);
+    setDragSuspended(false);
     setDragSourceIndex(null);
     setDragOverIndex(null);
+  }
+
+  /** Suspends row dragging while a control inside the row is being pressed. */
+  function handleRowPointerDown(e: React.PointerEvent<HTMLLIElement>) {
+    const control = (e.target as HTMLElement).closest(
+      "input, textarea, a, button:not([data-drag-handle])"
+    );
+    setDragSuspended(control !== null);
   }
 
   return (
@@ -251,7 +260,8 @@ export function PerformerSelector({
             {selected.map((p, index) => (
               <li
                 key={p.id}
-                draggable={dragEnabledIndex === index}
+                draggable={selected.length >= 2 && !dragSuspended}
+                onPointerDown={handleRowPointerDown}
                 onDragStart={() => setDragSourceIndex(index)}
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -267,6 +277,8 @@ export function PerformerSelector({
                 onDragEnd={endDrag}
                 className={cn(
                   "flex flex-col rounded-lg border border-border bg-card px-3 py-1.5",
+                  selected.length >= 2 && "cursor-grab active:cursor-grabbing",
+                  dragSourceIndex === index && "opacity-60",
                   dragOverIndex === index &&
                     dragSourceIndex !== null &&
                     dragSourceIndex !== index &&
@@ -278,8 +290,7 @@ export function PerformerSelector({
                     <button
                       type="button"
                       aria-label={`Reorder ${p.display_name} (position ${index + 1} of ${selected.length}, use arrow keys to move)`}
-                      onMouseDown={() => setDragEnabledIndex(index)}
-                      onMouseUp={() => setDragEnabledIndex(null)}
+                      data-drag-handle
                       onKeyDown={(e) => {
                         if (e.key === "ArrowUp") {
                           e.preventDefault();
