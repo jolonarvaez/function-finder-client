@@ -12,6 +12,7 @@ import {
   AvatarGroupCount,
   AvatarImage,
 } from "@/components/ui/avatar";
+import { MapLinks } from "@/components/reusables/MapLinks";
 import { formatTime, getEventCoverOrNull } from "@/components/dj/dj-event.types";
 import { getEventHost, getEventPerformers, type ApiEvent } from "@/lib/services/events";
 
@@ -95,6 +96,10 @@ export function EventItem({ event }: Props) {
             </p>
           )}
         </div>
+
+        {/* Open in a map app — sits above the stretched card link like the
+            other in-card links, so tapping one doesn't open the event. */}
+        <MapLinks address={event.custom_location?.address ?? event.location} />
 
         {event.description && (
           <p className="line-clamp-2 text-xs text-muted-foreground">{event.description}</p>
