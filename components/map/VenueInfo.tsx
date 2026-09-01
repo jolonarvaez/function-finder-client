@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
+import { MapLinks } from "@/components/reusables/MapLinks";
 import { XIcon, MapPinIcon, Turntable, ClockIcon, CalendarIcon, UserIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { EventImage } from "@/components/dj/dj-event.types";
@@ -81,6 +82,7 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
               <MapPinIcon className="size-3.5 shrink-0" />
               {event.address}
             </p>
+            <MapLinks address={event.address} className="m-2" />
             {event.genres.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {event.genres.map((g) => (

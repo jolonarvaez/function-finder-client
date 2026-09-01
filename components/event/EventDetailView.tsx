@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
+import { MapLinks } from "@/components/reusables/MapLinks";
 import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, getEventHost, type ApiEvent } from "@/lib/services/events";
@@ -130,6 +131,9 @@ export function EventDetailContent({ event }: Readonly<{ event: ApiEvent }>) {
           <Section icon={MapPinIcon} label="Location">
             {address}
           </Section>
+
+          {/* Open in a map app */}
+          <MapLinks address={event.custom_location?.address ?? event.location} />
 
           {/* Entry */}
           <Section icon={TicketIcon} label="Entry">
