@@ -1,4 +1,4 @@
-import { FaGoogle, FaApple, FaWaze } from "react-icons/fa";
+import { FaGoogle, FaWaze } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ export function MapLinks({ address, className }: MapLinksProps) {
   if (links.length === 0) return null;
 
   return (
-    <div className={cn("grid grid-cols-3 gap-2", className)}>
+    <div className={cn("grid grid-cols-2 gap-2", className)}>
       {links.map(({ label, href, icon: Icon }) => (
         <Button key={label} asChild variant="outline" className="rounded-lg">
           <a href={href} target="_blank" rel="noopener noreferrer">
@@ -44,11 +44,6 @@ function getMapLinks(address?: string | null): MapLink[] {
       label: "Google Maps",
       href: `https://www.google.com/maps/search/?api=1&query=${query}`,
       icon: FaGoogle,
-    },
-    {
-      label: "Apple Maps",
-      href: `https://maps.apple.com/?q=${query}`,
-      icon: FaApple,
     },
     {
       label: "Waze",
