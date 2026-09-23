@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ImageIcon, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
+import { toSafeImageSrc } from "./utils";
 
 export type StagedImagePickerProps = Readonly<{
   previews: string[];
@@ -12,12 +13,6 @@ export type StagedImagePickerProps = Readonly<{
   onSetCover: (index: number) => void;
   onReorder: (from: number, to: number) => void;
 }>;
-
-function toSafeImageSrc(preview: string): string | null {
-  if (preview.startsWith("blob:")) return preview;
-  if (preview.startsWith("data:image/")) return preview;
-  return null;
-}
 
 export function StagedImagePicker({
   previews,

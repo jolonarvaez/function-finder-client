@@ -1,4 +1,4 @@
-import { CalendarPlus2Icon, PencilLineIcon } from "lucide-react";
+import { CalendarPlus2Icon, ClipboardCheckIcon, PencilLineIcon } from "lucide-react";
 import { MAKATI_CENTER } from "@/lib/constants";
 import type { EventFormMode } from "./types";
 
@@ -31,3 +31,14 @@ export const MODE_CONFIG: Record<EventFormMode, ModeConfig> = {
 };
 
 export const DEFAULT_COORDINATES = { lng: MAKATI_CENTER[0], lat: MAKATI_CENTER[1] };
+
+/**
+ * The create-only review step. Deliberately not keyed by mode: edit mode never
+ * reaches it, and a mode-keyed record would force a meaningless `edit` entry.
+ * MODE_CONFIG keeps its meaning as the *final commit* labels.
+ */
+export const REVIEW_STEP = {
+  advanceLabel: "Review Event",
+  headerTitle: "Review Event",
+  headerIcon: ClipboardCheckIcon,
+} as const;

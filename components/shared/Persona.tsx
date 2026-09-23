@@ -18,6 +18,8 @@ export type PersonaProps = Readonly<{
   variant?: "full" | "min";
   className?: string;
   userId?: string;
+  /** Hide the profile link where navigating away would destroy unsaved state. */
+  showProfileLink?: boolean;
 }>;
 
 function GenreBadges({ genre }: Readonly<{ genre: string[] }>) {
@@ -53,6 +55,7 @@ export function Persona({
   variant = "full",
   className,
   userId,
+  showProfileLink = true,
 }: PersonaProps) {
   if (variant === "min") {
     return (
@@ -74,7 +77,7 @@ export function Persona({
           )}
         </div>
 
-        <ProfileLink userId={userId} />
+        {showProfileLink && <ProfileLink userId={userId} />}
       </div>
     );
   }
@@ -106,7 +109,7 @@ export function Persona({
             )}
           </div>
 
-          <ProfileLink userId={userId} className="self-center" />
+          {showProfileLink && <ProfileLink userId={userId} className="self-center" />}
         </div>
       </CardContent>
     </Card>

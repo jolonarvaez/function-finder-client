@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import {
   SparklesIcon,
@@ -38,8 +38,9 @@ import { useUserStore } from "@/components/auth/use-user-store";
 import { reverseGeocode, type AddressSuggestion } from "@/lib/services/geocode/geocode";
 import { PageContainer, PageHeader } from "../../reusables/PageContainer";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
-import { MODE_CONFIG } from "./constants";
-import { buildInitialState, isTicketLinkValid, normalizeTicketLink } from "./utils";
+import { MODE_CONFIG, REVIEW_STEP } from "./constants";
+import { buildInitialState, isTicketLinkValid, normalizeTicketLink, toSummaryData } from "./utils";
+import { EventSummary } from "./EventSummary";
 import type { EventFormMode, EventFormValues, Performer } from "./types";
 
 export type { EventFormMode, EventFormValues };
@@ -87,6 +88,19 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
 
   const [submitting, setSubmitting] = useState(false);
 
+  // Create mode only: "form" collects input, "summary" reviews it before any API call.
+  const [step, setStep] = useState<"form" | "summary">("form");
+  const [error, setError] = useState<string | null>(null);
+
+  // Derived, never a raw `step` read — edit mode cannot reach the summary even if
+  // `setStep` were called by mistake.
+  const isSummary = !isEdit && step === "summary";
+
+  const formScrollY = useRef(0);
+  const summaryHeadingRef = useRef<HTMLHeadingElement>(null);
+  const advanceButtonRef = useRef<HTMLButtonElement>(null);
+  const hasStepped = useRef(false);
+
   const handleCoordinatesChange = useCallback((coords: { lng: number; lat: number }) => {
     setCoordinates(coords);
     reverseGeocode(coords.lat, coords.lng).then((result) => {
@@ -130,11 +144,13 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
     setStaged(next);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!date || !profile) return;
+  async function submitValues() {
+    // The `submitting` guard is belt-and-braces with the disabled button: a
+    // keyboard repeat can outrun a re-render.
+    if (!date || !profile || submitting) return;
 
     setSubmitting(true);
+    setError(null);
     try {
       await onSubmit(
         {
@@ -161,10 +177,30 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
         isEdit ? [] : staged.map((s) => s.file)
       );
     } catch {
+      setError(config.errorMessage);
       toast.error(config.errorMessage);
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function handleFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!date || !profile) return;
+
+    if (isEdit) {
+      await submitValues();
+      return;
+    }
+    // Create mode: nothing hits the API until the review step is confirmed.
+    formScrollY.current = window.scrollY;
+    setError(null);
+    setStep("summary");
+  }
+
+  function handleBackToForm() {
+    setError(null);
+    setStep("form");
   }
 
   const ticketLinkValid = isTicketLinkValid(ticketLink);
@@ -181,19 +217,67 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
 
   const submitLabel = submitting ? config.busyLabel : config.idleLabel;
 
+  const summaryData = isSummary
+    ? toSummaryData({
+        name: eventName,
+        description,
+        category,
+        date,
+        startTime,
+        endTime,
+        entryPrice,
+        ticketLink,
+        genres: selectedGenres,
+        performers,
+        address,
+        imagePreviews: staged.map((st) => st.preview),
+      })
+    : null;
+
+  useEffect(() => {
+    if (isEdit) return;
+    // Skip the mount run so we don't fight Next's own scroll restoration.
+    if (!hasStepped.current) {
+      hasStepped.current = true;
+      return;
+    }
+    if (isSummary) {
+      window.scrollTo({ top: 0 });
+      summaryHeadingRef.current?.focus();
+      return;
+    }
+    // Un-hiding the form restores page height only after layout, so an immediate
+    // scroll would clamp to the (short) summary height.
+    const y = formScrollY.current;
+    const raf = requestAnimationFrame(() => {
+      window.scrollTo({ top: y });
+      advanceButtonRef.current?.focus();
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [isSummary, isEdit]);
+
   return (
     <PageContainer>
-      <a
-        href={`#${config.formId}`}
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
-      >
-        Skip to form
-      </a>
+      {!isSummary && (
+        <a
+          href={`#${config.formId}`}
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+        >
+          Skip to form
+        </a>
+      )}
 
-      <PageHeader title={config.headerTitle} icon={config.headerIcon} showBack />
+      <PageHeader
+        title={isSummary ? REVIEW_STEP.headerTitle : config.headerTitle}
+        icon={isSummary ? REVIEW_STEP.headerIcon : config.headerIcon}
+        showBack={!isSummary}
+      />
 
-      <div className="flex-1">
-        <form id={config.formId} onSubmit={handleSubmit} className="space-y-4 pb-6">
+      {/* Hidden, not unmounted: preserves child-local state (performer search,
+          drag indices) and the MapLibre instance, so Back is free. The `hidden`
+          attribute — not the Tailwind class — also drops it from the a11y tree. */}
+      <div className="flex-1" hidden={isSummary}>
+        <form id={config.formId} onSubmit={handleFormSubmit} className="space-y-4 pb-6">
           {/* ── Details ─────────────────────────────────── */}
           <SectionHeader>Details</SectionHeader>
 
@@ -428,17 +512,34 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
         </form>
       </div>
 
+      {summaryData && (
+        <EventSummary
+          data={summaryData}
+          onConfirm={() => void submitValues()}
+          onBack={handleBackToForm}
+          submitting={submitting}
+          error={error ?? undefined}
+          confirmLabel={config.idleLabel}
+          busyLabel={config.busyLabel}
+          confirmDisabled={!isValid}
+          headingRef={summaryHeadingRef}
+        />
+      )}
+
       {/* Sticky submit */}
-      <div className="sticky bottom-0 z-20 border-t border-border bg-background py-3">
-        <Button
-          type="submit"
-          form={config.formId}
-          disabled={!isValid || submitting}
-          className="h-12 w-full rounded-lg text-sm font-semibold"
-        >
-          {submitLabel}
-        </Button>
-      </div>
+      {!isSummary && (
+        <div className="sticky bottom-0 z-20 border-t border-border bg-background py-3">
+          <Button
+            ref={advanceButtonRef}
+            type="submit"
+            form={config.formId}
+            disabled={!isValid || submitting}
+            className="h-12 w-full rounded-lg text-sm font-semibold"
+          >
+            {isEdit ? submitLabel : REVIEW_STEP.advanceLabel}
+          </Button>
+        </div>
+      )}
     </PageContainer>
   );
 }
