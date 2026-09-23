@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
-import { StepIndicator } from "@/components/onboarding/StepIndicator";
+import { StepIndicator } from "@/components/reusables/StepIndicator";
+import { ONBOARDING_STEP_COUNT } from "@/lib/constants";
 import { CountrySelect } from "@/components/reusables/CountrySelect";
 
 export type OnboardingProfilePageProps = Readonly<{
@@ -26,7 +27,7 @@ export function OnboardingProfilePage({ onContinue }: OnboardingProfilePageProps
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={2} className="mb-8" />
+      <StepIndicator currentStep={2} totalSteps={ONBOARDING_STEP_COUNT} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

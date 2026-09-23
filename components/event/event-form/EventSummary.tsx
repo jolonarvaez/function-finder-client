@@ -53,16 +53,15 @@ export function EventSummary({
   return (
     <div className={cn("flex flex-col", className)}>
       <div className="mb-6">
-        {/* tabIndex allows a programmatic focus move on step change; the ring is
-            suppressed because the heading is not itself interactive. */}
-        <h2
-          ref={headingRef}
-          tabIndex={-1}
-          className="text-2xl font-bold tracking-tight text-foreground outline-none"
-        >
+        {/* Visually redundant with the page's own "Review Event" h1, so it is
+            sr-only — but it still earns its place: it keeps the summary in the
+            heading outline, and it is the focus target on step change. Without
+            it focus falls to <body>, since the button that was focused is by
+            then inside the hidden form. */}
+        <h2 ref={headingRef} tabIndex={-1} className="sr-only">
           Review your event
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Check the details below. Nothing is published until you confirm.
         </p>
       </div>

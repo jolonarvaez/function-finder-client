@@ -3,8 +3,13 @@
 import { ArrowLeftIcon, PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ROLE_LABELS, type OnboardingRole, type Genre } from "@/lib/constants";
-import { StepIndicator } from "@/components/onboarding/StepIndicator";
+import {
+  ONBOARDING_STEP_COUNT,
+  ROLE_LABELS,
+  type OnboardingRole,
+  type Genre,
+} from "@/lib/constants";
+import { StepIndicator } from "@/components/reusables/StepIndicator";
 
 export type OnboardingSummaryPageProps = Readonly<{
   role: OnboardingRole;
@@ -43,7 +48,7 @@ export function OnboardingSummaryPage({
 }: OnboardingSummaryPageProps) {
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={4} className="mb-8" />
+      <StepIndicator currentStep={4} totalSteps={ONBOARDING_STEP_COUNT} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

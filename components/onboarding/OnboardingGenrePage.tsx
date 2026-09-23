@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
-import { GENRES, type Genre, type OnboardingRole } from "@/lib/constants";
-import { StepIndicator } from "@/components/onboarding/StepIndicator";
+import { GENRES, ONBOARDING_STEP_COUNT, type Genre, type OnboardingRole } from "@/lib/constants";
+import { StepIndicator } from "@/components/reusables/StepIndicator";
 
 export type { Genre };
 
@@ -46,7 +46,7 @@ export function OnboardingGenrePage({ role, onContinue, onSkip }: OnboardingGenr
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={3} className="mb-8" />
+      <StepIndicator currentStep={3} totalSteps={ONBOARDING_STEP_COUNT} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

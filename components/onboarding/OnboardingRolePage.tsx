@@ -4,8 +4,8 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/components/onboarding/use-onboarding-store";
-import { StepIndicator } from "@/components/onboarding/StepIndicator";
-import { type OnboardingRole } from "@/lib/constants";
+import { StepIndicator } from "@/components/reusables/StepIndicator";
+import { ONBOARDING_STEP_COUNT, type OnboardingRole } from "@/lib/constants";
 
 export type { OnboardingRole };
 
@@ -38,7 +38,7 @@ export function OnboardingRolePage({ onContinue }: OnboardingRolePageProps) {
 
   return (
     <div className="flex min-h-screen flex-col px-6 pb-10 pt-14">
-      <StepIndicator currentStep={1} className="mb-8" />
+      <StepIndicator currentStep={1} totalSteps={ONBOARDING_STEP_COUNT} className="mb-8" />
 
       {/* Heading */}
       <div className="mb-8">

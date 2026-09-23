@@ -41,4 +41,11 @@ export const REVIEW_STEP = {
   advanceLabel: "Review Event",
   headerTitle: "Review Event",
   headerIcon: ClipboardCheckIcon,
+  stepLabel: "Review",
 } as const;
+
+/** Create flow: fill the form, then review it. Edit mode has no second step. */
+export const CREATE_STEP_COUNT = 2;
+// Not "Details" — that would stutter against the form's own DETAILS section
+// header, which sits directly beneath the caption.
+export const FORM_STEP_LABEL = "Event info";

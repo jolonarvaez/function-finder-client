@@ -37,8 +37,9 @@ import { toIsoDate, toApiTime, getTimezoneOffset, type ApiEvent } from "@/lib/se
 import { useUserStore } from "@/components/auth/use-user-store";
 import { reverseGeocode, type AddressSuggestion } from "@/lib/services/geocode/geocode";
 import { PageContainer, PageHeader } from "../../reusables/PageContainer";
+import { StepIndicator } from "@/components/reusables/StepIndicator";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
-import { MODE_CONFIG, REVIEW_STEP } from "./constants";
+import { CREATE_STEP_COUNT, FORM_STEP_LABEL, MODE_CONFIG, REVIEW_STEP } from "./constants";
 import { buildInitialState, isTicketLinkValid, normalizeTicketLink, toSummaryData } from "./utils";
 import { EventSummary } from "./EventSummary";
 import type { EventFormMode, EventFormValues, Performer } from "./types";
@@ -272,6 +273,20 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
         icon={isSummary ? REVIEW_STEP.headerIcon : config.headerIcon}
         showBack={!isSummary}
       />
+
+      {/* Create-only: edit mode is a single step, so "Step 1 of 2" would be a lie.
+          Sits outside the form wrapper so it survives the summary step. The dots
+          are decorative — the caption below carries the meaning for a screen
+          reader, and no aria-live, since focus already moves on step change. */}
+      {!isEdit && (
+        <div className="mb-5 space-y-2">
+          <StepIndicator currentStep={isSummary ? 2 : 1} totalSteps={CREATE_STEP_COUNT} />
+          <p className="text-sm text-foreground">
+            Step {isSummary ? 2 : 1} of {CREATE_STEP_COUNT} ·{" "}
+            {isSummary ? REVIEW_STEP.stepLabel : FORM_STEP_LABEL}
+          </p>
+        </div>
+      )}
 
       {/* Hidden, not unmounted: preserves child-local state (performer search,
           drag indices) and the MapLibre instance, so Back is free. The `hidden`
