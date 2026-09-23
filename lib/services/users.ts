@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { OnboardingRole, Genre } from "@/lib/constants";
+import type { EventStatus, OnboardingRole, Genre } from "@/lib/constants";
 import type { DJEvent, EventImage } from "@/components/dj/dj-event.types";
 
 // ── Types ─────────────────────────────────────────────────────
@@ -51,6 +51,7 @@ type ApiEvent = {
   custom_location: { latitude: number; longitude: number; address: string } | null;
   /** Pre-sorted: index 0 is the cover. */
   event_images: EventImage[];
+  status: Exclude<EventStatus, "all">;
 };
 
 type ApiUserEventsResponse = {
@@ -91,6 +92,7 @@ function toEvent(e: ApiEvent): DJEvent {
       ? { lng: e.custom_location.longitude, lat: e.custom_location.latitude }
       : undefined,
     eventImages: e.event_images,
+    status: e.status,
   };
 }
 

@@ -5,7 +5,6 @@ import { LocationItem } from "@/components/shared/LocationItem";
 import { SearchBar } from "@/components/shared/SearchBar";
 import { useMapFilterStore } from "@/components/map/use-map-filter-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getStatus } from "@/components/dj/dj-event.types";
 import type { MapEvents } from "@/components/map/MapView";
 
 export type VenueListViewProps = Readonly<{
@@ -68,10 +67,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
 
     switch (activeFilter) {
       case "live-now":
-        result = result.filter((v) => {
-          const { date, startTime, endTime } = v.event;
-          return date && getStatus({ date, startTime, endTime }) === "live";
-        });
+        result = result.filter((v) => v.event.status === "live");
         break;
       case "nearest":
         break;
@@ -103,14 +99,7 @@ export function VenueListView({ venues = [], defaultDate }: VenueListViewProps) 
                 genre={venueGenres(venue)}
                 imageSrc={venue.event.event_images?.[0]?.url}
                 dj={venue.event.performers.map((p) => p.name).join(", ") || undefined}
-                isLive={
-                  !!venue.event.date &&
-                  getStatus({
-                    date: venue.event.date,
-                    startTime: venue.event.startTime,
-                    endTime: venue.event.endTime,
-                  }) === "live"
-                }
+                isLive={venue.event.status === "live"}
                 onGoNow={() => {}}
                 className="m-1.5"
               />

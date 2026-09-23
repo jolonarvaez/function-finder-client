@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { DJEventsView, type DJEvent } from "@/components/dj/DJEventsView";
 
-// Today is 2026-04-02 (Thursday)
+// Today is 2026-04-02 (Thursday). Statuses come from the API, so they are fixed here.
 const MOCK_EVENTS: DJEvent[] = [
   // ── Past ─────────────────────────────────────────────────
   {
     id: "1",
+    status: "done",
     name: "Night Fever",
     venue: "Fuego",
     address: "78 Jupiter St, Makati",
@@ -19,6 +20,7 @@ const MOCK_EVENTS: DJEvent[] = [
   },
   {
     id: "2",
+    status: "done",
     name: "Deep Cuts",
     venue: "The Vinyl Room",
     address: "92 Polaris St, Makati",
@@ -33,6 +35,7 @@ const MOCK_EVENTS: DJEvent[] = [
   // ── Live (today, within 10PM–4AM window) ─────────────────
   {
     id: "3",
+    status: "live",
     name: "Neon Dreams",
     venue: "Pulse",
     address: "123 Ayala Ave, Makati",
@@ -48,6 +51,7 @@ const MOCK_EVENTS: DJEvent[] = [
   // ── Upcoming ─────────────────────────────────────────────
   {
     id: "4",
+    status: "upcoming",
     name: "Concrete Jungle",
     venue: "Bass District",
     address: "15 Salcedo St, Makati",
@@ -61,6 +65,7 @@ const MOCK_EVENTS: DJEvent[] = [
   },
   {
     id: "5",
+    status: "upcoming",
     name: "Wavelength",
     venue: "Noir Lounge",
     address: "45 P. Burgos St, Makati",
@@ -73,6 +78,7 @@ const MOCK_EVENTS: DJEvent[] = [
   },
   {
     id: "6",
+    status: "upcoming",
     name: "Resonance",
     venue: "Elysium",
     address: "201 Makati Ave, Makati",
@@ -86,8 +92,8 @@ const MOCK_EVENTS: DJEvent[] = [
   },
 ];
 
-const UPCOMING_ONLY: DJEvent[] = MOCK_EVENTS.filter((e) => e.date >= "2026-04-03");
-const PAST_ONLY: DJEvent[] = MOCK_EVENTS.filter((e) => e.date < "2026-04-02");
+const UPCOMING_ONLY: DJEvent[] = MOCK_EVENTS.filter((e) => e.status === "upcoming");
+const PAST_ONLY: DJEvent[] = MOCK_EVENTS.filter((e) => e.status === "done");
 
 const meta: Meta<typeof DJEventsView> = {
   title: "Pages/DJEventManager",

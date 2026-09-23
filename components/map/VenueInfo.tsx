@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Persona } from "@/components/shared/Persona";
 import { EventImageGallery } from "@/components/event/EventImageGallery";
 import { MapLinks } from "@/components/reusables/MapLinks";
+import { StatusBadge } from "@/components/reusables/StatusBadge";
 import { XIcon, MapPinIcon, Turntable, ClockIcon, CalendarIcon, UserIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { EventImage } from "@/components/dj/dj-event.types";
@@ -71,13 +72,11 @@ export function VenueInfo({ event, open, onOpenChange }: VenueInfoProps) {
         <div className="flex-1 overflow-y-auto">
           {/* Venue info */}
           <SheetHeader className="px-5 pt-5 pb-0">
-            {live && (
-              <Badge className="w-fit bg-primary text-white">
-                <span className="mr-1.5 inline-block size-1.5 animate-pulse rounded-full bg-white" />{" "}
-                Live Now
-              </Badge>
-            )}
-            <SheetTitle className="text-xl font-bold">{event.name}</SheetTitle>
+            <div className="flex items-center gap-2">
+              <SheetTitle className="text-xl font-bold">{event.name}</SheetTitle>
+              <StatusBadge status={event.status} />
+            </div>
+
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPinIcon className="size-3.5 shrink-0" />
               {event.address}

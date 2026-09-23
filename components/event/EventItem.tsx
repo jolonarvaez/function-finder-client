@@ -4,6 +4,7 @@ import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { MapPinIcon, Turntable } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/reusables/StatusBadge";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,
@@ -28,8 +29,6 @@ export function EventItem({ event }: Props) {
   const startTime = formatTime(event.start_time.slice(0, 5));
   const endTime = formatTime(event.end_time.slice(0, 5));
   const isLive = event.status === "live";
-  const isDone = event.status === "done";
-  const isUpcoming = event.status === "upcoming";
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card">
@@ -57,28 +56,18 @@ export function EventItem({ event }: Props) {
         )}
       </div>
 
-      {/* flex-1 absorbs the extra height so the lineup footer stays bottom-aligned
-          across cards of differing content length in the same grid row */}
       <div className="relative flex-1 space-y-3 p-4">
         <div className="min-w-0 space-y-0.5">
           {/* Status sits on its own row rather than beside the title — in a
               narrow grid column there isn't room for both, and the name is
               what matters most on the card. */}
           <div className="flex flex-col items-start gap-1.5">
-            {isLive && (
-              <span className="flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
-                <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground opacity-75 motion-reduce:animate-none" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-primary-foreground" />
-                </span>
-                Live
-              </span>
-            )}
-            {isUpcoming && <Badge variant="secondary">Upcoming</Badge>}
-            {isDone && <Badge variant="outline">Done</Badge>}
-            <p className="line-clamp-2 text-lg font-semibold leading-snug text-foreground">
-              {event.name}
-            </p>
+            <div className="flex gap-1 justify-items-center">
+              <p className="line-clamp-2 text-lg font-semibold leading-snug text-foreground">
+                {event.name}
+              </p>
+              <StatusBadge status={event.status} />
+            </div>
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground">
             <MapPinIcon className="size-3.5 shrink-0" />

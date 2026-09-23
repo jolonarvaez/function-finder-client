@@ -16,14 +16,13 @@ export function PublicLiveEvents({ events }: PublicLiveEventsProps) {
   return (
     <section aria-labelledby="live-events-heading" className="space-y-3">
       <h2 id="live-events-heading" className="text-base font-semibold text-foreground">
-        Live Now
+        Live
       </h2>
       <div className="space-y-3">
         {events.map((event) => (
           <EventCard
             key={event.id}
             event={event}
-            status="live"
             onView={() => router.push(`/events/${event.id}`)}
           />
         ))}

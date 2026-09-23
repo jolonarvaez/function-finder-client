@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getUser, getUserEvents, getUserPerformers, type UserProfile } from "@/lib/services/users";
-import { getStatus, type DJEvent } from "@/components/dj/dj-event.types";
+import { type DJEvent } from "@/components/dj/dj-event.types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { ProfileHeader } from "./ProfileHeader";
 import { PublicLiveEvents } from "./PublicLiveEvents";
@@ -37,9 +37,9 @@ export function ProfileView({ userId }: ProfileViewProps) {
       })
       .then(([fetchedProfile, events]) => {
         setProfile(fetchedProfile);
-        setLiveEvents(events.filter((e) => getStatus(e) === "live"));
+        setLiveEvents(events.filter((e) => e.status === "live"));
         const upcoming = events
-          .filter((e) => getStatus(e) === "upcoming")
+          .filter((e) => e.status === "upcoming")
           .sort((a, b) =>
             a.date === b.date
               ? a.startTime.localeCompare(b.startTime)

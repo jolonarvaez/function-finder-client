@@ -4,8 +4,9 @@ import { format, parseISO } from "date-fns";
 import { MapPinIcon, PencilIcon, ExternalLinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatTime, type DJEvent, type EventStatus } from "./dj-event.types";
+import { formatTime, type DJEvent } from "./dj-event.types";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
+import { StatusBadge } from "@/components/reusables/StatusBadge";
 
 function GenreChips({ genres }: { genres: DJEvent["genres"] }) {
   return (
@@ -21,29 +22,19 @@ function GenreChips({ genres }: { genres: DJEvent["genres"] }) {
 
 export type EventCardProps = {
   event: DJEvent;
-  status: EventStatus;
   onEdit?: () => void;
   onView?: () => void;
 };
 
-export function EventCard({ event, status, onEdit, onView }: EventCardProps) {
-  const isPast = status === "past";
-  const isLive = status === "live";
-
+export function EventCard({ event, onEdit, onView }: EventCardProps) {
   return (
     <div className="rounded-lg border border-border bg-card p-4 space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-0.5">
           <div className="flex items-center gap-2">
-            {isLive && (
-              <span className="flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
-                <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground opacity-75 motion-reduce:animate-none" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-primary-foreground" />
-                </span>
-                Live
-              </span>
-            )}
+            {event.status === "live" || event.status === "upcoming" ? (
+              <StatusBadge status={event.status} />
+            ) : null}
             <p className="truncate text-lg font-semibold text-foreground">{event.name}</p>
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground">
@@ -52,7 +43,7 @@ export function EventCard({ event, status, onEdit, onView }: EventCardProps) {
           </div>
         </div>
 
-        {!isPast && !isLive && onEdit && (
+        {event.status === "upcoming" && onEdit && (
           <Button
             size="icon"
             variant="ghost"

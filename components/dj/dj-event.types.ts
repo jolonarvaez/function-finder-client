@@ -1,6 +1,6 @@
 import { parseISO } from "date-fns";
 import { MAKATI_CENTER } from "@/lib/constants";
-import type { Genre } from "@/lib/constants";
+import type { EventStatus, Genre } from "@/lib/constants";
 
 // ── Core type ────────────────────────────────────────────────
 
@@ -31,9 +31,9 @@ export type DJEvent = {
   genres: Genre[];
   coordinates?: { lng: number; lat: number };
   eventImages?: EventImage[];
+  /** Resolved by the API; never derived on the client. */
+  status: Exclude<EventStatus, "all">;
 };
-
-export type EventStatus = "live" | "upcoming" | "past" | "all";
 
 /** Resolves the cover URL for an event, falling back to the placeholder. */
 export function getEventCover(event: {
@@ -75,45 +75,6 @@ export type EditDraft = {
 };
 
 // ── Helpers ──────────────────────────────────────────────────
-
-export function todayISO(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function nextDayISO(isoDate: string): string {
-  const d = new Date(`${isoDate}T00:00:00`);
-  d.setDate(d.getDate() + 1);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-type StatusFields = { date: string; startTime: string; endTime: string };
-
-function sameDayStatus(event: StatusFields, today: string, nowTime: string): EventStatus {
-  if (event.date < today) return "past";
-  if (event.date > today) return "upcoming";
-  if (nowTime < event.startTime) return "upcoming";
-  if (nowTime > event.endTime) return "past";
-  return "live";
-}
-
-function overnightStatus(event: StatusFields, today: string, nowTime: string): EventStatus {
-  const nextDay = nextDayISO(event.date);
-  if (today < event.date) return "upcoming";
-  if (today === event.date) return nowTime >= event.startTime ? "live" : "upcoming";
-  if (today === nextDay) return nowTime <= event.endTime ? "live" : "past";
-  return "past";
-}
-
-export function getStatus(event: StatusFields): EventStatus {
-  const today = todayISO();
-  const now = new Date();
-  const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-
-  return event.endTime >= event.startTime
-    ? sameDayStatus(event, today, nowTime)
-    : overnightStatus(event, today, nowTime);
-}
 
 export function formatTime(t: string) {
   const [h, m] = t.split(":").map(Number);

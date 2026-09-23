@@ -25,7 +25,6 @@ export function PublicUpcomingEvents({ events, displayName }: PublicUpcomingEven
             <EventCard
               key={event.id}
               event={event}
-              status="upcoming"
               onView={() => router.push(`/events/${event.id}`)}
             />
           ))}

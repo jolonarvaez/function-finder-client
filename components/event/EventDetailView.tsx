@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { MapLinks } from "@/components/reusables/MapLinks";
+import { StatusBadge } from "@/components/reusables/StatusBadge";
 import { Persona } from "@/components/shared/Persona";
 import { PageContainer, PageHeader } from "@/components/reusables/PageContainer";
 import { getEvent, getEventHost, type ApiEvent } from "@/lib/services/events";
@@ -196,20 +197,6 @@ function Section({
         <span className="text-sm font-medium text-foreground">{children}</span>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status }: Readonly<{ status: string }>) {
-  if (status === "live") {
-    return <Badge className="bg-primary text-primary-foreground">Live Now</Badge>;
-  }
-  if (status === "upcoming") {
-    return <Badge variant="secondary">Upcoming</Badge>;
-  }
-  return (
-    <Badge variant="outline" className="text-muted-foreground">
-      Past
-    </Badge>
   );
 }
 

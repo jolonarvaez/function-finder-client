@@ -6,7 +6,7 @@ import { ChevronDownIcon, CalendarDaysIcon } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "./EventCard";
-import { getStatus, type DJEvent } from "./dj-event.types";
+import { type DJEvent } from "./dj-event.types";
 import { getUserEvents } from "@/lib/services/users";
 import { useUserStore } from "@/components/auth/use-user-store";
 import { PageContainer, PageHeader } from "../reusables/PageContainer";
@@ -33,14 +33,14 @@ export function DJEventsView() {
       .finally(() => setLoading(false));
   }, [profile]);
 
-  const liveEvents = events.filter((e) => getStatus(e) === "live");
+  const liveEvents = events.filter((e) => e.status === "live");
   const upcomingEvents = events
-    .filter((e) => getStatus(e) === "upcoming")
+    .filter((e) => e.status === "upcoming")
     .sort((a, b) =>
       a.date === b.date ? a.startTime.localeCompare(b.startTime) : a.date.localeCompare(b.date)
     );
-  const pastEvents = events
-    .filter((e) => getStatus(e) === "past")
+  const doneEvents = events
+    .filter((e) => e.status === "done")
     .sort((a, b) => b.date.localeCompare(a.date));
 
   return (
@@ -57,18 +57,13 @@ export function DJEventsView() {
       )}
 
       <div className="space-y-6">
-        {/* ── Live Now ──────────────────────────────── */}
+        {/* ── Live ──────────────────────────────────── */}
         {liveEvents.length > 0 && (
           <section aria-label="Live events">
-            <SectionLabel>Live Now</SectionLabel>
+            <SectionLabel>Live</SectionLabel>
             <div className="mt-2 space-y-3">
               {liveEvents.map((e) => (
-                <EventCard
-                  key={e.id}
-                  event={e}
-                  status="live"
-                  onView={() => router.push(`/events/${e.id}`)}
-                />
+                <EventCard key={e.id} event={e} onView={() => router.push(`/events/${e.id}`)} />
               ))}
             </div>
           </section>
@@ -89,7 +84,6 @@ export function DJEventsView() {
                   <EventCard
                     key={e.id}
                     event={e}
-                    status="upcoming"
                     onView={() => router.push(`/events/${e.id}`)}
                     onEdit={() => router.push(`${basePath}/edit-event/${e.id}`)}
                   />
@@ -103,20 +97,15 @@ export function DJEventsView() {
         <section aria-label="Past events">
           <Collapsible>
             <CollapsibleTrigger className="group flex w-full items-center justify-between">
-              <SectionLabel>Past ({pastEvents.length})</SectionLabel>
+              <SectionLabel>Past ({doneEvents.length})</SectionLabel>
               <ChevronDownIcon className="size-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2 space-y-3">
-              {pastEvents.length === 0 ? (
+              {doneEvents.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No past events.</p>
               ) : (
-                pastEvents.map((e) => (
-                  <EventCard
-                    key={e.id}
-                    event={e}
-                    status="past"
-                    onView={() => router.push(`/events/${e.id}`)}
-                  />
+                doneEvents.map((e) => (
+                  <EventCard key={e.id} event={e} onView={() => router.push(`/events/${e.id}`)} />
                 ))
               )}
             </CollapsibleContent>

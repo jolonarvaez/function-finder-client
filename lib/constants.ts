@@ -162,7 +162,7 @@ export const VENUE_FILTERS = ["live-now", "nearest", "best-match"] as const;
 export type VenueFilter = (typeof VENUE_FILTERS)[number];
 
 export const VENUE_FILTER_LABELS: Record<VenueFilter, string> = {
-  "live-now": "Live Now",
+  "live-now": "Live",
   nearest: "Nearest",
   "best-match": "Best Match",
 };
