@@ -1,4 +1,4 @@
-import { parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { MAKATI_CENTER } from "@/lib/constants";
 import type { EventStatus, Genre } from "@/lib/constants";
 
@@ -76,6 +76,11 @@ export type EditDraft = {
 
 // ── Helpers ──────────────────────────────────────────────────
 
+/** Formats a local date as the "YYYY-MM-DD" string used by {@link DJEvent.date}. */
+export function toISODate(date: Date) {
+  return format(date, "yyyy-MM-dd");
+}
+
 export function formatTime(t: string) {
   const [h, m] = t.split(":").map(Number);
   const suffix = h >= 12 ? "PM" : "AM";
@@ -106,7 +111,7 @@ export function draftToPartial(draft: EditDraft, original: DJEvent): Partial<DJE
     name: draft.name.trim() || original.name,
     description: draft.description.trim() || undefined,
     category: draft.category || original.category,
-    date: `${draft.date.getFullYear()}-${String(draft.date.getMonth() + 1).padStart(2, "0")}-${String(draft.date.getDate()).padStart(2, "0")}`,
+    date: toISODate(draft.date),
     startTime: draft.startTime,
     endTime: draft.endTime,
     entryPrice: draft.entryPrice ? Number(draft.entryPrice) : undefined,

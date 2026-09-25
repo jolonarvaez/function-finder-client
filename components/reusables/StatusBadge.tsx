@@ -8,7 +8,7 @@ const STATUS_VARIANTS = {
   done: "outline",
 } as const;
 
-const STATUS_LABELS = {
+export const STATUS_LABELS = {
   live: "Live",
   upcoming: "Upcoming",
   done: "Done",

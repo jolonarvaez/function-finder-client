@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatTime, type DJEvent } from "./dj-event.types";
 import { CopyLinkButton } from "@/components/reusables/CopyLinkButton";
 import { StatusBadge } from "@/components/reusables/StatusBadge";
+import { cn } from "@/lib/utils";
 
 function GenreChips({ genres }: { genres: DJEvent["genres"] }) {
   return (
@@ -24,11 +25,12 @@ export type EventCardProps = {
   event: DJEvent;
   onEdit?: () => void;
   onView?: () => void;
+  className?: string;
 };
 
-export function EventCard({ event, onEdit, onView }: EventCardProps) {
+export function EventCard({ event, onEdit, onView, className }: EventCardProps) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+    <div className={cn("rounded-lg border border-border bg-card p-4 space-y-3", className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-0.5">
           <div className="flex items-center gap-2">
@@ -39,7 +41,11 @@ export function EventCard({ event, onEdit, onView }: EventCardProps) {
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground">
             <MapPinIcon className="size-3.5 shrink-0" />
-            {event.address && <p className="text-sm text-foreground">{event.address}</p>}
+            {event.address && (
+              <p data-slot="event-address" className="text-sm text-foreground">
+                {event.address}
+              </p>
+            )}
           </div>
         </div>
 
