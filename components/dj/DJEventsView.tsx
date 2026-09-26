@@ -114,7 +114,7 @@ export function DJEventsContent({
   onEdit,
 }: DJEventsContentProps) {
   return (
-    <PageContainer>
+    <PageContainer full>
       {/* Header */}
       <PageHeader title="My Events" icon={CalendarDaysIcon} showBack />
 

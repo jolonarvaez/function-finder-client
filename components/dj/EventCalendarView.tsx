@@ -13,10 +13,10 @@ import { toISODate, type DJEvent } from "./dj-event.types";
 /** Event names shown inside a day cell before collapsing into "+N more". */
 const MAX_VISIBLE_EVENTS = 2;
 
-/** Mirrors StatusBadge's emphasis: filled for live, muted for upcoming, outline for done. */
+/** Filled primary for events still ahead (live/upcoming), outline for done. */
 const CHIP_CLASSES: Record<DJEvent["status"], string> = {
   live: "bg-primary text-primary-foreground",
-  upcoming: "bg-secondary text-secondary-foreground",
+  upcoming: "bg-primary text-primary-foreground",
   done: "border border-border text-muted-foreground",
 };
 
@@ -80,16 +80,12 @@ function EventDayButton({ day, children, ...props }: React.ComponentProps<typeof
             }}
           >
             {children}
-            <div
-              aria-hidden
-              lang="en"
-              className="flex w-full min-w-0 flex-col gap-0.5 text-[0.6875rem] leading-tight"
-            >
+            <div aria-hidden lang="en" className="flex w-full min-w-0 flex-col gap-1 mt-1 text-xs">
               {events.slice(0, MAX_VISIBLE_EVENTS).map((e) => (
                 <span
                   key={e.id}
                   className={cn(
-                    "line-clamp-2 rounded-sm px-0.5 py-px font-medium whitespace-normal wrap-break-word hyphens-auto",
+                    "line-clamp-2 rounded-md py-1 font-medium whitespace-normal wrap-break-word hyphens-auto",
                     CHIP_CLASSES[e.status]
                   )}
                 >

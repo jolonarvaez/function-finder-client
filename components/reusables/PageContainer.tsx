@@ -7,10 +7,11 @@ import { cn } from "@/lib/utils";
 export function PageContainer({
   children,
   className,
-}: Readonly<{ children: React.ReactNode; className?: string }>) {
-  // `className` lets a wide page (e.g. the events grid) override the reading
-  // width without changing it for every other page.
-  return <div className={cn("mx-auto max-w-2xl px-4 py-6", className)}>{children}</div>;
+  full = false,
+}: Readonly<{ children: React.ReactNode; className?: string; full?: boolean }>) {
+  // `full` drops the reading width for pages that should span the viewport;
+  // `className` covers any other one-off width override.
+  return <div className={cn("mx-auto px-6 py-6", !full && "max-w-2xl", className)}>{children}</div>;
 }
 
 type PageHeaderProps = Readonly<{
