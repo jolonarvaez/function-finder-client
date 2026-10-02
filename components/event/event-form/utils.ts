@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format, isBefore, isValid, parseISO, startOfDay } from "date-fns";
 import { toast } from "sonner";
 import {
   EventImageError,
@@ -6,12 +6,13 @@ import {
   getEventPerformers,
   getTimezoneOffset,
   type ApiEvent,
+  type ExtractedEvent,
 } from "@/lib/services/events";
 // NOTE: `formatTime` above is the PARSER ("22:00:00+08" -> "22:00"). This is its
 // inverse-in-spirit, the display formatter ("22:00" -> "10PM"). Same name, opposite
 // jobs — aliased so the two can never be confused at a call site.
 import { formatTime as formatClockTime } from "@/components/dj/dj-event.types";
-import type { Genre } from "@/lib/constants";
+import { EVENT_CATEGORIES, GENRES, type Genre } from "@/lib/constants";
 import { DEFAULT_COORDINATES } from "./constants";
 import type { EventSummaryData, Performer, PerformerProfile, SummaryPerformer } from "./types";
 
@@ -188,4 +189,105 @@ export function toSummaryData(input: SummaryInput): EventSummaryData {
       .map(toSafeImageSrc)
       .filter((src): src is string => src !== null),
   };
+}
+
+// ── Poster autofill ───────────────────────────────────────────
+
+/** "Hip Hop", "hip-hop", "HIPHOP" -> "hiphop"; "Reggaetón" -> "reggaeton". */
+function normalizeLabel(raw: string): string {
+  return raw
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+/** Spellings flyers use that don't normalize onto a `GENRES` entry by themselves. */
+const GENRE_ALIASES: Record<string, Genre> = {
+  drumandbass: "DnB",
+  drumnbass: "DnB",
+  drumbass: "DnB",
+  rhythmandblues: "RnB",
+  randb: "RnB",
+  rap: "Hip-Hop",
+  afrobeat: "Afrobeats",
+  afro: "Afrobeats",
+};
+
+function matchGenre(raw: string): Genre | null {
+  const key = normalizeLabel(raw);
+  return GENRES.find((g) => normalizeLabel(g) === key) ?? GENRE_ALIASES[key] ?? null;
+}
+
+function matchCategory(raw: string): string | null {
+  const key = normalizeLabel(raw);
+  return EVENT_CATEGORIES.find((c) => normalizeLabel(c) === key) ?? null;
+}
+
+/** Form-state values a poster can fill. Keys are absent when the poster didn't provide them. */
+export type AutofillValues = Partial<
+  Pick<
+    InitialState,
+    | "name"
+    | "description"
+    | "category"
+    | "date"
+    | "startTime"
+    | "endTime"
+    | "entryPrice"
+    | "ticketLink"
+    | "genres"
+    | "address"
+  >
+>;
+
+/**
+ * Maps the extraction response into form-state values. Anything that can't be
+ * represented by the form (a past date, a category or genre outside the fixed
+ * lists) is dropped rather than half-applied. `datePassed` flags a skipped
+ * past date so the UI can tell the user to pick a new one.
+ */
+export function mapExtractedEvent(
+  extracted: ExtractedEvent,
+  today: Date
+): { values: AutofillValues; datePassed: boolean } {
+  const values: AutofillValues = {};
+  let datePassed = false;
+
+  const trimmed = (v: string | null) => v?.trim() || undefined;
+
+  values.name = trimmed(extracted.name);
+  values.description = trimmed(extracted.description);
+  values.ticketLink = trimmed(extracted.ticket_link);
+  values.address = trimmed(extracted.custom_location?.address ?? null);
+
+  if (extracted.category) values.category = matchCategory(extracted.category) ?? undefined;
+
+  if (extracted.date) {
+    const parsed = parseISO(extracted.date);
+    // The create-mode calendar can't show a past date as selected, so don't set one.
+    if (isValid(parsed)) {
+      if (isBefore(parsed, startOfDay(today))) datePassed = true;
+      else values.date = parsed;
+    }
+  }
+
+  // API times are "HH:MM:SS+off" — the form inputs hold "HH:MM".
+  if (extracted.start_time) values.startTime = formatTime(extracted.start_time);
+  if (extracted.end_time) values.endTime = formatTime(extracted.end_time);
+
+  if (extracted.entry_price != null) values.entryPrice = String(extracted.entry_price);
+
+  const genres = [
+    ...new Set((extracted.genres ?? []).map(matchGenre).filter((g): g is Genre => g !== null)),
+  ];
+  // Only replace the profile-default genres when the poster named one we support.
+  if (genres.length > 0) values.genres = genres;
+
+  // Drop the keys left undefined above, so callers can check `key in values`.
+  for (const key of Object.keys(values) as (keyof AutofillValues)[]) {
+    if (values[key] === undefined) delete values[key];
+  }
+
+  return { values, datePassed };
 }

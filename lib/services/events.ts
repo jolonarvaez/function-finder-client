@@ -83,6 +83,29 @@ type ApiSingleResponse = {
   data: ApiEvent;
 };
 
+/**
+ * Fields read off a flyer by `POST /events/extract`. Nothing is persisted; every
+ * field is null when the flyer doesn't state it. The address has no coordinates.
+ */
+type ExtractedEvent = {
+  name: string | null;
+  description: string | null;
+  category: string | null;
+  date: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  entry_price: number | null;
+  ticket_link: string | null;
+  genres: string[] | null;
+  custom_location: { address: string | null } | null;
+};
+
+type ApiExtractResponse = {
+  status: number;
+  message: string;
+  data: ExtractedEvent;
+};
+
 // ── Helpers ───────────────────────────────────────────────────
 
 /** "10:00:00+08" → "10:00" */
@@ -252,7 +275,18 @@ async function reorderEventImages(eventId: string, imageIds: string[]): Promise<
   }
 }
 
-export type { ApiEvent, ApiUser, ApiEventPerformer };
+/** Reads event details off a flyer image. Throws the raw AxiosError on failure. */
+async function extractEventFromPoster(file: File): Promise<ExtractedEvent> {
+  const body = new FormData();
+  body.append("file", file);
+  // Override the instance's JSON default — otherwise axios serializes FormData to JSON.
+  const { data } = await api.post<ApiExtractResponse>("/events/extract", body, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data.data;
+}
+
+export type { ApiEvent, ApiUser, ApiEventPerformer, ExtractedEvent };
 export {
   getEventsList,
   getEvent,
@@ -264,6 +298,7 @@ export {
   deleteEventImage,
   reorderEventImages,
   reorderEventPerformers,
+  extractEventFromPoster,
   toIsoDate,
   formatTime,
   toApiTime,

@@ -31,6 +31,8 @@ import { AddressAutocomplete } from "./AddressAutocomplete";
 import { PerformerSelector } from "./PerformerSelector";
 import { EventImageManager } from "./EventImageManager";
 import { StagedImagePicker } from "./StagedImagePicker";
+import { PosterAutofill } from "./PosterAutofill";
+import { usePosterAutofill } from "./use-poster-autofill";
 import { cn } from "@/lib/utils";
 import { EVENT_CATEGORIES, type Genre } from "@/lib/constants";
 import { toIsoDate, toApiTime, getTimezoneOffset, type ApiEvent } from "@/lib/services/events";
@@ -40,9 +42,15 @@ import { PageContainer, PageHeader } from "../../reusables/PageContainer";
 import { StepIndicator } from "@/components/reusables/StepIndicator";
 import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
 import { CREATE_STEP_COUNT, FORM_STEP_LABEL, MODE_CONFIG, REVIEW_STEP } from "./constants";
-import { buildInitialState, isTicketLinkValid, normalizeTicketLink, toSummaryData } from "./utils";
+import {
+  buildInitialState,
+  isTicketLinkValid,
+  normalizeTicketLink,
+  toSummaryData,
+  type AutofillValues,
+} from "./utils";
 import { EventSummary } from "./EventSummary";
-import type { EventFormMode, EventFormValues, Performer } from "./types";
+import type { EventFormMode, EventFormValues, Performer, StagedImage } from "./types";
 
 export type { EventFormMode, EventFormValues };
 
@@ -85,7 +93,16 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   const [liveEvent, setLiveEvent] = useState<ApiEvent | undefined>(initialEvent);
 
   // Create mode: image files staged in memory, uploaded after the event is created.
-  const [staged, setStaged] = useState<{ file: File; preview: string }[]>([]);
+  const [staged, setStaged] = useState<StagedImage[]>([]);
+
+  // Create mode: "autofill from poster". The poster is staged as the cover image.
+  const posterAutofill = usePosterAutofill({
+    staged,
+    setStaged,
+    onExtracted: applyAutofill,
+    onLocated: setCoordinates,
+  });
+  const extracting = posterAutofill.extracting;
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -143,6 +160,19 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item!);
     setStaged(next);
+  }
+
+  function applyAutofill(values: AutofillValues) {
+    if (values.name !== undefined) setEventName(values.name);
+    if (values.description !== undefined) setDescription(values.description);
+    if (values.category !== undefined) setCategory(values.category);
+    if (values.date !== undefined) setDate(values.date);
+    if (values.startTime !== undefined) setStartTime(values.startTime);
+    if (values.endTime !== undefined) setEndTime(values.endTime);
+    if (values.entryPrice !== undefined) setEntryPrice(values.entryPrice);
+    if (values.ticketLink !== undefined) setTicketLink(values.ticketLink);
+    if (values.genres !== undefined) setSelectedGenres(values.genres);
+    if (values.address !== undefined) setAddress(values.address);
   }
 
   async function submitValues() {
@@ -293,237 +323,253 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
           attribute — not the Tailwind class — also drops it from the a11y tree. */}
       <div className="flex-1" hidden={isSummary}>
         <form id={config.formId} onSubmit={handleFormSubmit} className="space-y-4 pb-6">
-          {/* ── Details ─────────────────────────────────── */}
-          <SectionHeader>Details</SectionHeader>
+          {!isEdit && <PosterAutofill {...posterAutofill.cardProps} />}
 
-          <Field>
-            <FieldLabel htmlFor="event-name">Event Name</FieldLabel>
-            <div className="relative">
-              <SparklesIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="event-name"
-                required
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                placeholder="Friday Night Fever"
-                className="h-11 rounded-lg pl-10 dark:bg-card"
-              />
-            </div>
-          </Field>
+          {/* Locked while a poster is being read, so nothing typed now gets
+              overwritten a moment later. */}
+          <fieldset
+            disabled={extracting}
+            aria-busy={extracting}
+            className={cn(
+              "min-w-0 space-y-4 transition-opacity duration-200 ease-out",
+              extracting && "opacity-60"
+            )}
+          >
+            {/* ── Details ─────────────────────────────────── */}
+            <SectionHeader>Details</SectionHeader>
 
-          <Field>
-            <FieldLabel htmlFor="description">
-              Description <span className="text-muted-foreground">(Optional)</span>
-            </FieldLabel>
-            <div className="relative">
-              <AlignLeftIcon className="absolute left-3 top-3 size-4 shrink-0 text-muted-foreground" />
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Tell people what to expect at your event..."
-                className="min-h-24 rounded-lg pl-10 dark:bg-card"
-              />
-            </div>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="category">Category</FieldLabel>
-            <Select value={category} onValueChange={setCategory} required>
-              <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
-                <div className="flex items-center gap-2">
-                  <TagIcon className="size-4 text-muted-foreground" />
-                  <SelectValue placeholder="Select a category" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {EVENT_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-
-          {/* ── Lineup ──────────────────────────────────── */}
-          <div className="border-t border-border pt-4">
-            <SectionHeader>Lineup</SectionHeader>
-          </div>
-
-          <Field>
-            <FieldLabel htmlFor="performer-search">Performers</FieldLabel>
-            <PerformerSelector
-              selected={performers}
-              onChange={setPerformers}
-              currentUser={profile ?? null}
-            />
-          </Field>
-
-          {/* ── Date & Time ─────────────────────────────── */}
-          <div className="border-t border-border pt-4">
-            <SectionHeader>Date & Time</SectionHeader>
-          </div>
-
-          <Field>
-            <FieldLabel htmlFor="date-picker">Date</FieldLabel>
-            <Popover open={dateOpen} onOpenChange={setDateOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date-picker"
-                  variant="outline"
-                  className={cn(
-                    "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  {date ? format(date, "PPP") : "Select date"}
-                  <ChevronDownIcon className="size-4 text-muted-foreground" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  captionLayout="dropdown"
-                  defaultMonth={date}
-                  onSelect={(d) => {
-                    if (d) {
-                      setDate(d);
-                      setDateOpen(false);
-                    }
-                  }}
-                  disabled={
-                    isEdit ? undefined : (d) => d < new Date(new Date().setHours(0, 0, 0, 0))
-                  }
+            <Field>
+              <FieldLabel htmlFor="event-name">Event Name</FieldLabel>
+              <div className="relative">
+                <SparklesIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="event-name"
+                  required
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}
+                  placeholder="Friday Night Fever"
+                  className="h-11 rounded-lg pl-10 dark:bg-card"
                 />
-              </PopoverContent>
-            </Popover>
-          </Field>
-
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
-            <Field>
-              <FieldLabel htmlFor="start-time">Start Time</FieldLabel>
-              <Input
-                id="start-time"
-                type="time"
-                step={60}
-                required
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-              />
+              </div>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="end-time">End Time</FieldLabel>
-              <Input
-                id="end-time"
-                type="time"
-                step={60}
-                required
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              <FieldLabel htmlFor="description">
+                Description <span className="text-muted-foreground">(Optional)</span>
+              </FieldLabel>
+              <div className="relative">
+                <AlignLeftIcon className="absolute left-3 top-3 size-4 shrink-0 text-muted-foreground" />
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Tell people what to expect at your event..."
+                  className="min-h-24 rounded-lg pl-10 dark:bg-card"
+                />
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="category">Category</FieldLabel>
+              <Select value={category} onValueChange={setCategory} required>
+                <SelectTrigger id="category" className="h-11 w-full rounded-lg dark:bg-card">
+                  <div className="flex items-center gap-2">
+                    <TagIcon className="size-4 text-muted-foreground" />
+                    <SelectValue placeholder="Select a category" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {EVENT_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+
+            {/* ── Lineup ──────────────────────────────────── */}
+            <div className="border-t border-border pt-4">
+              <SectionHeader>Lineup</SectionHeader>
+            </div>
+
+            <Field>
+              <FieldLabel htmlFor="performer-search">Performers</FieldLabel>
+              <PerformerSelector
+                selected={performers}
+                onChange={setPerformers}
+                currentUser={profile ?? null}
               />
             </Field>
-          </div>
 
-          {!isEdit && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <GlobeIcon className="size-3 shrink-0" />
-              <span>
-                {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC
-                {getTimezoneOffset().replace(/(\d{2})(\d{2})$/, "$1:$2")})
-              </span>
+            {/* ── Date & Time ─────────────────────────────── */}
+            <div className="border-t border-border pt-4">
+              <SectionHeader>Date & Time</SectionHeader>
             </div>
-          )}
 
-          <Field>
-            <FieldLabel htmlFor="entry-price">
-              Entry Price <span className="text-muted-foreground">(Optional)</span>
-            </FieldLabel>
-            <div className="relative">
-              <PhilippinePesoIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="entry-price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={entryPrice}
-                onChange={(e) => setEntryPrice(e.target.value)}
-                placeholder="0.00"
-                className="h-11 rounded-lg pl-10 dark:bg-card"
+            <Field>
+              <FieldLabel htmlFor="date-picker">Date</FieldLabel>
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date-picker"
+                    variant="outline"
+                    className={cn(
+                      "h-11 w-full justify-between rounded-lg font-normal dark:bg-card",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    {date ? format(date, "PPP") : "Select date"}
+                    <ChevronDownIcon className="size-4 text-muted-foreground" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    captionLayout="dropdown"
+                    defaultMonth={date}
+                    onSelect={(d) => {
+                      if (d) {
+                        setDate(d);
+                        setDateOpen(false);
+                      }
+                    }}
+                    disabled={
+                      isEdit ? undefined : (d) => d < new Date(new Date().setHours(0, 0, 0, 0))
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </Field>
+
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
+              <Field>
+                <FieldLabel htmlFor="start-time">Start Time</FieldLabel>
+                <Input
+                  id="start-time"
+                  type="time"
+                  step={60}
+                  required
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="end-time">End Time</FieldLabel>
+                <Input
+                  id="end-time"
+                  type="time"
+                  step={60}
+                  required
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="h-11 appearance-none rounded-lg dark:bg-card [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                />
+              </Field>
+            </div>
+
+            {!isEdit && (
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <GlobeIcon className="size-3 shrink-0" />
+                <span>
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC
+                  {getTimezoneOffset().replace(/(\d{2})(\d{2})$/, "$1:$2")})
+                </span>
+              </div>
+            )}
+
+            <Field>
+              <FieldLabel htmlFor="entry-price">
+                Entry Price <span className="text-muted-foreground">(Optional)</span>
+              </FieldLabel>
+              <div className="relative">
+                <PhilippinePesoIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="entry-price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={entryPrice}
+                  onChange={(e) => setEntryPrice(e.target.value)}
+                  placeholder="0.00"
+                  className="h-11 rounded-lg pl-10 dark:bg-card"
+                />
+              </div>
+            </Field>
+
+            <Field data-invalid={!ticketLinkValid || undefined}>
+              <FieldLabel htmlFor="ticket-link">
+                Ticket Link <span className="text-muted-foreground">(Optional)</span>
+              </FieldLabel>
+              <div className="relative">
+                <TicketCheck className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="ticket-link"
+                  type="url"
+                  inputMode="url"
+                  autoComplete="url"
+                  value={ticketLink}
+                  onChange={(e) => setTicketLink(e.target.value)}
+                  onBlur={() => setTicketLink(normalizeTicketLink(ticketLink) ?? "")}
+                  placeholder="https://tickets.example.com/your-event"
+                  aria-invalid={!ticketLinkValid}
+                  aria-describedby="ticket-link-description"
+                  className="h-11 rounded-lg pl-10 dark:bg-card"
+                />
+              </div>
+              <FieldDescription id="ticket-link-description" aria-live="polite">
+                {ticketLinkValid
+                  ? "Where attendees can buy tickets. We'll add https:// if you leave it off."
+                  : "Enter a valid ticket URL, e.g. https://tickets.example.com/your-event."}
+              </FieldDescription>
+            </Field>
+
+            <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
+
+            {/* ── Location ────────────────────────────────── */}
+            <div className="border-t border-border pt-4">
+              <SectionHeader>Location</SectionHeader>
+            </div>
+
+            <Field>
+              <FieldLabel htmlFor="address">Address</FieldLabel>
+              <AddressAutocomplete
+                value={address}
+                onChange={setAddress}
+                onSelect={handleAddressSelect}
               />
-            </div>
-          </Field>
+            </Field>
 
-          <Field data-invalid={!ticketLinkValid || undefined}>
-            <FieldLabel htmlFor="ticket-link">
-              Ticket Link <span className="text-muted-foreground">(Optional)</span>
-            </FieldLabel>
-            <div className="relative">
-              <TicketCheck className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="ticket-link"
-                type="url"
-                inputMode="url"
-                autoComplete="url"
-                value={ticketLink}
-                onChange={(e) => setTicketLink(e.target.value)}
-                onBlur={() => setTicketLink(normalizeTicketLink(ticketLink) ?? "")}
-                placeholder="https://tickets.example.com/your-event"
-                aria-invalid={!ticketLinkValid}
-                aria-describedby="ticket-link-description"
-                className="h-11 rounded-lg pl-10 dark:bg-card"
+            <LocationPicker
+              coordinates={coordinates}
+              onCoordinatesChange={handleCoordinatesChange}
+            />
+
+            {/* ── Images ──────────────────────────────────── */}
+            <div className="border-t border-border pt-4">
+              <SectionHeader>Images</SectionHeader>
+            </div>
+
+            {isEdit && liveEvent && profile ? (
+              <EventImageManager
+                eventId={liveEvent.id}
+                userId={profile.id}
+                images={liveEvent.event_images}
+                onChange={setLiveEvent}
               />
-            </div>
-            <FieldDescription id="ticket-link-description" aria-live="polite">
-              {ticketLinkValid
-                ? "Where attendees can buy tickets. We'll add https:// if you leave it off."
-                : "Enter a valid ticket URL, e.g. https://tickets.example.com/your-event."}
-            </FieldDescription>
-          </Field>
-
-          <GenreSelector selected={selectedGenres} onChange={setSelectedGenres} />
-
-          {/* ── Location ────────────────────────────────── */}
-          <div className="border-t border-border pt-4">
-            <SectionHeader>Location</SectionHeader>
-          </div>
-
-          <Field>
-            <FieldLabel htmlFor="address">Address</FieldLabel>
-            <AddressAutocomplete
-              value={address}
-              onChange={setAddress}
-              onSelect={handleAddressSelect}
-            />
-          </Field>
-
-          <LocationPicker coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
-
-          {/* ── Images ──────────────────────────────────── */}
-          <div className="border-t border-border pt-4">
-            <SectionHeader>Images</SectionHeader>
-          </div>
-
-          {isEdit && liveEvent && profile ? (
-            <EventImageManager
-              eventId={liveEvent.id}
-              userId={profile.id}
-              images={liveEvent.event_images}
-              onChange={setLiveEvent}
-            />
-          ) : (
-            <StagedImagePicker
-              previews={staged.map((s) => s.preview)}
-              onAdd={handleStagedAdd}
-              onRemove={handleStagedRemove}
-              onSetCover={(i) => handleStagedReorder(i, 0)}
-              onReorder={handleStagedReorder}
-            />
-          )}
+            ) : (
+              <StagedImagePicker
+                previews={staged.map((s) => s.preview)}
+                onAdd={handleStagedAdd}
+                onRemove={handleStagedRemove}
+                onSetCover={(i) => handleStagedReorder(i, 0)}
+                onReorder={handleStagedReorder}
+              />
+            )}
+          </fieldset>
         </form>
       </div>
 
@@ -548,7 +594,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
             ref={advanceButtonRef}
             type="submit"
             form={config.formId}
-            disabled={!isValid || submitting}
+            disabled={!isValid || submitting || extracting}
             className="h-12 w-full rounded-lg text-sm font-semibold"
           >
             {isEdit ? submitLabel : REVIEW_STEP.advanceLabel}

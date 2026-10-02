@@ -11,6 +11,9 @@ export type PerformerProfile = {
   genre_tags: string[];
 };
 
+/** Create mode: an image held in memory until the event exists, with its blob preview URL. */
+export type StagedImage = { file: File; preview: string };
+
 export type Performer = PerformerProfile & {
   /** Form-local set times as "HH:MM"; empty string when unset. */
   set_start_time: string;

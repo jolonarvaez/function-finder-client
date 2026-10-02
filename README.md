@@ -83,7 +83,7 @@ Core flows:
 1. **Discover** — the map plots events as pins; nearby ones cluster and separate as you zoom. `/events` shows the same filtered set as cards.
 2. **Filter** — genre, status (`live` / `upcoming` / `done`), and a date range, held in one shared store so the map and the list never disagree.
 3. **Onboard** — a 4-step flow (role → profile → genres → summary) after signup.
-4. **Publish** — DJs and hosts create events with image galleries, a map location picker with address autocomplete, and an ordered performer lineup.
+4. **Publish** — DJs and hosts create events with image galleries, a map location picker with address autocomplete, and an ordered performer lineup. On create, they can upload a flyer to **autofill the form**: the backend reads the poster with AI, the form is prefilled with whatever it found, and the poster becomes the event's cover image.
 
 ---
 
@@ -183,7 +183,8 @@ Basemap tiles come from **Carto** and need no key.
    browser ────────▶│  Supabase                    │  auth, session, image storage
                     └──────────────────────────────┘
 
-   browser ──▶ /api/backend/*  ──rewrite──▶  NEXT_PUBLIC_API_URL   events, users, lineups
+   browser ──▶ /api/backend/*  ──rewrite──▶  NEXT_PUBLIC_API_URL   events, users, lineups,
+                                                                    flyer extraction (AI)
 
    browser ──▶ /api/geocode/*  ──route handler──▶  Google Places   address search
 ```
@@ -219,7 +220,7 @@ components/
   map/                    MapView, markers, filters, geolocation
     clusters/             supercluster hook + cluster bubble marker
   event/                  list, detail, cards, gallery
-    event-form/           create/edit form, location picker, performer selector
+    event-form/           create/edit form, poster autofill, location picker, performer selector
   dj/  onboarding/  profile/  settings/  venues/  legal/
   shared/                 cross-feature widgets (Logo, GenreSelector, Footer…)
   reusables/              generic helpers (PageContainer, CountrySelect…)
