@@ -161,9 +161,10 @@ export function EventImageManager({ eventId, userId, images, onChange }: Props) 
               ) : (
                 <button
                   type="button"
+                  aria-label="Set as cover image"
                   disabled={reordering || isBusy}
                   onClick={() => handleSetCover(image.id)}
-                  className="absolute bottom-1 left-1 rounded-full bg-background/85 px-1.5 py-0.5 text-[9px] font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-background disabled:opacity-50"
+                  className="absolute bottom-1 left-1 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background/85 px-3 text-xs font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
                 >
                   Cover
                 </button>
