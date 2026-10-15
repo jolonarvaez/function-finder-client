@@ -133,9 +133,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
           <div className="space-y-3 p-3">
             {/* Status */}
             <div className="space-y-1.5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Status
-              </p>
+              <p className="text-sm font-semibold text-foreground">Status</p>
               <div className="flex flex-wrap gap-1.5">
                 {EVENT_STATUSES.map((status) => {
                   const isSelected = status === eventStatus;
@@ -165,9 +163,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
 
             {/* Genre */}
             <div className="space-y-1.5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Genre
-              </p>
+              <p className="text-sm font-semibold text-foreground">Genre</p>
               <GenreSelector
                 selected={selectedGenres}
                 onChange={setSelectedGenres}
@@ -180,9 +176,7 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
 
             {/* Date */}
             <div className="space-y-1.5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Date
-              </p>
+              <p className="text-sm font-semibold text-foreground">Date</p>
 
               <RadioGroup
                 value={dateOption ?? ""}

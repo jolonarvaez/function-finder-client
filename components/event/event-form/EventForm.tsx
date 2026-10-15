@@ -61,11 +61,7 @@ type EventFormProps = Readonly<{
 }>;
 
 function SectionHeader({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-      {children}
-    </h2>
-  );
+  return <h2 className="text-sm font-semibold text-foreground">{children}</h2>;
 }
 
 export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {

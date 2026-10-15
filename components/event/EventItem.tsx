@@ -121,9 +121,9 @@ export function EventItem({ event }: Props) {
       <div className="relative z-10 border-t border-border px-4 pb-4 pt-3">
         {performers.length > 0 && (
           <div className="mb-3 flex flex-col gap-2">
-            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Turntable className="size-3.5 shrink-0" />
-              {isLive ? "Now Playing" : "Lineup"}
+              {isLive ? "Now playing" : "Lineup"}
             </p>
             <div className="flex items-center gap-3">
               {performers.length > 1 ? (

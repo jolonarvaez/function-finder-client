@@ -26,7 +26,7 @@ export type EventSummaryProps = Readonly<{
 function SummaryRow({ label, children }: Readonly<{ label: string; children: React.ReactNode }>) {
   return (
     <div className="space-y-1">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
       {children}
     </div>
   );
