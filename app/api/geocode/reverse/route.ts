@@ -11,13 +11,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing lat/lng" }, { status: 400 });
   }
 
+  const latNum = Number(lat);
+  const lngNum = Number(lng);
+  if (
+    !Number.isFinite(latNum) ||
+    !Number.isFinite(lngNum) ||
+    latNum < -90 ||
+    latNum > 90 ||
+    lngNum < -180 ||
+    lngNum > 180
+  ) {
+    return NextResponse.json({ error: "Invalid lat/lng" }, { status: 400 });
+  }
+
   if (!API_KEY) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const res = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`
-  );
+  const params = new URLSearchParams({ latlng: `${latNum},${lngNum}`, key: API_KEY });
+  const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?${params}`);
   const data = await res.json();
 
   if (data.status !== "OK" || !data.results?.length) {

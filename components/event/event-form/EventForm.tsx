@@ -44,6 +44,7 @@ import { MAX_EVENT_IMAGES } from "@/components/dj/dj-event.types";
 import { CREATE_STEP_COUNT, FORM_STEP_LABEL, MODE_CONFIG, REVIEW_STEP } from "./constants";
 import {
   buildInitialState,
+  isEntryPriceValid,
   isTicketLinkValid,
   normalizeTicketLink,
   toSummaryData,
@@ -231,6 +232,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
   }
 
   const ticketLinkValid = isTicketLinkValid(ticketLink);
+  const entryPriceValid = isEntryPriceValid(entryPrice);
 
   const isValid =
     eventName.trim() &&
@@ -240,7 +242,8 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
     endTime &&
     selectedGenres.length > 0 &&
     address.trim() &&
-    ticketLinkValid;
+    ticketLinkValid &&
+    entryPriceValid;
 
   const submitLabel = submitting ? config.busyLabel : config.idleLabel;
 
@@ -477,7 +480,7 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
               </div>
             )}
 
-            <Field>
+            <Field data-invalid={!entryPriceValid || undefined}>
               <FieldLabel htmlFor="entry-price">
                 Entry Price <span className="text-muted-foreground">(Optional)</span>
               </FieldLabel>
@@ -491,9 +494,16 @@ export function EventForm({ mode, initialEvent, onSubmit }: EventFormProps) {
                   value={entryPrice}
                   onChange={(e) => setEntryPrice(e.target.value)}
                   placeholder="0.00"
+                  aria-invalid={!entryPriceValid}
+                  aria-describedby="entry-price-description"
                   className="h-11 rounded-lg pl-10 dark:bg-card"
                 />
               </div>
+              {!entryPriceValid && (
+                <FieldDescription id="entry-price-description" aria-live="polite">
+                  Enter a valid, non-negative price, or leave it blank for free entry.
+                </FieldDescription>
+              )}
             </Field>
 
             <Field data-invalid={!ticketLinkValid || undefined}>

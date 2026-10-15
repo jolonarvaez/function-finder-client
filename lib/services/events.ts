@@ -133,6 +133,20 @@ function getEventHost(event: ApiEvent): ApiUser | null {
   );
 }
 
+const SAFE_TICKET_LINK_SCHEME_RE = /^https?:\/\//i;
+
+/**
+ * Drops any ticket_link that isn't a plain http(s) URL before it ever reaches
+ * a UI `href` — a defense-in-depth backstop in case a non-http(s) value (e.g.
+ * a stray `javascript:` URI) ever makes it into the API response.
+ */
+function sanitizeEvent(event: ApiEvent): ApiEvent {
+  if (event.ticket_link && !SAFE_TICKET_LINK_SCHEME_RE.test(event.ticket_link)) {
+    return { ...event, ticket_link: null };
+  }
+  return event;
+}
+
 /** Returns the browser's UTC offset as "+HHMM" or "-HHMM" (no colon, per the API's OffsetTime format). */
 function getTimezoneOffset(): string {
   const offsetMinutes = -new Date().getTimezoneOffset();
@@ -213,12 +227,12 @@ export type UpdateEventBody = {
 
 async function createEvent(body: CreateEventBody): Promise<ApiEvent> {
   const { data } = await api.post<ApiSingleResponse>("/events", body);
-  return data.data;
+  return sanitizeEvent(data.data);
 }
 
 async function updateEvent(id: string, body: UpdateEventBody): Promise<ApiEvent> {
   const { data } = await api.patch<ApiSingleResponse>(`/events/${id}`, body);
-  return data.data;
+  return sanitizeEvent(data.data);
 }
 
 /** Persists lineup order. `performerIds` are `event_performers` row ids (not user ids) and must exactly match the event's existing performer set. */
@@ -226,12 +240,12 @@ async function reorderEventPerformers(eventId: string, performerIds: string[]): 
   const { data } = await api.patch<ApiSingleResponse>(`/events/${eventId}/performers/order`, {
     performerIds,
   });
-  return data.data;
+  return sanitizeEvent(data.data);
 }
 
 async function getEvent(id: string, signal?: AbortSignal): Promise<ApiEvent> {
   const { data } = await api.get<ApiSingleResponse>(`/events/${id}`, { signal });
-  return data.data;
+  return sanitizeEvent(data.data);
 }
 
 async function getEventsList({ startDate, endDate, genres, status }: GetEventsParams = {}): Promise<
@@ -243,13 +257,13 @@ async function getEventsList({ startDate, endDate, genres, status }: GetEventsPa
   if (genres && genres.length > 0) params.genres = genres.map((g) => g.toLowerCase()).join(",");
   if (status && status !== "all") params.status = status;
   const { data } = await api.get<ApiResponse>("/events", { params });
-  return data.data;
+  return data.data.map(sanitizeEvent);
 }
 
 async function addEventImages(eventId: string, urls: string[]): Promise<ApiEvent> {
   try {
     const { data } = await api.post<ApiSingleResponse>(`/events/${eventId}/images`, { urls });
-    return data.data;
+    return sanitizeEvent(data.data);
   } catch (err) {
     throw toImageError(err);
   }
@@ -258,7 +272,7 @@ async function addEventImages(eventId: string, urls: string[]): Promise<ApiEvent
 async function deleteEventImage(eventId: string, imageId: string): Promise<ApiEvent> {
   try {
     const { data } = await api.delete<ApiSingleResponse>(`/events/${eventId}/images/${imageId}`);
-    return data.data;
+    return sanitizeEvent(data.data);
   } catch (err) {
     throw toImageError(err);
   }
@@ -269,7 +283,7 @@ async function reorderEventImages(eventId: string, imageIds: string[]): Promise<
     const { data } = await api.patch<ApiSingleResponse>(`/events/${eventId}/images/order`, {
       imageIds,
     });
-    return data.data;
+    return sanitizeEvent(data.data);
   } catch (err) {
     throw toImageError(err);
   }

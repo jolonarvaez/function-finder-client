@@ -116,6 +116,13 @@ export function isTicketLinkValid(raw: string): boolean {
   }
 }
 
+/** True when the entry price is empty or a finite, non-negative number. */
+export function isEntryPriceValid(raw: string): boolean {
+  if (!raw.trim()) return true;
+  const value = Number.parseFloat(raw);
+  return Number.isFinite(value) && value >= 0;
+}
+
 /**
  * Allowlist for image `src` values: only the in-memory previews we created
  * ourselves. Never lets a remote or user-supplied string reach an <img>.
