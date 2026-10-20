@@ -44,7 +44,7 @@ function todayLabel() {
 
 export function MapFilters({ defaultOpen = false, defaultDate, className }: MapFiltersProps) {
   const [open, setOpen] = React.useState(defaultOpen);
-  const [dateOption, setDateOption] = React.useState<DateOption | null>(null);
+  const [dateOption, setDateOption] = React.useState<DateOption | null>("week");
 
   const {
     selectedGenres,
@@ -59,7 +59,6 @@ export function MapFilters({ defaultOpen = false, defaultDate, className }: MapF
 
   React.useEffect(() => {
     setDateRange("week", defaultDate ?? new Date());
-    setDateOption("week");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
