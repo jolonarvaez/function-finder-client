@@ -192,7 +192,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const isControlled = viewport !== undefined && onViewportChange !== undefined;
 
   const onViewportChangeRef = useRef(onViewportChange);
-  onViewportChangeRef.current = onViewportChange;
+  useEffect(() => {
+    onViewportChangeRef.current = onViewportChange;
+  });
 
   const mapStyles = useMemo(
     () => ({
@@ -398,14 +400,16 @@ function MapMarker({
     onDrag,
     onDragEnd,
   });
-  callbacksRef.current = {
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    onDragStart,
-    onDrag,
-    onDragEnd,
-  };
+  useEffect(() => {
+    callbacksRef.current = {
+      onClick,
+      onMouseEnter,
+      onMouseLeave,
+      onDragStart,
+      onDrag,
+      onDragEnd,
+    };
+  });
 
   const marker = useMemo(() => {
     const markerInstance = new MapLibreGL.Marker({
@@ -418,9 +422,16 @@ function MapMarker({
     const handleMouseEnter = (e: MouseEvent) => callbacksRef.current.onMouseEnter?.(e);
     const handleMouseLeave = (e: MouseEvent) => callbacksRef.current.onMouseLeave?.(e);
 
+    // These handlers only ever run later, from a real DOM event — never during
+    // this render — but the lint rule can't prove that for a ref read inside a
+    // closure registered from a `useMemo` factory. Moving marker creation into
+    // an effect would satisfy it, but would make `marker` briefly null on the
+    // first render, which every consumer of useMarkerContext() assumes it never is.
+    /* eslint-disable react-hooks/refs -- see comment above */
     markerInstance.getElement()?.addEventListener("click", handleClick);
     markerInstance.getElement()?.addEventListener("mouseenter", handleMouseEnter);
     markerInstance.getElement()?.addEventListener("mouseleave", handleMouseLeave);
+    /* eslint-enable react-hooks/refs */
 
     const handleDragStart = () => {
       const lngLat = markerInstance.getLngLat();
@@ -435,9 +446,11 @@ function MapMarker({
       callbacksRef.current.onDragEnd?.({ lng: lngLat.lng, lat: lngLat.lat });
     };
 
+    /* eslint-disable react-hooks/refs -- see comment above */
     markerInstance.on("dragstart", handleDragStart);
     markerInstance.on("drag", handleDrag);
     markerInstance.on("dragend", handleDragEnd);
+    /* eslint-enable react-hooks/refs */
 
     return markerInstance;
 
@@ -559,7 +572,8 @@ function MarkerPopup({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  if (popup.isOpen()) {
+  useEffect(() => {
+    if (!popup.isOpen()) return;
     const prev = prevPopupOptions.current;
 
     if (prev.offset !== popupOptions.offset) {
@@ -570,7 +584,7 @@ function MarkerPopup({
     }
 
     prevPopupOptions.current = popupOptions;
-  }
+  }, [popup, popupOptions]);
 
   const handleClose = () => popup.remove();
 
@@ -643,7 +657,8 @@ function MarkerTooltip({ children, className, ...popupOptions }: MarkerTooltipPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  if (tooltip.isOpen()) {
+  useEffect(() => {
+    if (!tooltip.isOpen()) return;
     const prev = prevTooltipOptions.current;
 
     if (prev.offset !== popupOptions.offset) {
@@ -654,7 +669,7 @@ function MarkerTooltip({ children, className, ...popupOptions }: MarkerTooltipPr
     }
 
     prevTooltipOptions.current = popupOptions;
-  }
+  }, [tooltip, popupOptions]);
 
   return createPortal(
     <div
@@ -926,7 +941,9 @@ function MapPopup({
   const { map } = useMap();
   const popupOptionsRef = useRef(popupOptions);
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
   const container = useMemo(() => document.createElement("div"), []);
 
   const popup = useMemo(() => {
@@ -961,7 +978,8 @@ function MapPopup({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
-  if (popup.isOpen()) {
+  useEffect(() => {
+    if (!popup.isOpen()) return;
     const prev = popupOptionsRef.current;
 
     if (popup.getLngLat().lng !== longitude || popup.getLngLat().lat !== latitude) {
@@ -975,7 +993,7 @@ function MapPopup({
       popup.setMaxWidth(popupOptions.maxWidth ?? "none");
     }
     popupOptionsRef.current = popupOptions;
-  }
+  }, [popup, longitude, latitude, popupOptions]);
 
   const handleClose = () => {
     popup.remove();

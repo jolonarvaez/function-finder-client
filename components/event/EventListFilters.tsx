@@ -40,7 +40,7 @@ export type EventListFiltersProps = Readonly<{
 }>;
 
 export function EventListFilters({ defaultDate, className }: EventListFiltersProps) {
-  const [dateOption, setDateOption] = React.useState<DateOption | null>(null);
+  const [dateOption, setDateOption] = React.useState<DateOption | null>("week");
   const [statusOpen, setStatusOpen] = React.useState(false);
   const [genreOpen, setGenreOpen] = React.useState(false);
   const [dateOpen, setDateOpen] = React.useState(false);
@@ -58,7 +58,6 @@ export function EventListFilters({ defaultDate, className }: EventListFiltersPro
 
   React.useEffect(() => {
     setDateRange("week", defaultDate ?? new Date());
-    setDateOption("week");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

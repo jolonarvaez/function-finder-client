@@ -78,7 +78,7 @@ function FilterPill({
 
 export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersProps) {
   const [activeSheet, setActiveSheet] = React.useState<ActiveSheet>(null);
-  const [dateOption, setDateOption] = React.useState<DateOption | null>(null);
+  const [dateOption, setDateOption] = React.useState<DateOption | null>("week");
 
   const {
     selectedGenres,
@@ -93,7 +93,6 @@ export function MobileMapFilters({ defaultDate, className }: MobileMapFiltersPro
 
   React.useEffect(() => {
     setDateRange("week", defaultDate ?? new Date());
-    setDateOption("week");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

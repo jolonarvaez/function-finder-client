@@ -62,6 +62,10 @@ export function PerformerSelector({
 
   useEffect(() => {
     if (query.trim().length < MIN_QUERY_LENGTH) {
+      // Must clear synchronously, not in a callback — otherwise the stale
+      // dropdown stays visible for a tick after the query drops below the
+      // minimum length.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
       setOpen(false);
       setSearching(false);

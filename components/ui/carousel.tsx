@@ -94,6 +94,11 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return;
+    // Sets the initial prev/next-disabled state as soon as the embla API is
+    // ready, so the buttons aren't briefly wrong before the first "select"
+    // event fires. Unmodified shadcn/ui upstream code — kept as-is per this
+    // project's convention of leaving components/ui/ untouched.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onSelect(api);
     api.on("reInit", onSelect);
     api.on("select", onSelect);

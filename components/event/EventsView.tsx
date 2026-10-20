@@ -85,6 +85,11 @@ export function EventsView() {
 
   useEffect(() => {
     if (!startDate || authLoading || profileLoading) return;
+    // Flips the spinner back on immediately when a filter changes and a
+    // refetch starts; setEvents/setLoading(false) below already run inside
+    // the fetch's own callbacks, which is what the rule asks for — this one
+    // can't move there since it has to happen before the fetch starts.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     getEventsList({
       startDate,

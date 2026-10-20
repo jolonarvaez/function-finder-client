@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
 import {
   SunIcon,
@@ -61,6 +61,11 @@ function getInitials(name?: string): string {
     .join("")
     .slice(0, 2)
     .toUpperCase();
+}
+
+function toSocialEntries(links: Record<string, string> | null | undefined): SocialEntry[] {
+  const entries = Object.entries(links ?? {}) as [SocialPlatform, string][];
+  return entries.map(([platform, value]) => ({ platform, value }));
 }
 
 // ── Sub-components ───────────────────────────────────────────
@@ -124,20 +129,20 @@ export function SettingsView() {
   const [country, setCountry] = useState(profile?.country ?? "");
   const [profileSaving, setProfileSaving] = useState(false);
   // Social links state
-  const [socials, setSocials] = useState<SocialEntry[]>(() => {
-    const links = profile?.socmed_links ?? {};
-    const entries = (Object.entries(links) as [SocialPlatform, string][]).filter(
-      ([p]) => p === "twitter" || p === "instagram"
-    );
-    return entries.length > 0 ? entries.map(([platform, value]) => ({ platform, value })) : [];
-  });
+  const [socials, setSocials] = useState<SocialEntry[]>(() =>
+    toSocialEntries(profile?.socmed_links)
+  );
   const [socialsSaving, setSocialsSaving] = useState(false);
 
-  useEffect(() => {
-    const links = profile?.socmed_links ?? {};
-    const entries = Object.entries(links) as [SocialPlatform, string][];
-    setSocials(entries.length > 0 ? entries.map(([platform, value]) => ({ platform, value })) : []);
-  }, [profile?.socmed_links]);
+  // Reset the editable list whenever the underlying profile data changes
+  // (e.g. once it finishes loading after mount) — done during render, per
+  // React's "adjusting state when a prop changes" pattern, rather than in an
+  // effect, so it doesn't cause an extra commit.
+  const [prevSocmedLinks, setPrevSocmedLinks] = useState(profile?.socmed_links);
+  if (profile?.socmed_links !== prevSocmedLinks) {
+    setPrevSocmedLinks(profile?.socmed_links);
+    setSocials(toSocialEntries(profile?.socmed_links));
+  }
   // Preferences state
   const [genres, setGenres] = useState<Genre[]>(profile?.genre_tags ?? []);
   const [genresSaving, setGenresSaving] = useState(false);
